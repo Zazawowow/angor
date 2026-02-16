@@ -43,6 +43,26 @@ Now you should have Angor running locally at [http://localhost:5062/](http://loc
 
 We welcome contributions to the codebase. Please maintain the same code style as the existing code.
 
+### Fork workflow (for PRs)
+
+To contribute via pull requests, use your own fork:
+
+1. **Fork the repo** on GitHub: go to [github.com/block-core/angor](https://github.com/block-core/angor) and click "Fork".
+
+2. **Add your fork as a remote** (replace `YOUR_USERNAME` with your GitHub username):
+   ```bash
+   git remote add fork https://github.com/YOUR_USERNAME/angor.git
+   ```
+
+3. **Push to your fork** instead of origin:
+   ```bash
+   git push fork main
+   # or for a feature branch:
+   git push fork your-branch-name
+   ```
+
+4. **Open a PR** on GitHub from your fork's branch to `block-core/angor` main.
+
 ## Running Cypress
 
 To run Cypress, follow these steps:
