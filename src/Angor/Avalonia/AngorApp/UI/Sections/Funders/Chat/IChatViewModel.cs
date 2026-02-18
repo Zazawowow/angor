@@ -1,9 +1,8 @@
-namespace AngorApp.UI.Sections.Funders.Chat
+namespace AngorApp.UI.Sections.Funders.Chat;
+
+public interface IChatViewModel
 {
-    public interface IChatViewModel
-    {
-        IEnumerable<ChatMessage> Messages { get; }
-        string CurrentText { get; set; }
-        public IEnhancedCommand SendMessage { get; }
-    }
+    IEnumerable<ChatMessage> Messages { get; }
+    string CurrentText { get; set; }
+    public IEnhancedCommand SendMessage { get; }
 }

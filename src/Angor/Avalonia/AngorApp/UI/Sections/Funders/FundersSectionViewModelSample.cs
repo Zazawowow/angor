@@ -1,10 +1,13 @@
+using AngorApp.UI.Sections.Funders.Items;
+using AngorApp.UI.Sections.Funders.Grouping;
+
 namespace AngorApp.UI.Sections.Funders;
 
 public class FundersSectionViewModelSample : IFundersSectionViewModel
 {
     public string Message { get; set; } = "Funders section";
 
-    public IEnumerable<IFundersGroup> Groups { get; } =
+    public IEnumerable<IFunderGroup> Groups { get; } =
     [
         new FunderGroupSample()
         {

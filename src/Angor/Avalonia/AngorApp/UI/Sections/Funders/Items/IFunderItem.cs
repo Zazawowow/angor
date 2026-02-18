@@ -1,4 +1,4 @@
-namespace AngorApp.UI.Sections.Funders
+namespace AngorApp.UI.Sections.Funders.Items
 {
     public interface IFunderItem
     {
