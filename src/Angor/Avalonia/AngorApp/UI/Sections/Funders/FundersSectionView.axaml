@@ -51,7 +51,7 @@
                                 <ItemsControl ClipToBounds="False" Classes="VerticalBigGap" ItemsSource="{Binding Funders}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <items:FunderItemView />
+                                            <items:FunderItemView ClipToBounds="False" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
