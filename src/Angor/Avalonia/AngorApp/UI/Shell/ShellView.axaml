@@ -10,7 +10,7 @@
         <shell:ShellViewModelSample />
     </Design.DataContext>
 
-    <Grid x:Name="TopBar" Margin="0 20 20 20" ColumnDefinitions="Auto *" RowDefinitions="42 *" ColumnSpacing="20" RowSpacing="20">
+    <Grid x:Name="TopBar" Margin="0,24,24,24" ColumnDefinitions="Auto *" RowDefinitions="42 *" ColumnSpacing="20" RowSpacing="20">
         <PathIcon Height="32" Foreground="{DynamicResource Brand}" Width="32" Data="{StaticResource AngorLogo}" />
         <DockPanel Grid.Row="0" Grid.Column="1" Dock="Top">
             <DockPanel DockPanel.Dock="Top" HorizontalSpacing="20">
@@ -46,13 +46,35 @@
                 </StackPanel>
             </DockPanel>
         </DockPanel>
-        <SectionStrip Classes="Nav" Grid.Row="1" Grid.Column="0" SelectedSection="{Binding SelectedSection}" IconSize="24" Width="200" HorizontalAlignment="Left" Sections="{Binding SidebarSections}" />
-        <OverlayBorder Grid.Row="1" Grid.Column="1" Classes="Panel" Padding="0" Background="{DynamicResource TiledLogoBrush}">
-            <Frame Content="{Binding SelectedSection.Navigator.Content^}" BackCommand="{Binding SelectedSection.Navigator.Back}">
+        <!--
+            SectionStrip layout properties (Zafiro template internals):
+              Padding       = outer scrollviewer/itemscontrol padding
+              ItemPadding   = Margin on the inner HorizontalItem DockPanel — set to 0 so
+                              SectionStripItem.Padding (in SectionStrip.axaml) is the sole padding
+              HorizontalIconLabelSpacing = gap between icon and label text
+              ItemSpacing   = StackPanel.Spacing between group blocks; we use 0 and
+                              drive inter-group spacing via SectionStripGroupHeader.Margin instead
+        -->
+        <SectionStrip Classes="Nav" Grid.Row="1" Grid.Column="0"
+                       SelectedSection="{Binding SelectedSection}"
+                       IconSize="20"
+                       Width="200"
+                       HorizontalAlignment="Left"
+                       Sections="{Binding SidebarSections}"
+                       Padding="8,8,8,8"
+                       ItemPadding="0"
+                       HorizontalIconLabelSpacing="10"
+                       ItemSpacing="0" />
+        <!-- Web: main content area is transparent; individual section cards carry their own backgrounds.
+             TiledLogoBrush belongs on home cards (see HomeSectionView), not here. -->
+        <OverlayBorder Grid.Row="1" Grid.Column="1" Classes="Panel" Padding="0" ClipToBounds="False">
+            <Frame Content="{Binding SelectedSection.Navigator.Content^}" BackCommand="{Binding SelectedSection.Navigator.Back}" ClipToBounds="False">
                 <Interaction.Behaviors>
                     <AutoHeaderFooterBehavior />
                 </Interaction.Behaviors>
             </Frame>
         </OverlayBorder>
+        <!-- App-wide crosshatch texture overlay, spanning entire shell (matching web .app-container::before) -->
+        <Border Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{DynamicResource AppTextureBrush}" IsHitTestVisible="False" />
     </Grid>
 </UserControl>

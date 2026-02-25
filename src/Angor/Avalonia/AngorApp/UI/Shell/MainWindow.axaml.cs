@@ -1,6 +1,10 @@
 using Avalonia.Platform;
 using Avalonia.Styling;
 
+#if DEBUG
+using Avalonia.Diagnostics;
+#endif
+
 namespace AngorApp.UI.Shell;
 
 public partial class MainWindow : Window
@@ -8,6 +12,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+#if DEBUG
+        this.AttachDevTools();
+#endif
         SetWindowIconForCurrentTheme();
         // React to theme changes to keep the window icon in sync (Windows/Linux)
         Application.Current!

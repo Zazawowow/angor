@@ -17,11 +17,15 @@
 
     <Styles.Resources>
         <ControlTheme TargetType="controls:ScrollableView" x:Key="{x:Type controls:ScrollableView}">
+            <Setter Property="ClipToBounds" Value="False" />
+            <Setter Property="ContentPadding" Value="24,24,24,24" />
             <Setter Property="Template">
                 <ControlTemplate>
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                  VerticalScrollBarVisibility="Auto">
+                                  VerticalScrollBarVisibility="Auto"
+                                  ClipToBounds="False">
                         <ContentPresenter x:Name="PART_ContentPresenter"
+                                          ClipToBounds="False"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Margin="{TemplateBinding ContentPadding}"

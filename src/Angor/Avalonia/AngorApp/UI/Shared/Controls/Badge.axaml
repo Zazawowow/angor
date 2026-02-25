@@ -18,12 +18,12 @@
 
     <Styles.Resources>
         <ControlTheme x:Key="{x:Type controls:Badge}" TargetType="controls:Badge">
-            <Setter Property="Padding" Value="12 5" />
+            <Setter Property="Padding" Value="{StaticResource PaddingBadge}" />
             <Setter Property="Color" Value="{DynamicResource SystemBaseHighColor}" />
-            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="CornerRadius" Value="{StaticResource RadiusSm}" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSm}" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Template">
                 <ControlTemplate>

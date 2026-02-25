@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:findProjects="clr-namespace:AngorApp.UI.Sections.FindProjects"
              xmlns:a="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:controls="clr-namespace:AngorApp.UI.Shared.Controls"
              mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="650"
              x:Class="AngorApp.UI.Sections.FindProjects.FindProjectsSectionView" x:DataType="findProjects:IFindProjectsSectionViewModel" ClipToBounds="False">
 
@@ -17,32 +18,32 @@
         </DataContextChangedTrigger>
     </Interaction.Behaviors>
 
-    <Panel Classes="Padded">
+    <Panel>
         <Loading IsLoading="{Binding LoadProjects.IsExecuting^}">
-            <ScrollViewer>
-                <ItemsControl Margin="0 70 0 0" ItemsSource="{Binding Projects}" ClipToBounds="False">
+            <controls:ScrollableView ContentPadding="24">
+                <ItemsControl ItemsSource="{Binding Projects}" ClipToBounds="False">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <BalancedWrapGrid MinItemWidth="280" MaxItemWidth="500" HorizontalSpacing="20" VerticalSpacing="20" />
+                            <BalancedWrapGrid MinItemWidth="280" MaxItemWidth="500" HorizontalSpacing="24" VerticalSpacing="24" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="10" Classes="Panel Elevate">
-                                <StackPanel Classes="BigGap">
-                                    <a:AdvancedImage CornerRadius="10 0" Margin="-20 -20 -20 0" Stretch="UniformToFill" Height="140" Source="{Binding BannerUrl}" />
-                                    <Border Height="60" Width="60" Margin="0 -50 0 0" HorizontalAlignment="Left" CornerRadius="30" ClipToBounds="True" Background="{DynamicResource AppBackground}">
+                            <Border Margin="12" Classes="Panel Elevate" ClipToBounds="False">
+                                <StackPanel Classes="Gap-XL">
+                                    <a:AdvancedImage CornerRadius="16 0" Margin="-20 -20 -20 0" Stretch="UniformToFill" Height="140" Source="{Binding BannerUrl}" />
+                                    <Border Height="60" Width="60" Margin="0,-48,0,0" HorizontalAlignment="Left" CornerRadius="30" ClipToBounds="True" Background="{DynamicResource AppBackground}">
                                         <a:AdvancedImage Source="{Binding LogoUrl}" />
                                     </Border>
                                     <TextBlock Classes="Header" DockPanel.Dock="Top" Text="{Binding Name}" />
-                                    <TextBlock Text="{Binding Description}" MaxLines="2" TextWrapping="Wrap" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
+                                    <TextBlock Text="{Binding Description}" MaxLines="2" TextWrapping="Wrap" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" Classes="Size-M" />
                                     <Grid>
-                                        <TextBlock Text="{Binding InvestorsCount, TargetNullValue='', StringFormat='{}{0} Investors'}" />
-                                        <TextBlock Classes="Strong" HorizontalAlignment="Right" Text="{Binding FundingRaised.DecimalString, FallbackValue='...'}" MaxLines="2" TextWrapping="Wrap" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
+                                        <TextBlock Classes="Size-XS Dimmed" Text="{Binding InvestorsCount, TargetNullValue='', StringFormat='{}{0} Investors'}" />
+                                        <TextBlock Classes="Strong Size-M" HorizontalAlignment="Right" Text="{Binding FundingRaised.DecimalString, FallbackValue='...'}" MaxLines="2" TextWrapping="Wrap" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
                                     </Grid>
                                     <Grid>
-                                        <TextBlock Text="Target" />
-                                        <TextBlock HorizontalAlignment="Right" Text="{Binding FundingTarget.DecimalString}" MaxLines="2" TextWrapping="Wrap" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
+                                        <TextBlock Classes="Size-XS Dimmed" Text="Target" />
+                                        <TextBlock Classes="Size-M" HorizontalAlignment="Right" Text="{Binding FundingTarget.DecimalString}" MaxLines="2" TextWrapping="Wrap" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
                                     </Grid>
                                     <ProgressBar IsIndeterminate="{Binding LoadStatistics.IsExecuting^}" Foreground="{DynamicResource ProgressBrush}" Background="{DynamicResource AppBackground}" Height="8"
                                                  Value="{Binding FundingRaised.Sats}" Maximum="{Binding FundingTarget.Sats}" />
@@ -64,7 +65,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </ScrollViewer>
+            </controls:ScrollableView>
         </Loading>
     </Panel>
 

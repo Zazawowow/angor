@@ -60,6 +60,7 @@
             <Color x:Key="Highlight">#2D5A3D</Color>           <!-- = PrimaryGreenDark -->
             <Color x:Key="BitcoinAccent">#F7931A</Color>       <!-- = BitcoinOrange -->
             <Color x:Key="SurfaceHover">#E9E9E9</Color>
+            <Color x:Key="NavItemHover">#E9E9E9</Color>
             <Color x:Key="SurfaceSelected">White</Color>
             <Color x:Key="CardSurface">White</Color>
             <Color x:Key="SurfaceLow">#E5E7EB</Color>       <!-- = Border -->
@@ -73,14 +74,17 @@
             <SolidColorBrush x:Key="ErrorSoft" Color="#fee2e2" />
             <SolidColorBrush x:Key="ErrorHard" Color="#fecaca" />
             <SolidColorBrush x:Key="ErrorForeground" Color="#dc2626" />
+            <SolidColorBrush x:Key="ErrorText" Color="#b91c1c" />
+            <SolidColorBrush x:Key="SuccessText" Color="#15803d" />
 
             <!-- Shadows -->
-            <BoxShadows x:Key="SectionShadow">0 0 30 0 LightGray</BoxShadows>
-            <BoxShadows x:Key="ItemShadow">0 0 20 0 LightGray</BoxShadows>
+            <!-- SectionShadow: tight glow for selected nav item — must fit in 2-4px margin -->
+            <BoxShadows x:Key="SectionShadow">0 1 6 0 #30000000</BoxShadows>
+            <BoxShadows x:Key="ItemShadow">0 2 8 0 #20000000</BoxShadows>
             <BoxShadows x:Key="ShadowNone">0 0 0 0 #40000000</BoxShadows>
-            <BoxShadows x:Key="DefaultShadow">0 2 15 0 #40000000</BoxShadows>
-            <BoxShadows x:Key="DefaultShadowHover">0 6 20 0 #40000000</BoxShadows>
-            <BoxShadows x:Key="ItemShadowBig">0 5 25 0 LightGray</BoxShadows>
+            <BoxShadows x:Key="DefaultShadow">0 2 8 0 #18000000</BoxShadows>
+            <BoxShadows x:Key="DefaultShadowHover">0 4 12 0 #28000000</BoxShadows>
+            <BoxShadows x:Key="ItemShadowBig">0 4 16 0 #20000000</BoxShadows>
 
             <!-- Button Brushes -->
             <SolidColorBrush x:Key="PrimaryButtonForeground" Color="{DynamicResource SurfaceHover}" />
@@ -92,9 +96,10 @@
             <SolidColorBrush x:Key="SecondaryButtonBorder" Color="{StaticResource TextStrong}" />
 
             <!-- Decorative Brushes -->
-            <VisualBrush x:Key="TiledLogoBrush" Opacity="0.05" DestinationRect="0,0,72,72" Stretch="UniformToFill" TileMode="Tile">
+            <!-- logo.svg is 120x129, scaled to 80px wide → 86px tall tile (matching web: background-size: 80px) -->
+            <VisualBrush x:Key="TiledLogoBrush" Opacity="0.03" DestinationRect="0,0,80,86" Stretch="Uniform" TileMode="Tile">
                 <VisualBrush.Visual>
-                    <Svg Path="/Assets/pattern.svg" />
+                    <Svg Path="/Assets/logo.svg" />
                 </VisualBrush.Visual>
             </VisualBrush>
 
@@ -136,6 +141,7 @@
             <Color x:Key="Highlight">#E5E8E1</Color>
             <Color x:Key="BitcoinAccent">#F7931A</Color>       <!-- = BitcoinOrange -->
             <Color x:Key="SurfaceHover">#3A3A3A</Color>
+            <Color x:Key="NavItemHover">#0F0F0F</Color>
             <Color x:Key="SurfaceSelected">#202020</Color>
             <Color x:Key="CardSurface">#2A2A2A</Color>
             <Color x:Key="SurfaceLow">#333333</Color>
@@ -157,20 +163,30 @@
                 </GradientStops>
             </LinearGradientBrush>
             
-            <!-- Shadows (disabled for dark theme) -->
-            <BoxShadows x:Key="SectionShadow">0 0 0 0 Transparent</BoxShadows>
-            <BoxShadows x:Key="ItemShadow">0 0 0 0 LightGray</BoxShadows>
-            <BoxShadows x:Key="ItemShadowBig">0 0 0 0 LightGray</BoxShadows>
+            <!-- Tiled logo background pattern (higher opacity on dark background, matching web: opacity .08) -->
+            <VisualBrush x:Key="TiledLogoBrush" Opacity="0.08" DestinationRect="0,0,80,86" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/logo.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
 
-            <!-- Button Brushes -->
+            <!-- Shadows (matching Storybook ultra-modern dark shadows) -->
+            <BoxShadows x:Key="SectionShadow">0 20 40 0 #99000000</BoxShadows>
+            <BoxShadows x:Key="ItemShadow">0 4 16 0 #66000000</BoxShadows>
+            <BoxShadows x:Key="ItemShadowBig">0 20 40 0 #99000000</BoxShadows>
+            <BoxShadows x:Key="DefaultShadow">0 4 16 0 #66000000</BoxShadows>
+            <BoxShadows x:Key="DefaultShadowHover">0 6 24 0 #80000000</BoxShadows>
+            <BoxShadows x:Key="ShadowNone">0 0 0 0 Transparent</BoxShadows>
+
+            <!-- Button Brushes (matching Storybook: linear-gradient(135deg, #2a2a2a, #1a1a1a)) -->
             <SolidColorBrush x:Key="PrimaryButtonForeground" Color="{StaticResource TextStrong}" />
-            <LinearGradientBrush x:Key="PrimaryButtonBackground" Opacity="0.5">
+            <LinearGradientBrush x:Key="PrimaryButtonBackground" StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStops>
-                    <GradientStop Offset="0" Color="{StaticResource Stroke}" />
-                    <GradientStop Offset="1" Color="{StaticResource Surface}" />
+                    <GradientStop Offset="0" Color="#2A2A2A" />
+                    <GradientStop Offset="1" Color="#1A1A1A" />
                 </GradientStops>
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="PrimaryButtonBorder" Color="{StaticResource Stroke}" />
+            <SolidColorBrush x:Key="PrimaryButtonBorder" Color="#3A3A3A" />
 
             <SolidColorBrush x:Key="AccentButtonForeground" Color="{DynamicResource SurfaceHover}" />
             <SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource Accent}" />
@@ -188,6 +204,41 @@
     <!-- ═══════════════════════════════════════════════════════════════════════
          SHARED RESOURCES (theme-independent)
          ═══════════════════════════════════════════════════════════════════════ -->
+
+    <!--
+        App-wide crosshatch texture replicating the web CSS:
+          repeating-linear-gradient(45deg, transparent 2px, rgba(255,255,255,.02) 4px)
+          repeating-linear-gradient(-45deg, transparent 2px, rgba(0,0,0,.01) 4px)
+        Applied as a full-span non-interactive overlay over the entire ShellView.
+    -->
+    <DrawingBrush x:Key="AppTextureBrush" TileMode="Tile" DestinationRect="0,0,4,4" Stretch="None">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#05FFFFFF" Thickness="1" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="0,2" EndPoint="2,0" />
+                            <LineGeometry StartPoint="2,4" EndPoint="4,2" />
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#03000000" Thickness="1" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="2,0" EndPoint="4,2" />
+                            <LineGeometry StartPoint="0,2" EndPoint="2,4" />
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
     
     <!-- CheckBox overrides -->
     <StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="Accent" />

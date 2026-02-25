@@ -3,7 +3,7 @@
 
     <Styles.Resources>
         <ControlTheme x:Key="StackingEdgePanel" TargetType="EdgePanel">
-            <Setter Property="Spacing" Value="10" />
+            <Setter Property="Spacing" Value="12" />
             <Setter Property="Template">
                 <ControlTemplate>
                     <StackPanel Background="{TemplateBinding Background}" Spacing="{TemplateBinding Spacing}">

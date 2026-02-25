@@ -18,22 +18,22 @@
 
 
     <c:ScrollableView>
-        <StackPanel Spacing="30" Margin="20" MaxWidth="1200" HorizontalAlignment="Stretch">
+        <StackPanel Spacing="32" Margin="24" MaxWidth="1200" HorizontalAlignment="Stretch">
 
             <!-- Top Section: Header + Investment Opportunity -->
-            <Grid ColumnDefinitions="*, 400" ColumnSpacing="20">
+            <Grid ColumnDefinitions="*, 400" ColumnSpacing="24">
 
                 <!-- Left Column: Header & Description -->
                 <OverlayBorder Classes="White Shadow" Padding="0" CornerRadius="16">
                     <StackPanel Grid.Column="0">
                         <a:AdvancedImage CornerRadius="10 0" Margin="-20 -20 -20 0" Stretch="UniformToFill" Height="140" Source="{Binding Project.Banner}" />
                         <Panel>
-                            <Border Classes="Shadow" Height="60" Width="60" Margin="20 -30 0 0" HorizontalAlignment="Left" CornerRadius="30" />
-                            <Border Height="60" Width="60" Margin="20 -30 0 0" HorizontalAlignment="Left" CornerRadius="30" ClipToBounds="True" Background="{DynamicResource AppBackground}">
+                            <Border Classes="Shadow" Height="60" Width="60" Margin="20,-32,0,0" HorizontalAlignment="Left" CornerRadius="30" />
+                            <Border Height="60" Width="60" Margin="20,-32,0,0" HorizontalAlignment="Left" CornerRadius="30" ClipToBounds="True" Background="{DynamicResource AppBackground}">
                                 <a:AdvancedImage Source="{Binding Project.Avatar}" />
                             </Border>
                         </Panel>
-                        <StackPanel Margin="20" Classes="SmallGap">
+                        <StackPanel Margin="24" Spacing="12">
                             <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Classes="Weight-Bold Size-XL Strong" />
                             <TextBlock Text="{Binding ShortDescription}" TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" TextWrapping="Wrap" Classes="Size-M" />
                         </StackPanel>
@@ -42,7 +42,7 @@
 
                 <!-- Right Column: Investment Opportunity -->
                 <Border Grid.Column="1" Classes="ColorPanel DarkGreen Shadow" IsVisible="{Binding IsInsideInvestmentPeriod}">
-                    <StackPanel Classes="BigGap" VerticalAlignment="Center">
+                    <StackPanel Classes="Gap-XL" VerticalAlignment="Center">
                         <ContentControl IconOptions.Size="32" IconOptions.Fill="White" Content="{Icon fa-bitcoin}" />
                         <TextBlock Text="Investment Opportunity" Classes="Title" Foreground="White" FontWeight="Bold" />
 
@@ -54,7 +54,7 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Center"
                                         FontSize="18"
-                                        Padding="24 14 "
+                                        Padding="24,16"
                                         FontWeight="Bold">
                         </EnhancedButton>
                     </StackPanel>
@@ -66,15 +66,15 @@
                 <HeaderedContainer.Header>
                     <EdgePanel StartContent="{Icon fa-bitcoin}" Content="Project Statistics " />
                 </HeaderedContainer.Header>
-                <StackPanel Spacing="15">
-                    <UniformGrid Columns="3" Margin="0 10" ColumnSpacing="16">
+                <StackPanel Spacing="16">
+                    <UniformGrid Columns="3" Margin="0,12" ColumnSpacing="16">
                         <c:NewCard ContainerClasses="Card ApricotBorder" Left="Target Amount" Content="{Binding TargetAmount.DecimalString}" Right="{Icon fa-bitcoin}" />
                         <c:NewCard ContainerClasses="Card ApricotBorder" Left="Total Raised" Content="{Binding TotalRaised.DecimalString}" Right="{Icon fa-clock}" />
                         <c:NewCard ContainerClasses="Card ApricotBorder" Left="Total Investors" Content="{Binding InvestorsCount}" Right="{Icon fa-clipboard}" LeftClasses="BrownText" ContentClasses="Size-XL" />
                     </UniformGrid>
 
-                    <StackPanel Classes="MediumGap">
-                        <Grid ColumnDefinitions="*, Auto" Margin="0 0 0 5">
+                    <StackPanel Classes="Gap-M">
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,8">
                             <TextBlock Text="Funding Progress" Foreground="#4a4a4a" Classes="Size-S Weight-Bold" />
                             <TextBlock Grid.Column="1" Foreground="{DynamicResource PrimaryGreenDark}" Text="{Binding FundingProgress, StringFormat={}{0:P0}}" FontWeight="Bold" />
                         </Grid>
@@ -86,9 +86,9 @@
             <!-- Investment Information -->
             <HeaderedContainer Classes="Card White Shadow BigHeader SmallIcon">
                 <HeaderedContainer.Header>
-                    <EdgePanel Margin="-5 0" StartContent="{Icon fa-bitcoin}">Investment Information</EdgePanel>
+                    <EdgePanel Margin="-4,0" StartContent="{Icon fa-bitcoin}">Investment Information</EdgePanel>
                 </HeaderedContainer.Header>
-                <UniformGrid Columns="3" Margin="0 10" ColumnSpacing="16" RowSpacing="16">
+                <UniformGrid Columns="3" Margin="0,12" ColumnSpacing="16" RowSpacing="16">
                     <c:NewCard ContainerClasses="Card ApricotBorder ThickBorder" Center="Subscription Price" Content="{Binding SubscriptionPrice.DecimalString}" Right="{Icon fa-bitcoin}" HeaderPanelClasses="" />
                     <c:NewCard ContainerClasses="Card ApricotBorder ThickBorder" Center="Frequency" Content="{Binding Frequency}" Right="{Icon fa-clock}" HeaderPanelClasses="" />
                     <c:NewCard ContainerClasses="Card ApricotBorder ThickBorder" Center="Installments" Content="{Binding Installments}" Right="{Icon fa-clipboard}" HeaderPanelClasses="" />
@@ -100,7 +100,7 @@
                 <Expander.Header>
                     <EdgePanel StartContent="{Icon fa-circle-info}" Content="Project Details" />
                 </Expander.Header>
-                <StackPanel Spacing="15" Margin="10">
+                <StackPanel Spacing="16" Margin="24">
 
                     <HeaderedContainer Header="Explorer">
                         <EdgePanel Classes="ColorPanel LightGray Radius-S SmallerPadding" StartContent="{Icon fa-arrow-up-right-from-square}">
@@ -141,7 +141,7 @@
                     <EdgePanel StartContent="{Icon fa-comment-dots}" Content="Nostr" />
                 </Expander.Header>
 
-                <StackPanel Spacing="15" Margin="10">
+                <StackPanel Spacing="16" Margin="24">
 
                     <HeaderedContainer Header="Nostr Public Key (npub)">
                         <EdgePanel Classes="ColorPanel LightGray SmallerPadding Radius-S" StartContent="{Icon fa-user}">

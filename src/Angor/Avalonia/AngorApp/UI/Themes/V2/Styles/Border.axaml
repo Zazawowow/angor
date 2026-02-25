@@ -27,11 +27,14 @@
     </Design.PreviewWith>
 
     <Style Selector="Border.Panel">
-        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="CornerRadius" Value="16" />
         <Setter Property="Padding" Value="20" />
         <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Background" Value="{DynamicResource Surface}" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <!-- web: box-shadow: 0 20px 40px rgba(0,0,0,.56) -->
+        <Setter Property="BoxShadow" Value="{DynamicResource ItemShadowBig}" />
     </Style>
 
 </Styles>

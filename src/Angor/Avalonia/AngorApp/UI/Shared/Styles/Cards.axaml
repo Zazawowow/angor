@@ -197,7 +197,7 @@
         </ControlTheme>
 
         <ControlTheme TargetType="EdgePanel" x:Key="HeaderEdgePanel">
-            <Setter Property="Spacing" Value="10" />
+            <Setter Property="Spacing" Value="12" />
             <Setter Property="Template">
                 <ControlTemplate>
                     <FlexBox Background="{TemplateBinding Background}" Wrap="Wrap" Gap="20" JustifyContent="Center">

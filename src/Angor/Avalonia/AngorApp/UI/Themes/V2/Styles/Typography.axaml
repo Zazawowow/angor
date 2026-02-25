@@ -73,7 +73,7 @@
     </Style>
 
     <Style Selector="Run.Thin">
-        <Setter Property="FontWeight" Value="SemiLight" />
+        <Setter Property="FontWeight" Value="Light" />
         <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
     </Style>
 
@@ -105,9 +105,9 @@
         <Setter Property="FontSize" Value="32" />
     </Style>
 
-    <!-- Atomic: Weight (FontWeight only) -->
+    <!-- Atomic: Weight (FontWeight only) - matches Vue font-weight: 300 -->
     <Style Selector="TextBlock.Weight-Light">
-        <Setter Property="FontWeight" Value="SemiLight" />
+        <Setter Property="FontWeight" Value="Light" />
     </Style>
     <Style Selector="TextBlock.Weight-Bold">
         <Setter Property="FontWeight" Value="Bold" />
@@ -129,16 +129,16 @@
          These are shortcuts for common combinations of atomic classes.
          ═══════════════════════════════════════════════════════════════════════ -->
 
-    <!-- Title: Size-XL + Weight-Bold -->
+    <!-- Title: Size-XL + Weight-Bold (22px matches Storybook ultra-modern h1) -->
     <Style Selector="TextBlock.Title">
-        <Setter Property="FontSize" Value="25" />
+        <Setter Property="FontSize" Value="22" />
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
-    <!-- Subtitle: Size-L + Weight-Light -->
+    <!-- Subtitle: Size-L + Weight-Light (matches Vue font-weight: 300) -->
     <Style Selector="TextBlock.Subtitle">
         <Setter Property="FontSize" Value="18" />
-        <Setter Property="FontWeight" Value="SemiLight" />
+        <Setter Property="FontWeight" Value="Light" />
     </Style>
 
     <!-- Header: Size-L + Weight-Bold + Text-Strong + NoWrap + Ellipsis -->
@@ -150,10 +150,10 @@
         <Setter Property="Foreground" Value="{DynamicResource TextStrong}" />
     </Style>
 
-    <!-- Regular: Size-M + Weight-Light (body text) -->
+    <!-- Regular: Size-M + Normal (body text, matches Vue font-weight: 400) -->
     <Style Selector="TextBlock.Regular">
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontWeight" Value="SemiLight" />
+        <Setter Property="FontWeight" Value="Normal" />
     </Style>
 
     <!-- Strong: Weight-Bold + Text-Strong (emphasis without size change) -->
@@ -177,7 +177,7 @@
         <Setter Property="FontSize" Value="11" />
     </Style>
 
-    <!-- Thin: Weight very light -->
+    <!-- Thin: Weight very light (matches Vue font-weight: 100) -->
     <Style Selector="TextBlock.Thin">
         <Setter Property="FontWeight" Value="Thin" />
     </Style>

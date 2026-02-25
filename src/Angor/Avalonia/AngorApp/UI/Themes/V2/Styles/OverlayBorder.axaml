@@ -28,7 +28,8 @@
 
     <Style Selector="OverlayBorder.Panel">
         <Setter Property="CornerRadius" Value="20" />
-        <Setter Property="Padding" Value="20" />
+        <!-- Main panel: 24px uniform spacing from edges (section content, header/footer bars) -->
+        <Setter Property="Padding" Value="24" />
         <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Background" Value="{DynamicResource Surface}" />

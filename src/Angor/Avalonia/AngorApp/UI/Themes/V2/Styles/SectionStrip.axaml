@@ -1,35 +1,110 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Note: SectionStrip requires ItemsSource binding, preview not available -->
-
-    <Style Selector="SectionStrip.Nav SectionStripGroupHeader">
-        <Setter Property="Foreground" Value="{DynamicResource Brand}" />
-        <Setter Property="FontFamily" Value="Sans Serif" />
-        <Setter Property="FontWeight" Value="SemiLight" />
-        <Setter Property="FontSize" Value="18" />
-        <Setter Property="Margin" Value="10" />
+    <!--
+        Fix clipped drop shadow on selected items.
+        Every node in the render chain must have ClipToBounds=False:
+          SectionStrip (its ScrollViewer template child)
+            └── SectionStripListBox (a ListBox)
+                  └── ListBox ScrollViewer template child
+                        └── ItemsPresenter template child
+    -->
+    <Style Selector="SectionStrip.Nav">
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+    <Style Selector="SectionStrip.Nav /template/ ScrollViewer">
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+    <Style Selector="SectionStrip.Nav /template/ ItemsControl">
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+    <Style Selector="SectionStrip.Nav SectionStripListBox">
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+    <Style Selector="SectionStrip.Nav SectionStripListBox /template/ ScrollViewer">
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+    <Style Selector="SectionStrip.Nav SectionStripListBox /template/ ItemsPresenter">
+        <Setter Property="ClipToBounds" Value="False" />
     </Style>
 
+    <!--
+        Sidebar nav styles.
+
+        Layout model (Zafiro SectionStrip internals):
+          ┌─ SectionStrip ──────────────────────────────────────────────────────────┐
+          │  Padding="8,8,8,8"  (set in ShellView — wraps the ItemsControl)        │
+          │  ┌─ StackPanel (ItemSpacing=0 between groups) ────────────────────────┐ │
+          │  │ ┌─ SectionGroupView (group 1: no name, Home+Funds) ───────────────┐ │ │
+          │  │ │ StackPanel Spacing=6 {                                           │ │ │
+          │  │ │   SectionStripGroupHeader  ← IsVisible=false (empty name)        │ │ │
+          │  │ │   SectionStripListBox {                                           │ │ │
+          │  │ │     SectionStripItem [Margin="0,2,0,2" Padding="12,9,12,9"]      │ │ │
+          │  │ │     SectionStripItem [Margin="0,2,0,2" Padding="12,9,12,9"]      │ │ │
+          │  │ │   }                                                               │ │ │
+          │  │ │ }                                                                 │ │ │
+          │  │ └──────────────────────────────────────────────────────────────────┘ │ │
+          │  │ ┌─ SectionGroupView (group 2: INVESTOR) ─────────────────────────┐   │ │
+          │  │ │ StackPanel Spacing=6 {                                          │   │ │
+          │  │ │   SectionStripGroupHeader [Margin="0,20,0,0"]  ← 20px top gap  │   │ │
+          │  │ │   SectionStripListBox { ... items ... }                         │   │ │
+          │  │ │ }                                                                │   │ │
+          │  │ └────────────────────────────────────────────────────────────────┘   │ │
+          │  └────────────────────────────────────────────────────────────────────┘ │
+          └──────────────────────────────────────────────────────────────────────────┘
+
+        Result (all in pixels, sidebar = 200px wide):
+          - 8px outer padding each side → items are 184px wide
+          - Items: padding 12px H, 9px V → ~40px row height
+          - Items: 2px V margin → 4px gap between consecutive items
+          - Groups: 20px top margin on header → clear visual separation
+          - StackPanel Spacing=6 (hardcoded in Zafiro) → 6px between header and items
+          - ItemPadding=0 (set in ShellView) → no double-padding
+    -->
+
+    <!-- ── Group header (INVESTOR / FOUNDER) with divider ────────────────── -->
+    <Style Selector="SectionStrip.Nav SectionStripGroupHeader">
+        <Setter Property="Margin" Value="0,16,0,0" />
+        <Setter Property="Padding" Value="12,10,12,0" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Border}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilySans}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+    <Style Selector="SectionStrip.Nav SectionStripGroupHeader TextBlock">
+        <Setter Property="LetterSpacing" Value="1" />
+    </Style>
+
+    <!-- ── Nav item (default) ─────────────────────────────────────────────── -->
     <Style Selector="SectionStrip.Nav SectionStripItem">
-        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Padding" Value="8" />
+        <!-- Horizontal 12px + vertical 9px → ~40px item height with 20px icon -->
+        <Setter Property="Padding" Value="12,9,12,9" />
         <Setter Property="IconOptions.Fill" Value="{Binding $self.Foreground}" />
-        <Setter Property="Margin" Value="10" />
-        <Setter Property="FontWeight" Value="Bold" />
+        <!-- 2px H gives the shadow room to render; 12px V = 24px gap between items (matches Vue app) -->
+        <Setter Property="Margin" Value="2,12,2,12" />
+        <Setter Property="FontFamily" Value="{StaticResource FontFamilySans}" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBase}" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
+    <!-- ── Hover ──────────────────────────────────────────────────────────── -->
     <Style Selector="SectionStrip.Nav SectionStripItem:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SurfaceHover}" />
+        <Setter Property="Background" Value="{DynamicResource NavItemHover}" />
     </Style>
 
+    <!-- ── Selected ───────────────────────────────────────────────────────── -->
     <Style Selector="SectionStrip.Nav SectionStripItem:selected">
         <Setter Property="Background" Value="{DynamicResource SurfaceSelected}" />
         <Setter Property="Foreground" Value="{DynamicResource Highlight}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style Selector="SectionStrip.Nav SectionStripItem:selected Border">

@@ -10,7 +10,7 @@ namespace AngorApp.UI.Shared.Controls;
 public class ScrollableView : ContentControl
 {
     public static readonly StyledProperty<Thickness> ContentPaddingProperty =
-        AvaloniaProperty.Register<ScrollableView, Thickness>(nameof(ContentPadding), new Thickness(20));
+        AvaloniaProperty.Register<ScrollableView, Thickness>(nameof(ContentPadding), new Thickness(24));
 
     public static readonly StyledProperty<double> MaxContentWidthProperty =
         AvaloniaProperty.Register<ScrollableView, double>(nameof(MaxContentWidth), double.PositiveInfinity);
