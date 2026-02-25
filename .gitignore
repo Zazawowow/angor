@@ -402,3 +402,12 @@ FodyWeavers.xsd
 
 # VS Code settings (local only)
 .vscode/settings.json
+
+# Cursor IDE
+.cursor/
+
+# macOS
+.DS_Store
+
+# Local database files
+*.db
