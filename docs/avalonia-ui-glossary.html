@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avalonia UI Glossary — Web to XAML</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #e5e5e5;
+      --muted: #a0a0a0;
+      --accent: #2d5a3d;
+      --code: #9cdcfe;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    th, td {
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td:first-child { color: var(--code); font-family: ui-monospace, monospace; }
+    td:nth-child(2) { color: var(--text); }
+    td:nth-child(3) { color: var(--muted); font-size: 0.85rem; }
+    code {
+      background: var(--surface);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, monospace;
+      font-size: 0.88em;
+    }
+    .section { margin-bottom: 2rem; }
+    .tip {
+      background: var(--surface);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .tip strong { color: var(--text); }
+    ul { margin: 0.5rem 0; padding-left: 1.25rem; }
+    li { margin-bottom: 0.35rem; }
+  </style>
+</head>
+<body>
+  <h1>Avalonia UI Glossary</h1>
+  <p class="subtitle">Web (HTML/CSS) → Avalonia (XAML) terminology for clearer guidance</p>
+
+  <section class="section">
+    <h2>Containers (layout)</h2>
+    <table>
+      <thead>
+        <tr><th>Web term</th><th>Avalonia equivalent</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>div, section, main, aside</td><td>Panel, Border, StackPanel, Grid, DockPanel</td><td>Avalonia has no generic “div”; pick by layout behavior</td></tr>
+        <tr><td>div (block)</td><td>StackPanel (vertical) or Panel</td><td>StackPanel stacks children vertically by default</td></tr>
+        <tr><td>div (flex row)</td><td>StackPanel Orientation="Horizontal" or FlexBox</td><td>Horizontal stacking</td></tr>
+        <tr><td>div (flex column)</td><td>StackPanel (default)</td><td>Vertical stacking</td></tr>
+        <tr><td>div (grid)</td><td>Grid with ColumnDefinitions / RowDefinitions</td><td>Explicit rows/columns</td></tr>
+        <tr><td>div (flex wrap)</td><td>WrapPanel, BalancedWrapGrid, FlexBox Wrap</td><td>Wrapping layouts</td></tr>
+        <tr><td>main (content area)</td><td>OverlayBorder, ScrollViewer, ContentControl</td><td>Main app content</td></tr>
+        <tr><td>aside (sidebar)</td><td>SectionStrip, DockPanel Dock="Left"</td><td>Side navigation</td></tr>
+        <tr><td>header</td><td>DockPanel row 0, or Border at top</td><td>Top bar</td></tr>
+        <tr><td>article, section</td><td>Border Classes="Panel" or HeaderedContainer</td><td>Card-like sections</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Semantic layout roles</h2>
+    <table>
+      <thead>
+        <tr><th>Web role</th><th>Avalonia pattern</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Page container</td><td>UserControl root or ScrollableView</td><td></td></tr>
+        <tr><td>Section</td><td>Border Classes="Panel" or HeaderedContainer</td><td></td></tr>
+        <tr><td>Card</td><td>Border Classes="Panel" or Classes="Card"</td><td></td></tr>
+        <tr><td>List container</td><td>ItemsControl, ListBox, ItemsRepeater</td><td></td></tr>
+        <tr><td>List item</td><td>DataTemplate inside ItemsControl.ItemTemplate</td><td></td></tr>
+        <tr><td>Form group</td><td>StackPanel or Grid with labels/inputs</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Spacing & layout</h2>
+    <table>
+      <thead>
+        <tr><th>Web</th><th>Avalonia</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>margin</td><td>Margin</td><td></td></tr>
+        <tr><td>padding</td><td>Padding</td><td></td></tr>
+        <tr><td>gap (flex/grid)</td><td>Spacing (StackPanel), ItemSpacing (WrapPanel), ColumnSpacing/RowSpacing (Grid)</td><td></td></tr>
+        <tr><td>flex-gap</td><td>Gap (FlexBox)</td><td></td></tr>
+        <tr><td>width, height</td><td>Width, Height</td><td></td></tr>
+        <tr><td>min-width, max-width</td><td>MinWidth, MaxWidth</td><td></td></tr>
+        <tr><td>flex: 1</td><td>Grid.Column="*" or HorizontalAlignment="Stretch"</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Visual styling</h2>
+    <table>
+      <thead>
+        <tr><th>Web</th><th>Avalonia</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>background</td><td>Background</td><td></td></tr>
+        <tr><td>border</td><td>BorderBrush, BorderThickness</td><td></td></tr>
+        <tr><td>border-radius</td><td>CornerRadius</td><td></td></tr>
+        <tr><td>box-shadow</td><td>BoxShadow</td><td></td></tr>
+        <tr><td>opacity</td><td>Opacity</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Typography</h2>
+    <table>
+      <thead>
+        <tr><th>Web</th><th>Avalonia</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>h1, h2</td><td>TextBlock Classes="Title" or FontSize/FontWeight</td><td></td></tr>
+        <tr><td>p</td><td>TextBlock</td><td></td></tr>
+        <tr><td>span</td><td>TextBlock (inline) or Run inside TextBlock</td><td></td></tr>
+        <tr><td>font-size</td><td>FontSize or Classes="Size-XS", "Size-M", etc.</td><td></td></tr>
+        <tr><td>font-weight</td><td>FontWeight</td><td></td></tr>
+        <tr><td>color</td><td>Foreground</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Angor app quick reference</h2>
+    <p>Use these when describing issues in the Angor Avalonia app:</p>
+    <ul>
+      <li><strong>“The main content area”</strong> → <code>OverlayBorder</code> in ShellView</li>
+      <li><strong>“The home section”</strong> → <code>HomeSectionView</code></li>
+      <li><strong>“The Find Projects card”</strong> → left column (column 0) in HomeSectionView</li>
+      <li><strong>“The Launch a Project card”</strong> → right column (column 2) in HomeSectionView</li>
+      <li><strong>“The card surface/background”</strong> → <code>Border</code> with <code>Classes="Panel"</code></li>
+      <li><strong>“The card content (icon, text, button)”</strong> → <code>StackPanel</code> inside the card</li>
+      <li><strong>“The logo texture overlay”</strong> → <code>Border</code> with <code>TiledLogoBrush</code></li>
+      <li><strong>“The gap between the two cards”</strong> → middle column of Grid (<code>*,24,*</code>)</li>
+    </ul>
+  </section>
+
+  <div class="tip">
+    <strong>Tip:</strong> When reporting layout issues, say things like “the card surface” or “the StackPanel inside the Find Projects card” — that maps directly to the XAML structure.
+  </div>
+
+  <section class="section">
+    <h2>Inspecting the running app</h2>
+    <p>Run the app in <strong>Debug</strong> mode (F5), then press <strong>F12</strong> to open Avalonia DevTools.</p>
+    <ul>
+      <li><strong>Logical / Visual Tree</strong> — Click a control to see it in the tree and inspect its properties</li>
+      <li><strong>Layout tab</strong> — View and edit <code>Margin</code>, <code>Padding</code>, <code>Border</code>, size constraints</li>
+      <li><strong>Ctrl+Shift+click</strong> — Inspect the control under the cursor</li>
+      <li><strong>F8</strong> — Screenshot the selected element</li>
+    </ul>
+    <p>Use this to find which control has the wrong margins, then tell me the control type and property (e.g. “OverlayBorder.Panel Padding” or “ScrollableView ContentPadding”).</p>
+  </section>
+</body>
+</html>

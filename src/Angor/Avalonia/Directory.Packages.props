@@ -9,6 +9,7 @@
     <!-- Important: keep version in sync! -->
     <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Quick.AvaloniaFonts.Roboto" Version="1.0.0" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />

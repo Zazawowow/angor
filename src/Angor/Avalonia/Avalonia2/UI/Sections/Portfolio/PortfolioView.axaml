@@ -1,0 +1,385 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:portfolio="clr-namespace:Avalonia2.UI.Sections.Portfolio"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="800"
+             x:Class="Avalonia2.UI.Sections.Portfolio.PortfolioView"
+             x:DataType="portfolio:PortfolioViewModel">
+    <Design.DataContext>
+        <portfolio:PortfolioViewModel />
+    </Design.DataContext>
+
+    <Panel>
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- EMPTY STATE: shown when HasInvestments = false          -->
+        <!-- Vue: "FUNDED" title, "You haven't funded any projects   -->
+        <!-- yet. Browse the latest to find one." description,       -->
+        <!-- "Find Projects" button with search icon                 -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <controls:EmptyState Title="FUNDED"
+                             Description="You haven't funded any projects yet. Browse the latest to find one."
+                             HasButton="True"
+                             ButtonText="Find Projects"
+                             HasButtonIcon="True"
+                             ButtonIconData="{StaticResource Search}"
+                             IsVisible="{Binding !HasInvestments}" />
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- INVESTMENT DETAIL: shown when SelectedInvestment != null -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <Panel IsVisible="{Binding SelectedInvestment, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <portfolio:InvestmentDetailView DataContext="{Binding SelectedInvestment}" />
+        </Panel>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- PORTFOLIO LIST: shown when HasInvestments = true         -->
+        <!-- and no investment detail is selected                    -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Portfolio list visible when: has investments AND no detail selected -->
+        <controls:ScrollableView ContentPadding="24,24,24,24"
+                                 Name="PortfolioListPanel">
+            <Grid ColumnDefinitions="380,*" >
+
+                <!-- ═══════════════════════════════════════ -->
+                <!-- LEFT PANEL: Portfolio Summary Card      -->
+                <!-- ═══════════════════════════════════════ -->
+                <Border Grid.Column="0"
+                        Background="{DynamicResource Surface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        BoxShadow="{DynamicResource ItemShadow}"
+                        Padding="24"
+                        Margin="0,0,24,0"
+                        VerticalAlignment="Stretch">
+                    <StackPanel Spacing="20" VerticalAlignment="Center">
+
+                        <!-- Angor Logo — centered -->
+                        <Panel HorizontalAlignment="Center" Width="80" Height="80" Margin="0,8,0,0">
+                            <Path Data="{StaticResource AngorLogo}"
+                                  Fill="#4B7C5A"
+                                  Stretch="Uniform" />
+                        </Panel>
+
+                        <!-- Title -->
+                        <TextBlock Text="PORTFOLIO"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   HorizontalAlignment="Center"
+                                   LetterSpacing="1" />
+
+                        <!-- Subtitle -->
+                        <TextBlock Text="Track your investments and portfolio performance."
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextMuted}"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center" />
+
+                        <!-- Buttons Row: Refresh + Penalties -->
+                        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                            <Button Classes="Primary" Padding="20,8">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Viewbox Width="14" Height="14" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource RefreshArrows}"
+                                              Stroke="White"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round"
+                                              StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="Refresh" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="White" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                            <Button Padding="20,8"
+                                    Background="#F7931A" CornerRadius="8">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Viewbox Width="14" Height="14" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource Padlock}"
+                                              Stroke="White"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round"
+                                              StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="Penalties" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="White" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Stats Grid: 2x2 -->
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                              Margin="0,4,0,0">
+                            <!-- Funded Projects -->
+                            <Border Grid.Row="0" Grid.Column="0"
+                                    Background="{DynamicResource SurfaceLow}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16"
+                                    Margin="0,0,8,8">
+                                <StackPanel Spacing="8">
+                                    <Border Width="28" Height="28" CornerRadius="14"
+                                            Background="#1A4B7C5A" HorizontalAlignment="Left">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource NavIconDocument}"
+                                                  Stroke="{DynamicResource TextMuted}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeLineCap="Round"
+                                                  StrokeJoin="Round"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Text="{Binding FundedProjects}"
+                                               FontSize="20" FontWeight="Bold"
+                                               Foreground="{DynamicResource TextStrong}" />
+                                    <TextBlock Text="Funded Projects"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Total Invested -->
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    Background="{DynamicResource SurfaceLow}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16"
+                                    Margin="8,0,0,8">
+                                <StackPanel Spacing="8">
+                                    <Border Width="28" Height="28" CornerRadius="14"
+                                            Background="#F7931A" HorizontalAlignment="Left">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource BitcoinSymbol}"
+                                                  Fill="White"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="{Binding TotalInvested}"
+                                                   FontSize="18" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextStrong}" />
+                                        <TextBlock Text="BTC"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMuted}"
+                                                   VerticalAlignment="Bottom" Margin="0,0,0,1" />
+                                    </StackPanel>
+                                    <TextBlock Text="Total invested"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Recovered to penalty -->
+                            <Border Grid.Row="1" Grid.Column="0"
+                                    Background="{DynamicResource SurfaceLow}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16"
+                                    Margin="0,0,8,0">
+                                <StackPanel Spacing="8">
+                                    <Border Width="28" Height="28" CornerRadius="14"
+                                            Background="#1A4B7C5A" HorizontalAlignment="Left">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource RefreshArrows}"
+                                                  Stroke="{DynamicResource TextMuted}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeLineCap="Round"
+                                                  StrokeJoin="Round"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="{Binding RecoveredToPenalty}"
+                                                   FontSize="18" FontWeight="Bold"
+                                                   Foreground="{DynamicResource TextStrong}" />
+                                        <TextBlock Text="BTC"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMuted}"
+                                                   VerticalAlignment="Bottom" Margin="0,0,0,1" />
+                                    </StackPanel>
+                                    <TextBlock Text="Recovered to penalty"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMuted}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Projects in Recovery -->
+                            <Border Grid.Row="1" Grid.Column="1"
+                                    Background="{DynamicResource SurfaceLow}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Padding="16"
+                                    Margin="8,0,0,0">
+                                <StackPanel Spacing="8">
+                                    <Border Width="28" Height="28" CornerRadius="14"
+                                            Background="#1A4B7C5A" HorizontalAlignment="Left">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource Shield}"
+                                                  Fill="{DynamicResource TextMuted}"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Text="{Binding ProjectsInRecovery}"
+                                               FontSize="20" FontWeight="Bold"
+                                               Foreground="{DynamicResource TextStrong}" />
+                                    <TextBlock Text="Projects in Recovery"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMuted}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══════════════════════════════════════ -->
+                <!-- RIGHT PANEL: Your Investments           -->
+                <!-- ═══════════════════════════════════════ -->
+                <StackPanel Grid.Column="1" Spacing="16">
+
+                    <!-- Section heading -->
+                    <TextBlock Text="Your Investments"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource TextStrong}" />
+
+                    <!-- Investment Cards — responsive grid for 2 columns -->
+                    <ItemsControl ItemsSource="{Binding Investments}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <controls:ResponsiveGrid MinItemWidth="320" ColumnSpacing="16" RowSpacing="16" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="portfolio:InvestmentViewModel">
+                                <Border Background="{DynamicResource Surface}"
+                                        BorderBrush="{DynamicResource Stroke}"
+                                        BorderThickness="1"
+                                        CornerRadius="12"
+                                        ClipToBounds="True"
+                                        BoxShadow="{DynamicResource ItemShadow}"
+                                        Name="InvestmentCardBorder">
+                                    <StackPanel Spacing="0">
+
+                                        <!-- Banner + Avatar — fixed height matching ProjectCard -->
+                                        <Panel Height="150">
+                                            <Border Background="{DynamicResource SurfaceLow}" />
+                                            <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
+                                                                            Source="{Binding BannerUrl}" />
+                                            <!-- Avatar -->
+                                            <Panel VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                                                   Margin="20,0,0,-32">
+                                                <Border CornerRadius="32" Width="64" Height="64"
+                                                        Background="{DynamicResource Surface}"
+                                                        BoxShadow="0 4 12 0 #26000000"
+                                                        ClipToBounds="True">
+                                                    <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
+                                                                                    Source="{Binding AvatarUrl}" />
+                                                </Border>
+                                            </Panel>
+                                        </Panel>
+
+                                        <!-- Content area -->
+                                        <StackPanel Spacing="12" Margin="20,48,20,20">
+
+                                            <!-- Status pills -->
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <ContentControl Classes="Pill Green"
+                                                                Content="{Binding StatusPill1}" />
+                                                <ContentControl Classes="Pill Orange"
+                                                                Content="{Binding StatusPill2}" />
+                                            </StackPanel>
+
+                                            <!-- Project name -->
+                                            <TextBlock Text="{Binding ProjectName}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextStrong}" />
+
+                                            <!-- Funding info -->
+                                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto"
+                                                  Margin="0,4,0,0">
+                                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                                           Text="Funding:"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource TextMuted}"
+                                                           Margin="0,0,0,8" />
+                                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                                           Text="{Binding FundingAmount}"
+                                                           FontSize="14"
+                                                           FontWeight="Bold"
+                                                           Foreground="{DynamicResource TextStrong}"
+                                                           HorizontalAlignment="Right" />
+
+                                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                                           Text="Date:"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource TextMuted}" />
+                                                <TextBlock Grid.Row="1" Grid.Column="1"
+                                                           Text="{Binding FundingDate}"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource TextStrong}"
+                                                           HorizontalAlignment="Right" />
+                                            </Grid>
+
+                                            <!-- Payment Progress -->
+                                            <DockPanel Margin="0,4,0,0">
+                                                <TextBlock Text="Payment Progress"
+                                                           FontSize="13"
+                                                           Foreground="{DynamicResource TextMuted}"
+                                                           DockPanel.Dock="Left"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock HorizontalAlignment="Right"
+                                                           FontSize="13"
+                                                           Foreground="{DynamicResource TextMuted}"
+                                                           VerticalAlignment="Center">
+                                                    <Run Text="{Binding PaymentSegmentsCompleted}" /><Run Text="/" /><Run Text="{Binding PaymentSegmentsTotal}" />
+                                                </TextBlock>
+                                            </DockPanel>
+
+                                            <!-- Progress segments (visual bars) -->
+                                            <Grid ColumnDefinitions="*,8,*,8,*">
+                                                <!-- Segment 1 -->
+                                                <Border Grid.Column="0" Height="6" CornerRadius="3"
+                                                        Background="{DynamicResource Stroke}" />
+                                                <!-- Segment 2 -->
+                                                <Border Grid.Column="2" Height="6" CornerRadius="3"
+                                                        Background="{DynamicResource Stroke}" />
+                                                <!-- Segment 3 -->
+                                                <Border Grid.Column="4" Height="6" CornerRadius="3"
+                                                        Background="{DynamicResource Stroke}" />
+                                            </Grid>
+
+                                            <!-- Manage button — text only, NO icon per Vue reference -->
+                                            <Button Classes="Secondary" HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Center"
+                                                    Padding="16,12" Margin="0,4,0,0"
+                                                    Name="ManageButton"
+                                                    Tag="{Binding}">
+                                                <TextBlock Text="Manage"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextStrong}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+        </controls:ScrollableView>
+    </Panel>
+</UserControl>

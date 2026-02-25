@@ -1,0 +1,455 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Design.PreviewWith>
+        <Border BoxShadow="{DynamicResource ItemShadowBig}" />
+    </Design.PreviewWith>
+    
+    <!-- ═════════════════════════════════════════════════════════════════════
+         BRAND COLORS - Official Angor Design System
+         Reference: angor.tx1138.com/storybook/?path=/docs/brand-colors
+         ═════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Primary Colors -->
+    <Color x:Key="PrimaryGreen">#4B7C5A</Color>
+    <Color x:Key="PrimaryGreenHover">#3D6448</Color>
+    <Color x:Key="PrimaryGreenDark">#2D5A3D</Color>
+    <Color x:Key="PrimaryBlack">#1A1A1A</Color>
+    <Color x:Key="PrimaryBlackHover">#0A0A0A</Color>
+
+    <!-- Secondary Colors -->
+    <Color x:Key="Success">#22C55E</Color>
+    <Color x:Key="Error">#EF4444</Color>
+    <Color x:Key="Warning">#F59E0B</Color>
+    <Color x:Key="Info">#3B82F6</Color>
+    <Color x:Key="SoftGreen">#d4edda</Color>
+
+    <!-- Bitcoin -->
+    <Color x:Key="BitcoinOrange">#F7931A</Color>
+    <Color x:Key="BitcoinOrangeDarker">#f97316</Color>
+
+    <!-- Legacy aliases (for backward compatibility) -->
+    <Color x:Key="Accent">#2D5A3D</Color>
+    <Color x:Key="Dimmed">#9ca3af</Color>
+
+    <ResourceDictionary.ThemeDictionaries>
+        
+        <!-- ═══════════════════════════════════════════════════════════════════════
+             LIGHT THEME
+             Reference: Storybook Light Mode
+             ═══════════════════════════════════════════════════════════════════════ -->
+        <ResourceDictionary x:Key="Default">
+            
+            <!-- Background Colors (from Storybook) -->
+            <Color x:Key="PageBackground">#FFFFFF</Color>
+            <Color x:Key="CardBackground">#F9FAFB</Color>
+            <Color x:Key="Border">#E5E7EB</Color>
+
+            <!-- Text Colors (from Storybook) -->
+            <Color x:Key="BodyText">#1A1A1A</Color>
+            <Color x:Key="Values">#1A1A1A</Color>
+            <Color x:Key="Labels">#6B7280</Color>
+
+            <!-- Legacy/Extended Colors -->
+            <Color x:Key="AppBackground">#faf9f6</Color>
+            <Color x:Key="Surface">White</Color>
+            <Color x:Key="Stroke">#19000000</Color>
+            <Color x:Key="TextMuted">#6B7280</Color>           <!-- = Labels -->
+            <Color x:Key="TextStrong">#0A0A0A</Color>          <!-- ≈ PrimaryBlackHover -->
+            <Color x:Key="Brand">#2D5A3D</Color>               <!-- = PrimaryGreenDark -->
+            <Color x:Key="Highlight">#2D5A3D</Color>           <!-- = PrimaryGreenDark -->
+            <Color x:Key="BitcoinAccent">#F7931A</Color>       <!-- = BitcoinOrange -->
+            <Color x:Key="SurfaceHover">#E9E9E9</Color>
+            <Color x:Key="NavItemHover">#E9E9E9</Color>
+            <Color x:Key="SurfaceSelected">White</Color>
+            <Color x:Key="CardSurface">White</Color>
+            <Color x:Key="SurfaceLow">#E5E7EB</Color>       <!-- = Border -->
+            <Color x:Key="SurfaceMedium">#f5f5f5</Color>
+            <Color x:Key="SurfaceHigh">#FAF9F6</Color>
+            
+            <Color x:Key="DashColorHighlight">#606060</Color>
+
+            <!-- Error Colors -->
+            <StaticResource x:Key="SystemControlErrorTextForegroundBrush" ResourceKey="Error" />
+            <SolidColorBrush x:Key="ErrorSoft" Color="#fee2e2" />
+            <SolidColorBrush x:Key="ErrorHard" Color="#fecaca" />
+            <SolidColorBrush x:Key="ErrorForeground" Color="#dc2626" />
+            <SolidColorBrush x:Key="ErrorText" Color="#b91c1c" />
+            <SolidColorBrush x:Key="SuccessText" Color="#15803d" />
+
+            <!-- Warning/Fee Box Colors (light mode: warm cream/amber) -->
+            <SolidColorBrush x:Key="WarningBoxBackground" Color="#FFF7ED" />
+            <SolidColorBrush x:Key="WarningBoxBorder" Color="#FDBA74" />
+            <SolidColorBrush x:Key="WarningBoxText" Color="#9A3412" />
+
+            <!-- Shadows — matched to Vue CSS exactly -->
+            <!-- SectionShadow: tight glow for selected nav item — must fit in 2-4px margin -->
+            <BoxShadows x:Key="SectionShadow">0 1 6 0 #30000000</BoxShadows>
+            <!-- Vue card: box-shadow: 0 2px 8px rgba(0,0,0,0.1) = #1A000000 -->
+            <BoxShadows x:Key="ItemShadow">0 2 8 0 #1A000000</BoxShadows>
+            <!-- Vue card hover: box-shadow: 0 8px 24px rgba(0,0,0,0.15) = #26000000 -->
+            <BoxShadows x:Key="ItemShadowHover">0 8 24 0 #26000000</BoxShadows>
+            <BoxShadows x:Key="ShadowNone">0 0 0 0 Transparent</BoxShadows>
+            <BoxShadows x:Key="DefaultShadow">0 2 8 0 #1A000000</BoxShadows>
+            <BoxShadows x:Key="DefaultShadowHover">0 8 24 0 #26000000</BoxShadows>
+            <!-- Vue content-card: box-shadow: 0 6px 18px rgba(0,0,0,0.15) = #26000000 -->
+            <BoxShadows x:Key="ItemShadowBig">0 6 18 0 #26000000</BoxShadows>
+            <BoxShadows x:Key="ContentPanelShadow">0 6 18 0 #26000000</BoxShadows>
+
+            <!-- Button Brushes (matching Vue: linear-gradient(135deg, #0a0a0a, #1a1a1a), border #0a0a0a) -->
+            <SolidColorBrush x:Key="PrimaryButtonForeground" Color="#FAFAFA" />
+            <LinearGradientBrush x:Key="PrimaryButtonBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#0A0A0A" Offset="0" />
+                <GradientStop Color="#1A1A1A" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="PrimaryButtonBorder" Color="#0A0A0A" />
+            <!-- Vue btn-primary light: box-shadow 0 4px 16px #0006 — strong visible drop shadow -->
+            <BoxShadows x:Key="PrimaryButtonShadow">0 4 16 0 #00000099</BoxShadows>
+            <BoxShadows x:Key="PrimaryButtonShadowHover">0 8 24 0 #000000B3</BoxShadows>
+
+            <SolidColorBrush x:Key="SecondaryButtonForeground" Color="{StaticResource TextStrong}" />
+            <SolidColorBrush x:Key="SecondaryButtonBackground" Color="{DynamicResource SurfaceHover}" />
+            <SolidColorBrush x:Key="SecondaryButtonBorder" Color="{StaticResource TextStrong}" />
+
+            <!-- Decorative Brushes -->
+            <!-- Tiled logo background pattern (higher opacity on dark background, matching web: opacity .08) -->
+            <VisualBrush x:Key="TiledLogoBrush" Opacity="0.08" DestinationRect="0,0,80,86" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/logo.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+            <!-- pattern.svg (164x164 Angor logo outline) tiled at 100px — full-page background overlay (dark: 0.03) -->
+            <VisualBrush x:Key="TiledPatternBrush" Opacity="0.03" DestinationRect="0,0,100,100" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/pattern.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+            <!-- pattern.svg at smaller size for content cards (Vue: background-size 5%, opacity 0.2) -->
+            <VisualBrush x:Key="TiledPatternCardBrush" Opacity="0.2" DestinationRect="0,0,48,48" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/pattern.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+
+            <LinearGradientBrush x:Key="BitcoinWash" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStops>
+                    <GradientStop Offset="0" Color="#fff7ed" />
+                    <GradientStop Offset="1" Color="#fef3c7" />
+                </GradientStops>
+            </LinearGradientBrush>
+            
+            <LinearGradientBrush x:Key="BlueWash" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStops>
+                    <GradientStop Offset="0" Color="#eff6ff" />
+                    <GradientStop Offset="1" Color="#e0e7ff" />
+                </GradientStops>
+            </LinearGradientBrush>
+            
+            <SolidColorBrush x:Key="StatValue" Color="#92400e" />
+            <SolidColorBrush x:Key="StatLabel" Color="#92400e" />
+
+            <!-- Stat card orange-tinted border: Vue rgba(253,186,116,0.4) -->
+            <SolidColorBrush x:Key="StatCardBorder" Color="#66FDba74" />
+            <!-- Stat card background: Vue rgba(255,255,255,0.7) -->
+            <SolidColorBrush x:Key="StatCardBackground" Color="#B3FFFFFF" />
+            <!-- Stat card container outer border: Vue #fed7aa -->
+            <SolidColorBrush x:Key="StatContainerBorder" Color="#fed7aa" />
+
+            <!-- Investment detail: stats detail card warm gradient (light) -->
+            <LinearGradientBrush x:Key="StatsDetailCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#FFF7ED" Offset="0" />
+                <GradientStop Color="#FEF3C7" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="StatsDetailCardBorder" Color="#40FED7AA" />
+            <!-- Inner stat card in stats detail section (light: white bg, orange border) -->
+            <SolidColorBrush x:Key="StatsDetailInnerBackground" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="StatsDetailInnerBorder" Color="#40FDBA74" />
+            <!-- Stats detail text colors (light: warm brown tones) -->
+            <SolidColorBrush x:Key="StatsDetailLabel" Color="#92400E" />
+            <SolidColorBrush x:Key="StatsDetailValue" Color="#1C1917" />
+            <SolidColorBrush x:Key="StatsDetailSubtext" Color="#78716C" />
+            <!-- Progress bar track in stats detail (light: warm amber) -->
+            <SolidColorBrush x:Key="StatsDetailProgressTrack" Color="#F5D0A9" />
+
+            <!-- Investment info status badge colors -->
+            <SolidColorBrush x:Key="BadgeApprovedBackground" Color="#D4EDDA" />
+            <SolidColorBrush x:Key="BadgeApprovedForeground" Color="#155724" />
+            <SolidColorBrush x:Key="BadgePendingBackground" Color="#FEF3C7" />
+            <SolidColorBrush x:Key="BadgePendingForeground" Color="#92400E" />
+
+            <!-- Waiting card (Step 1): Vue linear-gradient(to bottom right, #fef3c7, #fde68a), border #fbbf24 -->
+            <LinearGradientBrush x:Key="WaitingCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#FEF3C7" Offset="0" />
+                <GradientStop Color="#FDE68A" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="WaitingCardBorder" Color="#FBBF24" />
+            <SolidColorBrush x:Key="WaitingCardTitle" Color="#92400E" />
+            <SolidColorBrush x:Key="WaitingCardSubtext" Color="#B45309" />
+            <SolidColorBrush x:Key="WaitingCardIconCircle" Color="#33F59E0B" />
+
+            <!-- Preview card (Step 2): Vue warm orange gradient -->
+            <LinearGradientBrush x:Key="PreviewCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#FFF7ED" Offset="0" />
+                <GradientStop Color="#FEF3C7" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="PreviewCardBorder" Color="#FED7AA" />
+            <SolidColorBrush x:Key="PreviewCardTitle" Color="#92400E" />
+            <SolidColorBrush x:Key="PreviewCardSubtext" Color="#B45309" />
+            <SolidColorBrush x:Key="PreviewCardIconCircle" Color="#33F59E0B" />
+
+            <!-- Nav group header divider: transparent → gray-300 → transparent (matches Vue bg-gradient-to-r via-gray-300) -->
+            <LinearGradientBrush x:Key="NavGroupDivider" StartPoint="0%,50%" EndPoint="100%,50%">
+                <GradientStop Color="Transparent" Offset="0" />
+                <GradientStop Color="#D1D5DB" Offset="0.5" />
+                <GradientStop Color="Transparent" Offset="1" />
+            </LinearGradientBrush>
+
+        </ResourceDictionary>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════
+             DARK THEME
+             Reference: Storybook Dark Mode
+             ═══════════════════════════════════════════════════════════════════════ -->
+        <ResourceDictionary x:Key="Dark">
+            
+            <!-- Background Colors (from Storybook) -->
+            <Color x:Key="PageBackground">#1A1A1A</Color>      <!-- = PrimaryBlack -->
+            <Color x:Key="CardBackground">#0A0A0A</Color>      <!-- = PrimaryBlackHover -->
+            <Color x:Key="Border">#404040</Color>
+
+            <!-- Text Colors (from Storybook) -->
+            <Color x:Key="BodyText">#FAFAFA</Color>
+            <Color x:Key="Values">#9CA3AF</Color>
+            <Color x:Key="Labels">#888888</Color>
+
+            <!-- Legacy/Extended Colors -->
+            <Color x:Key="AppBackground">#0A0A0A</Color>       <!-- = CardBackground (Dark) -->
+            <Color x:Key="Surface">#B31A1A1A</Color>
+            <Color x:Key="Stroke">#19FFFFFF</Color>
+            <Color x:Key="TextMuted">#A0A0A0</Color>
+            <Color x:Key="TextStrong">#FAFAFA</Color>          <!-- = BodyText (Dark) -->
+            <Color x:Key="Brand">#5FAF78</Color>
+            <Color x:Key="Highlight">#E5E8E1</Color>
+            <Color x:Key="BitcoinAccent">#F7931A</Color>       <!-- = BitcoinOrange -->
+            <Color x:Key="SurfaceHover">#3A3A3A</Color>
+            <Color x:Key="NavItemHover">#0F0F0F</Color>
+            <Color x:Key="SurfaceSelected">#202020</Color>
+            <Color x:Key="CardSurface">#2A2A2A</Color>
+            <Color x:Key="SurfaceLow">#333333</Color>
+            <Color x:Key="SurfaceMedium">#2a2a2a</Color>
+            <Color x:Key="SurfaceHigh">#0A0A0A</Color>
+            <Color x:Key="DashColorHighlight">#FBBF24</Color>
+
+            <!-- Error Colors -->
+            <StaticResource x:Key="SystemControlErrorTextForegroundBrush" ResourceKey="Error" />
+            <SolidColorBrush x:Key="ErrorSoft" Color="#667f1d1d" />
+            <SolidColorBrush x:Key="ErrorHard" Color="#80991b1b" />
+            <SolidColorBrush x:Key="ErrorForeground" Color="#80991b1b" />
+
+            <!-- Warning/Fee Box Colors (dark mode: warm rust/brown) -->
+            <SolidColorBrush x:Key="WarningBoxBackground" Color="#2A1A14" />
+            <SolidColorBrush x:Key="WarningBoxBorder" Color="#7C3A2A" />
+            <SolidColorBrush x:Key="WarningBoxText" Color="#D97050" />
+
+            <!-- Decorative Brushes -->
+            <LinearGradientBrush x:Key="BitcoinWash" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStops>
+                    <GradientStop Offset="0" Color="#0EF7931A" />
+                    <GradientStop Offset="1" Color="#1AF7931A" />
+                </GradientStops>
+            </LinearGradientBrush>
+            
+            <LinearGradientBrush x:Key="BlueWash" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStops>
+                    <GradientStop Offset="0" Color="#1A2A3A" />
+                    <GradientStop Offset="1" Color="#2A1A3A" />
+                </GradientStops>
+            </LinearGradientBrush>
+            
+            <!-- Tiled logo background pattern (higher opacity on dark background, matching web: opacity .08) -->
+            <VisualBrush x:Key="TiledLogoBrush" Opacity="0.08" DestinationRect="0,0,80,86" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/logo.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+            <!-- pattern.svg (164x164 Angor logo outline) tiled at 100px — content area background (dark: 0.04) -->
+            <VisualBrush x:Key="TiledPatternBrush" Opacity="0.04" DestinationRect="0,0,100,100" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/pattern.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+            <!-- pattern.svg at smaller size for content cards (dark: opacity 0.15) -->
+            <VisualBrush x:Key="TiledPatternCardBrush" Opacity="0.15" DestinationRect="0,0,48,48" Stretch="Uniform" TileMode="Tile">
+                <VisualBrush.Visual>
+                    <Svg Path="/Assets/pattern.svg" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+
+            <!-- Shadows — matched to Vue CSS dark mode -->
+            <!-- Vue dark nav: subtle glow -->
+            <BoxShadows x:Key="SectionShadow">0 2 8 0 #4D000000</BoxShadows>
+            <!-- Vue dark card: box-shadow: 0 2px 8px rgba(0,0,0,0.3) = #4D000000 -->
+            <BoxShadows x:Key="ItemShadow">0 2 8 0 #4D000000</BoxShadows>
+            <!-- Vue dark card hover: box-shadow: 0 8px 24px rgba(0,0,0,0.4) = #66000000 -->
+            <BoxShadows x:Key="ItemShadowHover">0 8 24 0 #66000000</BoxShadows>
+            <!-- Vue dark content-card: bigger panel shadow -->
+            <BoxShadows x:Key="ItemShadowBig">0 6 18 0 #66000000</BoxShadows>
+            <BoxShadows x:Key="ContentPanelShadow">0 6 18 0 #66000000</BoxShadows>
+            <BoxShadows x:Key="DefaultShadow">0 2 8 0 #4D000000</BoxShadows>
+            <BoxShadows x:Key="DefaultShadowHover">0 8 24 0 #66000000</BoxShadows>
+            <BoxShadows x:Key="ShadowNone">0 0 0 0 Transparent</BoxShadows>
+
+            <!-- Button Brushes (matching Storybook: linear-gradient(135deg, #2a2a2a, #1a1a1a)) -->
+            <SolidColorBrush x:Key="PrimaryButtonForeground" Color="{StaticResource TextStrong}" />
+            <LinearGradientBrush x:Key="PrimaryButtonBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStops>
+                    <GradientStop Offset="0" Color="#2A2A2A" />
+                    <GradientStop Offset="1" Color="#1A1A1A" />
+                </GradientStops>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="PrimaryButtonBorder" Color="#3A3A3A" />
+            <!-- Vue btn-primary dark: box-shadow 0 4px 16px #0006 -->
+            <BoxShadows x:Key="PrimaryButtonShadow">0 4 16 0 #000000AA</BoxShadows>
+            <BoxShadows x:Key="PrimaryButtonShadowHover">0 8 24 0 #000000CC</BoxShadows>
+
+            <SolidColorBrush x:Key="AccentButtonForeground" Color="{DynamicResource SurfaceHover}" />
+            <SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource Accent}" />
+            <SolidColorBrush x:Key="AccentButtonBorder" Color="{StaticResource Stroke}" />
+
+            <SolidColorBrush x:Key="SecondaryButtonForeground" Color="{StaticResource TextStrong}" />
+            <SolidColorBrush x:Key="SecondaryButtonBackground" Color="{StaticResource Surface}" />
+            <SolidColorBrush x:Key="SecondaryButtonBorder" Color="{StaticResource Stroke}" />
+
+            <SolidColorBrush x:Key="StatLabel" Color="#a0a0a0" />
+            <SolidColorBrush x:Key="StatValue" Color="#fafafa" />
+
+            <!-- Stat card orange-tinted border: Vue dark rgba(234,88,12,0.3) -->
+            <SolidColorBrush x:Key="StatCardBorder" Color="#4DEA580C" />
+            <!-- Stat card background: Vue dark rgba(42,42,42,0.7) -->
+            <SolidColorBrush x:Key="StatCardBackground" Color="#B32A2A2A" />
+            <!-- Stat card container outer border: Vue dark #ea580c33 -->
+            <SolidColorBrush x:Key="StatContainerBorder" Color="#33EA580C" />
+
+            <!-- Investment detail: stats detail card warm gradient (dark) -->
+            <!-- Vue dark: linear-gradient(to bottom right, rgba(234,88,12,0.15), rgba(251,191,36,0.15)) -->
+            <LinearGradientBrush x:Key="StatsDetailCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#26EA580C" Offset="0" />
+                <GradientStop Color="#26FBBF24" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="StatsDetailCardBorder" Color="#4DEA580C" />
+            <!-- Inner stat card in stats detail section (dark: dark surface, orange-tinted border) -->
+            <SolidColorBrush x:Key="StatsDetailInnerBackground" Color="#B32A2A2A" />
+            <SolidColorBrush x:Key="StatsDetailInnerBorder" Color="#4DEA580C" />
+            <!-- Stats detail text colors (dark: light text) -->
+            <SolidColorBrush x:Key="StatsDetailLabel" Color="#A0A0A0" />
+            <SolidColorBrush x:Key="StatsDetailValue" Color="#FAFAFA" />
+            <SolidColorBrush x:Key="StatsDetailSubtext" Color="#9CA3AF" />
+            <!-- Progress bar track in stats detail (dark: muted amber) -->
+            <SolidColorBrush x:Key="StatsDetailProgressTrack" Color="#4DEA580C" />
+
+            <!-- Investment info status badge colors (dark) -->
+            <SolidColorBrush x:Key="BadgeApprovedBackground" Color="#1A22C55E" />
+            <SolidColorBrush x:Key="BadgeApprovedForeground" Color="#86EFAC" />
+            <SolidColorBrush x:Key="BadgePendingBackground" Color="#26FBBF24" />
+            <SolidColorBrush x:Key="BadgePendingForeground" Color="#FDE68A" />
+
+            <!-- Waiting card (Step 1) dark: amber-tinted dark bg -->
+            <LinearGradientBrush x:Key="WaitingCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#26FBBF24" Offset="0" />
+                <GradientStop Color="#26F59E0B" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="WaitingCardBorder" Color="#4DFBBF24" />
+            <SolidColorBrush x:Key="WaitingCardTitle" Color="#FDE68A" />
+            <SolidColorBrush x:Key="WaitingCardSubtext" Color="#FCD34D" />
+            <SolidColorBrush x:Key="WaitingCardIconCircle" Color="#33FBBF24" />
+
+            <!-- Preview card (Step 2) dark: orange-tinted dark bg -->
+            <LinearGradientBrush x:Key="PreviewCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#26EA580C" Offset="0" />
+                <GradientStop Color="#26FBBF24" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="PreviewCardBorder" Color="#4DEA580C" />
+            <SolidColorBrush x:Key="PreviewCardTitle" Color="#FDE68A" />
+            <SolidColorBrush x:Key="PreviewCardSubtext" Color="#FCD34D" />
+            <SolidColorBrush x:Key="PreviewCardIconCircle" Color="#33EA580C" />
+
+            <!-- Nav group header divider: transparent → gray-600 → transparent (matches Vue bg-gradient-to-r via-gray-600) -->
+            <LinearGradientBrush x:Key="NavGroupDivider" StartPoint="0%,50%" EndPoint="100%,50%">
+                <GradientStop Color="Transparent" Offset="0" />
+                <GradientStop Color="#4B5563" Offset="0.5" />
+                <GradientStop Color="Transparent" Offset="1" />
+            </LinearGradientBrush>
+
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         SHARED RESOURCES (theme-independent)
+         ═══════════════════════════════════════════════════════════════════════ -->
+
+    <!--
+        App-wide crosshatch texture replicating the web CSS:
+          repeating-linear-gradient(45deg, transparent 2px, rgba(255,255,255,.02) 4px)
+          repeating-linear-gradient(-45deg, transparent 2px, rgba(0,0,0,.01) 4px)
+        Applied as a full-span non-interactive overlay over the entire ShellView.
+    -->
+    <DrawingBrush x:Key="AppTextureBrush" TileMode="Tile" DestinationRect="0,0,4,4" Stretch="None">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#05FFFFFF" Thickness="1" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="0,2" EndPoint="2,0" />
+                            <LineGeometry StartPoint="2,4" EndPoint="4,2" />
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#03000000" Thickness="1" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="2,0" EndPoint="4,2" />
+                            <LineGeometry StartPoint="0,2" EndPoint="2,4" />
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    
+    <!-- CheckBox overrides -->
+    <StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="Accent" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" ResourceKey="Accent" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" ResourceKey="Accent" />
+    <Thickness x:Key="CheckBoxBorderThemeThickness">2</Thickness>
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUnchecked" ResourceKey="Stroke" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUncheckedPointerOver" ResourceKey="Accent" />
+
+    <!-- Accent Button (fallback) -->
+    <SolidColorBrush x:Key="AccentButtonForeground" Color="{DynamicResource SurfaceHover}" />
+    <SolidColorBrush x:Key="AccentButtonBackground" Color="{DynamicResource Accent}" />
+    <SolidColorBrush x:Key="AccentButtonBorder" Color="{DynamicResource Accent}" />
+
+    <!-- Brand Wash - subtle green brand tint -->
+    <LinearGradientBrush x:Key="BrandWash" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#192D5A3D" Offset="0" />
+        <GradientStop Color="#102D5A3D" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Green gradient for small action buttons (Vue: linear-gradient(135deg, #4b7c5a, #3d6448)) -->
+    <LinearGradientBrush x:Key="GreenGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#4B7C5A" Offset="0" />
+        <GradientStop Color="#3D6448" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- TextBox overrides -->
+    <StaticResource x:Key="TextControlBorderBrushFocused" ResourceKey="BitcoinOrange" />
+    <StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SurfaceHover" />
+    <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
+
+</ResourceDictionary>

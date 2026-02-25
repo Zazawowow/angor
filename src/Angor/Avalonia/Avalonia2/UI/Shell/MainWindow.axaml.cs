@@ -1,7 +1,7 @@
 using Avalonia.Platform;
 using Avalonia.Styling;
 
-namespace AngorApp.UI.Shell;
+namespace Avalonia2.UI.Shell;
 
 public partial class MainWindow : Window
 {
@@ -18,8 +18,8 @@ public partial class MainWindow : Window
     {
         var isLight = Application.Current?.ActualThemeVariant == ThemeVariant.Light;
         var asset = isLight
-            ? "avares://AngorApp/Assets/angor-app-icon-light.png"
-            : "avares://AngorApp/Assets/angor-app-icon-dark.png";
+            ? "avares://Avalonia2/Assets/angor-app-icon-light.png"
+            : "avares://Avalonia2/Assets/angor-app-icon-dark.png";
 
         try
         {
@@ -28,7 +28,7 @@ public partial class MainWindow : Window
         }
         catch
         {
-            var fallback = "avares://AngorApp/Assets/angor-logo.ico";
+            var fallback = "avares://Avalonia2/Assets/angor-logo.ico";
             using var stream = AssetLoader.Open(new Uri(fallback));
             Icon = new WindowIcon(stream);
         }

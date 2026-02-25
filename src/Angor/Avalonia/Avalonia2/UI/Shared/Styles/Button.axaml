@@ -1,0 +1,55 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <StackPanel Spacing="10" IconOptions.Size="{StaticResource IconSizeSmall}">
+            <EnhancedButton Content="Standard Button" />
+            <EnhancedButton HorizontalAlignment="Stretch" Content="Penalties"  />
+            <EnhancedButton Content="Reactive Button" />
+        </StackPanel>
+    </Design.PreviewWith>
+    
+    <Style Selector="EnhancedButton">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    
+    <Style Selector="ListBoxItem">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    
+    <Style Selector="ToggleButton">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    
+    <Style Selector="ToggleSwitch">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    
+    <Style Selector="CheckBox">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    
+    <Style Selector="Expander /template/ ToggleButton#Header">
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Styles.Resources>
+        <ControlTheme x:Key="ThinTransparentButton" TargetType="EnhancedButton" BasedOn="{StaticResource TransparentButton}">
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </ControlTheme>
+    </Styles.Resources>
+    
+    <Style Selector="EnhancedButton.Card">
+        <Setter Property="Theme" Value="{StaticResource TransparentButton}" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="FontWeight" Value="Regular" />
+    </Style>
+    
+</Styles>

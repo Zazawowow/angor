@@ -1,0 +1,64 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
+        xmlns:dialogs="clr-namespace:Zafiro.Avalonia.Dialogs;assembly=Zafiro.Avalonia.Dialogs">
+    <Design.PreviewWith>
+        <DialogControl Content="This is the content of the dialog">
+            <DialogControl.Options>
+                <generic:List x:TypeArguments="IOption">
+                    <OptionDesign Title="Primary" Role="Primary" />
+                    <OptionDesign Title="Secondary" Role="Secondary" />
+                    <!-- <OptionDesign Title="Cancel" Role="Cancel" /> -->
+                    <!-- <OptionDesign Title="Destructive" Role="Destructive" /> -->
+                </generic:List>
+            </DialogControl.Options>
+        </DialogControl>
+    </Design.PreviewWith>
+
+    <Style Selector="DialogControl">
+        <Setter Property="MinWidth" Value="448" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel VerticalSpacing="24">
+                    <ItemsControl ItemsSource="{TemplateBinding Options}" DockPanel.Dock="Bottom" IsVisible="{TemplateBinding Options, Converter={x:Static Enumerable.NotEmpty}}">
+                        <ItemsControl.ItemContainerTheme>
+                            <ControlTheme TargetType="ContentPresenter">
+                                <Setter Property="IsVisible" Value="{Binding IsVisible^, DataType=IOption}" />
+                            </ControlTheme>
+                        </ItemsControl.ItemContainerTheme>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" ColumnSpacing="10" RowSpacing="20" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="IOption">
+                                <EnhancedButton Height="52" HorizontalAlignment="Stretch"
+                                                IsCancel="{Binding IsCancel}"
+                                                IsDefault="{Binding IsDefault}"
+                                                Role="{Binding Role, Converter={x:Static dialogs:OptionRoleToButtonRoleConverter.Instance}}"
+                                                Content="{Binding Title^}" Command="{Binding Command}">
+                                    <Interaction.Behaviors>
+                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Primary">
+                                            <AddClassAction ClassName="Emphasized" />
+                                        </BindingTriggerBehavior>
+                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Secondary">
+                                            <AddClassAction ClassName="Secondary" />
+                                        </BindingTriggerBehavior>
+                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Cancel">
+                                            <AddClassAction ClassName="Outline" />
+                                        </BindingTriggerBehavior>
+                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Destructive">
+                                            <AddClassAction ClassName="Destructive" />
+                                        </BindingTriggerBehavior>
+                                    </Interaction.Behaviors>
+                                </EnhancedButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ContentPresenter DockPanel.Dock="Top" Content="{TemplateBinding Content}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:fp="clr-namespace:Avalonia2.UI.Sections.FindProjects"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
+             x:Class="Avalonia2.UI.Sections.FindProjects.FindProjectsView"
+             x:DataType="fp:FindProjectsViewModel">
+    <Design.DataContext>
+        <fp:FindProjectsViewModel />
+    </Design.DataContext>
+
+    <!--
+        Find Projects (Vue reference): NO search bar. Responsive grid of ProjectCards.
+        Vue: CSS grid auto-fill, gap 16px, padding 16px.
+        Cards show: banner, avatar, pills, title, description, investor+raised, target, progress bar.
+    -->
+    <controls:ScrollableView ContentPadding="16,16,16,16">
+        <ItemsControl ItemsSource="{Binding Projects}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <controls:ResponsiveGrid MinItemWidth="320"
+                                             ColumnSpacing="16"
+                                             RowSpacing="16" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="fp:ProjectItemViewModel">
+                    <controls:ProjectCard
+                        ProjectName="{Binding ProjectName}"
+                        ShortDescription="{Binding ShortDescription}"
+                        InvestorCount="{Binding InvestorCount}"
+                        InvestorLabel="{Binding InvestorLabel}"
+                        Raised="{Binding Raised}"
+                        Target="{Binding Target}"
+                        TargetLabel="{Binding TargetLabel}"
+                        Progress="{Binding Progress}"
+                        ProjectType="{Binding ProjectType}"
+                        Status="{Binding Status}"
+                        Banner="{Binding BannerUrl}"
+                        Avatar="{Binding AvatarUrl}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </controls:ScrollableView>
+</UserControl>

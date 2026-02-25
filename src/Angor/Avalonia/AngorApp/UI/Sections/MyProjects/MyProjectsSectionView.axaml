@@ -23,8 +23,7 @@
         </DataContextChangedTrigger>
     </Interaction.Behaviors>
     
-    <controls:PageContainer>
-    <DockPanel VerticalSpacing="20" HorizontalSpacing="20">
+    <DockPanel VerticalSpacing="20" HorizontalSpacing="20" Margin="24">
         
         <DockPanel HorizontalSpacing="20" VerticalSpacing="20">
             <Border x:Name="Sidebar" Classes="ColorPanel LightGray" Width="300">
@@ -87,5 +86,4 @@
             </Panel>
         </DockPanel>
     </DockPanel>
-    </controls:PageContainer>
 </UserControl>

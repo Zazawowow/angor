@@ -1,0 +1,486 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:settings="clr-namespace:Avalonia2.UI.Sections.Settings"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
+             x:Class="Avalonia2.UI.Sections.Settings.SettingsView"
+             x:DataType="settings:SettingsViewModel">
+    <Design.DataContext>
+        <settings:SettingsViewModel />
+    </Design.DataContext>
+
+    <!--
+        Settings page (Vue): 8 settings-card sections stacked vertically.
+        Each card: rounded-2xl, bg #fff / dark #1a1a1a, border 1px #e5e7eb / dark #333,
+                   box-shadow 0 2px 8px rgba(0,0,0,0.1), overflow hidden
+        Header bar: padding 20px 24px, bg #f5f5f5 / dark #0a0a0a, border-bottom 1px solid #e5e7eb / dark #333
+        Body: padding 24px
+    -->
+    <Panel>
+        <controls:ScrollableView ContentPadding="24,24,24,24">
+            <StackPanel Spacing="16" MaxWidth="600">
+
+                <!-- ═══ 1. Network ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <!-- Header bar -->
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Globe}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Network"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <!-- Body -->
+                        <Border Padding="24">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                                        Classes="Secondary"
+                                        Content="Change Network"
+                                        VerticalAlignment="Center"
+                                        Click="OnChangeNetworkClick" />
+                                <StackPanel Spacing="4" VerticalAlignment="Center">
+                                    <TextBlock Text="Current Network"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <TextBlock Text="{Binding NetworkType}"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource Brand}" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 2. Theme / Appearance ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Palette}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Theme"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <DockPanel>
+                                <ToggleButton DockPanel.Dock="Right"
+                                              Classes="Widget"
+                                              IsChecked="{Binding IsDarkThemeEnabled, Mode=TwoWay}"
+                                              VerticalAlignment="Center">
+                                    <ToggleButton.Content>
+                                        <PathIcon Foreground="{DynamicResource TextMuted}"
+                                                  Data="{DynamicResource Sun}" />
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                                <StackPanel Spacing="4" VerticalAlignment="Center">
+                                    <TextBlock Text="Dark Mode"
+                                               FontSize="14"
+                                               FontWeight="Medium"
+                                               Foreground="{DynamicResource TextStrong}" />
+                                    <TextBlock Text="Toggle between light and dark theme"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 3. Explorer ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Link}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Explorer"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Block explorer URL for viewing transactions"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <TextBox Text="{Binding ExplorerUrl, Mode=TwoWay}"
+                                         Watermark="https://mempool.space"
+                                         Padding="12,12,16,12" />
+                                <Button HorizontalAlignment="Left"
+                                        Classes="Secondary"
+                                        Content="Save Explorer" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 4. Indexer ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Server}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Indexer"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Angor indexer API endpoint"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <TextBox Text="{Binding IndexerUrl, Mode=TwoWay}"
+                                         Watermark="https://angor.io/api"
+                                         Padding="12,12,16,12" />
+                                <Button HorizontalAlignment="Left"
+                                        Classes="Secondary"
+                                        Content="Save Indexer" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 5. Nostr Relays ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Signal}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Nostr Relays"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Configure your Nostr relay connections"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <TextBox Text="{Binding Relay1, Mode=TwoWay}"
+                                         Watermark="wss://relay.angor.io"
+                                         Padding="12,12,16,12" />
+                                <TextBox Text="{Binding Relay2, Mode=TwoWay}"
+                                         Watermark="wss://relay.damus.io"
+                                         Padding="12,12,16,12" />
+                                <TextBox Text="{Binding Relay3, Mode=TwoWay}"
+                                         Watermark="wss://relay.nostr.band"
+                                         Padding="12,12,16,12" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Classes="Secondary" Content="Save Relays" />
+                                    <Button Classes="Secondary" Content="Add Relay">
+                                        <Button.Content>
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Path Data="{StaticResource Plus}"
+                                                      Stroke="{DynamicResource TextStrong}"
+                                                      StrokeThickness="2"
+                                                      StrokeLineCap="Round"
+                                                      Width="14" Height="14"
+                                                      Stretch="Uniform"
+                                                      VerticalAlignment="Center" />
+                                                <TextBlock Text="Add Relay" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 6. Currency Display ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource CurrencyDollar}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Currency Display"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right"
+                                           Text="{Binding CurrencyDisplay}"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource Brand}"
+                                           VerticalAlignment="Center" />
+                                <StackPanel Spacing="4" VerticalAlignment="Center">
+                                    <TextBlock Text="Display Format"
+                                               FontSize="14"
+                                               FontWeight="Medium"
+                                               Foreground="{DynamicResource TextStrong}" />
+                                    <TextBlock Text="Choose how Bitcoin amounts are displayed"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 7. Seed Backup ═══ -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Key}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Seed Backup"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="Back up your wallet seed phrase. This is the only way to recover your wallet if you lose access."
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           TextWrapping="Wrap" />
+                                <!-- Vue: action button with green gradient, min-height 52, rounded-lg -->
+                                <Border HorizontalAlignment="Left" Classes="ButtonShadow">
+                                    <Button Classes="Primary" Content="View Seed Phrase" />
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 8. Danger Zone ═══ -->
+                <Border BorderBrush="{DynamicResource ErrorForeground}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SurfaceHigh}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource ExclamationTriangle}"
+                                      Stroke="#EF4444"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Danger Zone"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#EF4444"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="Irreversible actions. Proceed with extreme caution."
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           TextWrapping="Wrap" />
+                                <!-- Delete Wallet -->
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right"
+                                            VerticalAlignment="Center"
+                                            Padding="16,10"
+                                            Background="#FEE2E2"
+                                            Foreground="#DC2626"
+                                            BorderBrush="#FECACA"
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <Path Data="{StaticResource Trash}"
+                                                  Stroke="#DC2626"
+                                                  StrokeThickness="1.5"
+                                                  StrokeLineCap="Round"
+                                                  StrokeJoin="Round"
+                                                  Width="16" Height="16"
+                                                  Stretch="Uniform"
+                                                  VerticalAlignment="Center" />
+                                            <TextBlock Text="Delete Wallet" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <StackPanel Spacing="4" VerticalAlignment="Center">
+                                        <TextBlock Text="Delete Wallet Data"
+                                                   FontSize="14"
+                                                   FontWeight="Medium"
+                                                   Foreground="{DynamicResource TextStrong}" />
+                                        <TextBlock Text="Remove all local wallet data. This cannot be undone."
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource TextMuted}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </controls:ScrollableView>
+
+        <!-- ═══ Network Selection Modal Overlay ═══ -->
+        <Border Background="#80000000"
+                IsVisible="{Binding IsNetworkModalOpen}"
+                IsHitTestVisible="{Binding IsNetworkModalOpen}"
+                PointerPressed="OnModalBackdropPressed">
+
+            <Border Background="{DynamicResource CardSurface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="32"
+                    MaxWidth="400"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    PointerPressed="OnModalContentPressed">
+                <StackPanel Spacing="20">
+                    <TextBlock Text="Select Network"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource TextStrong}"
+                               HorizontalAlignment="Center" />
+
+                    <TextBlock Text="Choose which Bitcoin network to connect to."
+                               FontSize="13"
+                               Foreground="{DynamicResource TextMuted}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+
+                    <!-- Network options -->
+                    <StackPanel Spacing="8">
+                        <Button Classes="Secondary" Content="Mainnet"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Click="OnSelectMainnet" />
+                        <Button Classes="Secondary" Content="Testnet"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Click="OnSelectTestnet" />
+                        <Button Classes="Secondary" Content="Signet"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Click="OnSelectSignet" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Panel>
+</UserControl>

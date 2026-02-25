@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:funds="clr-namespace:Avalonia2.UI.Sections.Funds"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             x:Class="Avalonia2.UI.Sections.Funds.FundsView"
+             x:DataType="funds:FundsViewModel">
+    <Design.DataContext>
+        <funds:FundsViewModel />
+    </Design.DataContext>
+
+    <!--
+        Funds (Vue reference): Stat cards row at top, then seed group sections
+        with wallet cards inside. Each wallet card has icon, name, type, balance,
+        and green gradient send/receive action buttons.
+    -->
+    <controls:ScrollableView ContentPadding="24,24,24,24">
+        <StackPanel Spacing="24">
+
+            <!-- ═══ Stat Cards Row ═══ -->
+            <!-- Vue: orange-tinted stat cards in a flex row -->
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <controls:StatCard Label="TOTAL BALANCE"
+                                   Value="{Binding TotalBalance}"
+                                   Unit="BTC" />
+                <controls:StatCard Label="TOTAL INVESTED"
+                                   Value="{Binding TotalInvested}"
+                                   Unit="BTC" />
+            </StackPanel>
+
+            <!-- ═══ Seed Groups ═══ -->
+            <ItemsControl ItemsSource="{Binding SeedGroups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="funds:SeedGroupViewModel">
+                        <Border Background="{DynamicResource Surface}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                ClipToBounds="True"
+                                BoxShadow="{DynamicResource ItemShadow}"
+                                Margin="0,0,0,16">
+                            <StackPanel Spacing="0">
+                                <!-- Group Header -->
+                                <!-- Vue: settings-card-header-bar pattern: bg-gray-100/dark:bg-black, border-bottom, icon + title -->
+                                <Border Background="{DynamicResource SurfaceMedium}"
+                                        BorderBrush="{DynamicResource Stroke}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="24,16">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <Panel Width="20" Height="20" VerticalAlignment="Center">
+                                            <Path Data="{StaticResource NavIconWallet}"
+                                                  Fill="{DynamicResource TextMuted}"
+                                                  Stretch="Uniform" />
+                                        </Panel>
+                                        <TextBlock Text="{Binding GroupName}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextStrong}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Wallet Cards List -->
+                                <ItemsControl ItemsSource="{Binding Wallets}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="funds:WalletItemViewModel">
+                                            <controls:WalletCard
+                                                WalletName="{Binding Name}"
+                                                Balance="{Binding Balance}"
+                                                WalletType="{Binding WalletType}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- ═══ Add Wallet Button ═══ -->
+            <!-- Vue: centered dashed border add button -->
+            <Button Classes="Secondary"
+                    HorizontalAlignment="Center"
+                    Padding="24,12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Panel Width="16" Height="16" VerticalAlignment="Center">
+                        <Path Data="{StaticResource Plus}"
+                              Stroke="{DynamicResource TextMuted}"
+                              StrokeThickness="1.5"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Stretch="Uniform" />
+                    </Panel>
+                    <TextBlock Text="Add Wallet"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextStrong}" />
+                </StackPanel>
+            </Button>
+
+        </StackPanel>
+    </controls:ScrollableView>
+</UserControl>

@@ -1,0 +1,111 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
+
+    <Design.PreviewWith>
+        <StackPanel Spacing="8" Width="500">
+            <ThemeVariantScope RequestedThemeVariant="Dark">
+                <Border Background="{DynamicResource AppBackground}" Padding="16">
+                    <StackPanel Spacing="0">
+                        <controls:WalletCard WalletName="Main Wallet" Balance="5.2340 BTC" WalletType="Hot Wallet" />
+                        <controls:WalletCard WalletName="Savings" Balance="4.7660 BTC" WalletType="Cold Storage" />
+                    </StackPanel>
+                </Border>
+            </ThemeVariantScope>
+            <ThemeVariantScope RequestedThemeVariant="Light">
+                <Border Background="{DynamicResource AppBackground}" Padding="16">
+                    <controls:WalletCard WalletName="Main Wallet" Balance="5.2340 BTC" WalletType="Hot Wallet" />
+                </Border>
+            </ThemeVariantScope>
+        </StackPanel>
+    </Design.PreviewWith>
+
+    <!--
+        Vue wallet card row:
+        Card row: padding 20px 24px, border-bottom 1px solid #e8e8e8
+        Icon container: 40x40, border-radius 8px, type-specific colors (bitcoin: bg #fef3c7, color #f59e0b)
+        Action buttons: 32x32, background linear-gradient(135deg, #4b7c5a, #3d6448), border-radius 6px
+    -->
+    <Style Selector="controls|WalletCard">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="controls:WalletCard">
+                <Border Background="Transparent"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="0,0,0,1"
+                        Padding="20,20,24,20">
+                    <DockPanel>
+                        <!-- Right side: green gradient icon action buttons (32x32 each) -->
+                        <StackPanel DockPanel.Dock="Right"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                            <!-- Send button — 32x32 green gradient -->
+                            <Border Width="32" Height="32"
+                                    CornerRadius="6"
+                                    Background="{DynamicResource GreenGradient}"
+                                    Cursor="Hand">
+                                <Path Data="{StaticResource ArrowUpRight}"
+                                      Stroke="White"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="16" Height="16"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                            </Border>
+                            <!-- Receive button — 32x32 green gradient -->
+                            <Border Width="32" Height="32"
+                                    CornerRadius="6"
+                                    Background="{DynamicResource GreenGradient}"
+                                    Cursor="Hand">
+                                <Path Data="{StaticResource ArrowDownLeft}"
+                                      Stroke="White"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="16" Height="16"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Left side: wallet icon + info -->
+                        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                            <!-- Wallet icon — Vue: 40x40, rounded-lg, bitcoin warm tint -->
+                            <Border Width="40" Height="40"
+                                    CornerRadius="8"
+                                    Background="#fef3c7"
+                                    Padding="8">
+                                <Path Data="{StaticResource BitcoinSymbol}"
+                                      Fill="#f59e0b"
+                                      Stretch="Uniform" />
+                            </Border>
+                            <!-- Name + type/balance column -->
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding WalletName}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{TemplateBinding WalletType}"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <TextBlock Text="·"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <TextBlock Text="{TemplateBinding Balance}"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+</Styles>

@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:funders="clr-namespace:Avalonia2.UI.Sections.Funders"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Avalonia2.UI.Sections.Funders.FundersView"
+             x:DataType="funders:FundersViewModel">
+    <Design.DataContext>
+        <funders:FundersViewModel />
+    </Design.DataContext>
+
+    <!--
+        Funders empty state (Vue):
+        Icon: Users icon in a w-16 h-16 rounded-full circle (dark: bg-[#2a2a2a], light: bg-gray-100)
+        Title: "No Funders Yet"
+        Desc: "When investors fund your projects, they'll appear here.
+               You can review and approve funding requests from this page."
+        NO button
+    -->
+    <controls:EmptyState Title="No Funders Yet"
+                         Description="When investors fund your projects, they'll appear here. You can review and approve funding requests from this page."
+                         HasButton="False"
+                         UseCustomIcon="True"
+                         IconData="{StaticResource NavIconUsers}" />
+</UserControl>

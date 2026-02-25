@@ -1,0 +1,95 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <WrapPanel>
+                <StackPanel Spacing="10" Margin="0,0,20,0">
+                    <ContentControl Classes="Pill Red" Content="Error" />
+                    <ContentControl Classes="Pill Green" Content="Open" />
+                    <ContentControl Classes="Pill Orange" Content="Invest" />
+                    <ContentControl Classes="Pill BrightGreen" Content="Success" />
+                    <ContentControl Classes="Pill Blue" Content="Invest" />
+                    <ContentControl Classes="Pill Amber" Content="Fund" />
+                    <ContentControl Classes="Pill Pink" Content="Subscription" />
+                </StackPanel>
+                <ThemeVariantScope RequestedThemeVariant="Dark">
+                    <StackPanel Spacing="10" Background="Black" Margin="0,0,20,0">
+                        <ContentControl Classes="Pill Red" Content="Error" />
+                        <ContentControl Classes="Pill Green" Content="Open" />
+                        <ContentControl Classes="Pill Orange" Content="Invest" />
+                        <ContentControl Classes="Pill BrightGreen" Content="Success" />
+                        <ContentControl Classes="Pill Blue" Content="Invest" />
+                        <ContentControl Classes="Pill Amber" Content="Fund" />
+                        <ContentControl Classes="Pill Pink" Content="Subscription" />
+                    </StackPanel>
+                </ThemeVariantScope>
+            </WrapPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!--
+        Vue pill/badge styling:
+        - padding: 4px 12px
+        - border-radius: 12px
+        - font-size: 12px
+        - font-weight: 600
+    -->
+    <Style Selector=":is(Control).Pill">
+        <Setter Property="Border.CornerRadius" Value="12" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Border.BorderThickness" Value="1" />
+        <Setter Property="TextElement.FontSize" Value="12" />
+        <Setter Property="TextElement.FontWeight" Value="SemiBold" />
+        <Setter Property="Border.Padding" Value="12 4" />
+    </Style>
+
+    <!-- Green — status "Open", "Active", generic success -->
+    <Style Selector=":is(Control).Pill.Green">
+        <Setter Property="Border.BorderBrush" Value="#4b7c5a" />
+        <Setter Property="Border.Background" Value="#1a4b7c5a" />
+        <Setter Property="TextElement.Foreground" Value="#4b7c5a" />
+    </Style>
+
+    <!-- BrightGreen — "Successfully Funded" -->
+    <Style Selector=":is(Control).Pill.BrightGreen">
+        <Setter Property="Border.BorderBrush" Value="#22c55e" />
+        <Setter Property="Border.Background" Value="#1a22c55e" />
+        <Setter Property="TextElement.Foreground" Value="#22c55e" />
+    </Style>
+
+    <!-- Red — errors, "Funding Closed" -->
+    <Style Selector=":is(Control).Pill.Red">
+        <Setter Property="Border.BorderBrush" Value="#ef4444" />
+        <Setter Property="Border.Background" Value="#1aef4444" />
+        <Setter Property="TextElement.Foreground" Value="#ef4444" />
+    </Style>
+
+    <!-- Orange — Bitcoin/generic accent -->
+    <Style Selector=":is(Control).Pill.Orange">
+        <Setter Property="Border.BorderBrush" Value="#f7931a" />
+        <Setter Property="Border.Background" Value="#1af7931a" />
+        <Setter Property="TextElement.Foreground" Value="#f7931a" />
+    </Style>
+
+    <!-- Blue — Vue type "invest": bg #dbeafe, color #1e40af (light) / bg rgba(59,130,246,0.2) color #93c5fd (dark) -->
+    <Style Selector=":is(Control).Pill.Blue">
+        <Setter Property="Border.BorderBrush" Value="#3b82f6" />
+        <Setter Property="Border.Background" Value="#1a3b82f6" />
+        <Setter Property="TextElement.Foreground" Value="#1e40af" />
+    </Style>
+
+    <!-- Amber — Vue type "fund": bg #fef3c7, color #92400e (light) / bg rgba(251,191,36,0.2) color #fbbf24 (dark) -->
+    <Style Selector=":is(Control).Pill.Amber">
+        <Setter Property="Border.BorderBrush" Value="#f59e0b" />
+        <Setter Property="Border.Background" Value="#1af59e0b" />
+        <Setter Property="TextElement.Foreground" Value="#92400e" />
+    </Style>
+
+    <!-- Pink — Vue type "subscription": bg #fce7f3, color #9f1239 (light) / bg rgba(236,72,153,0.2) color #f472b6 (dark) -->
+    <Style Selector=":is(Control).Pill.Pink">
+        <Setter Property="Border.BorderBrush" Value="#ec4899" />
+        <Setter Property="Border.Background" Value="#1aec4899" />
+        <Setter Property="TextElement.Foreground" Value="#9f1239" />
+    </Style>
+
+</Styles>

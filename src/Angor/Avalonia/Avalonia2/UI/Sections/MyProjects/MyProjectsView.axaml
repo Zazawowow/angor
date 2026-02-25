@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mp="clr-namespace:Avalonia2.UI.Sections.MyProjects"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Avalonia2.UI.Sections.MyProjects.MyProjectsView"
+             x:DataType="mp:MyProjectsViewModel">
+    <Design.DataContext>
+        <mp:MyProjectsViewModel />
+    </Design.DataContext>
+
+    <Panel>
+        <!-- ═══ EMPTY STATE (no projects, wizard not open) ═══ -->
+        <!--
+            My Projects empty state (Vue):
+            Icon: Angor logo (w-28 h-28, opacity-0.9)
+            Title: "WELCOME TO ANGOR FOUNDER HUB"
+            Desc: "This section is where you can launch your projects for funding."
+            Button: "Launch a Project" — NO icon on button, just text
+        -->
+        <Panel Name="EmptyStatePanel">
+            <controls:EmptyState Title="WELCOME TO ANGOR FOUNDER HUB"
+                                 Description="This section is where you can launch your projects for funding."
+                                 ButtonText="Launch a Project"
+                                 HasButton="True" />
+        </Panel>
+
+        <!-- ═══ PROJECT LIST (has projects, wizard not open) ═══ -->
+        <Panel Name="ProjectListPanel" IsVisible="False">
+            <controls:ScrollableView ContentPadding="24,24,24,24">
+                <StackPanel Spacing="24">
+                    <!-- Header with Launch button -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="My Projects" FontSize="24" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                        <Border Grid.Column="1" Classes="ButtonShadow">
+                            <Button Name="LaunchFromListButton" Classes="Primary" Padding="24,12">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Viewbox Width="14" Height="14" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource Plus}"
+                                              Stroke="{DynamicResource PrimaryButtonForeground}"
+                                              StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="Launch a Project" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                    </Grid>
+
+                    <!-- Project cards -->
+                    <ItemsControl ItemsSource="{Binding Projects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="mp:MyProjectItemViewModel">
+                                <Border Background="{DynamicResource Surface}"
+                                        BorderBrush="{DynamicResource Stroke}"
+                                        BorderThickness="1" CornerRadius="12"
+                                        BoxShadow="{DynamicResource ItemShadow}"
+                                        Padding="24" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Spacing="8">
+                                            <!-- Type pill + name -->
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Border CornerRadius="4" Padding="8,3"
+                                                        Background="{DynamicResource BrandWash}">
+                                                    <TextBlock Text="{Binding TypePillText}" FontSize="11"
+                                                               FontWeight="Bold"
+                                                               Foreground="{DynamicResource Brand}" />
+                                                </Border>
+                                                <Border CornerRadius="4" Padding="8,3"
+                                                        Background="{DynamicResource SurfaceMedium}">
+                                                    <TextBlock Text="{Binding Status}" FontSize="11"
+                                                               FontWeight="Bold"
+                                                               Foreground="{DynamicResource TextMuted}" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextStrong}" />
+                                            <TextBlock Text="{Binding Description}" FontSize="14"
+                                                       Foreground="{DynamicResource TextMuted}"
+                                                       TextWrapping="Wrap" MaxLines="2"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <!-- Stats row -->
+                                            <StackPanel Orientation="Horizontal" Spacing="24" Margin="0,8,0,0">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock Text="{Binding InvestorLabel}" FontSize="12"
+                                                               Foreground="{DynamicResource TextMuted}" />
+                                                    <TextBlock Text="{Binding InvestorCount}" FontSize="12"
+                                                               FontWeight="Bold"
+                                                               Foreground="{DynamicResource TextStrong}" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock Text="{Binding TargetLabel}" FontSize="12"
+                                                               Foreground="{DynamicResource TextMuted}" />
+                                                    <TextBlock FontSize="12" FontWeight="Bold"
+                                                               Foreground="{DynamicResource BitcoinAccent}">
+                                                        <Run Text="{Binding TargetAmount}" /><Run Text=" BTC" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock Text="Start:" FontSize="12"
+                                                               Foreground="{DynamicResource TextMuted}" />
+                                                    <TextBlock Text="{Binding StartDate}" FontSize="12"
+                                                               FontWeight="Bold"
+                                                               Foreground="{DynamicResource TextStrong}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <!-- Manage button -->
+                                        <Button Grid.Column="1" Classes="Secondary" VerticalAlignment="Center"
+                                                Padding="16,8" CornerRadius="8" Content="Manage" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </controls:ScrollableView>
+        </Panel>
+
+        <!-- ═══ CREATE PROJECT WIZARD ═══ -->
+        <Panel Name="CreateWizardPanel" IsVisible="False">
+            <mp:CreateProjectView Name="CreateWizardView" />
+        </Panel>
+    </Panel>
+</UserControl>

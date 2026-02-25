@@ -1,0 +1,106 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:home="clr-namespace:Avalonia2.UI.Sections.Home"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Avalonia2.UI.Sections.Home.HomeView"
+             x:DataType="home:HomeViewModel">
+    <Design.DataContext>
+        <home:HomeViewModel />
+    </Design.DataContext>
+
+    <!--
+        Home page: two equal-width cards side by side.
+        Left  — "Fund Projects"  (Bitcoin icon, search button)
+        Right — "Get Funded"     (Lightning icon, launch button)
+        
+        Matches Vue prototype at angor.tx1138.com/app.html (desktop layout)
+        and legacy AngorApp HomeSectionView.
+    -->
+    <controls:ScrollableView ContentPadding="24,24,24,24">
+        <Grid ColumnDefinitions="*,24,*" RowDefinitions="*" ClipToBounds="False">
+
+            <!-- ═══ Fund Projects card (left) ═══ -->
+            <Grid Grid.Column="0" MinHeight="480" ClipToBounds="False">
+                <!-- Card background -->
+                <Border Classes="Panel" ClipToBounds="False" />
+                <!-- Tiled logo watermark overlay (matches Vue invest-column ::before) -->
+                <Border CornerRadius="12" Background="{DynamicResource TiledLogoBrush}" IsHitTestVisible="False" />
+                <!-- Content -->
+                <StackPanel Spacing="0" VerticalAlignment="Center" Margin="48">
+                    <!-- Bitcoin icon (fill-based, 80x80) — Vue: w-24 h-24 mb-8 -->
+                    <PathIcon Height="80" Width="80"
+                              Margin="0,0,0,32"
+                              HorizontalAlignment="Center"
+                              Foreground="{DynamicResource Brand}"
+                              Data="{StaticResource BitcoinSymbol}" />
+                    <!-- Title — Vue: text-3xl font-bold mb-4 tracking-tight -->
+                    <TextBlock Classes="Title Strong"
+                               Margin="0,0,0,16"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Text="Fund Projects" />
+                    <!-- Description — Vue: font-size 20px, leading-relaxed (1.625), normal weight, mb-8 -->
+                    <TextBlock FontSize="20"
+                               LineHeight="32"
+                               FontWeight="Normal"
+                               Margin="0,0,0,32"
+                               Foreground="{DynamicResource TextMuted}"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Text="Discover and fund innovative Bitcoin projects on the Angor platform." />
+                    <!-- Action button — Vue: px-8 py-3 text-base btn-primary -->
+                    <Border HorizontalAlignment="Center" Classes="ButtonShadow">
+                        <Button Content="Find Projects"
+                                Classes="Primary" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- ═══ Get Funded card (right) ═══ -->
+            <Grid Grid.Column="2" MinHeight="480" ClipToBounds="False">
+                <!-- Card background -->
+                <Border Classes="Panel" ClipToBounds="False" />
+                <!-- Content -->
+                <StackPanel Spacing="0" VerticalAlignment="Center" Margin="48">
+                    <!-- Lightning icon (stroke-based, 80x80) — Vue: w-24 h-24 mb-8 -->
+                    <PathIcon Foreground="Transparent" Height="80" Width="80"
+                              Margin="0,0,0,32"
+                              HorizontalAlignment="Center"
+                              Data="{StaticResource Lightning}">
+                        <PathIcon.Styles>
+                            <Style Selector="PathIcon Path">
+                                <Setter Property="Stroke" Value="{DynamicResource Brand}" />
+                                <Setter Property="StrokeThickness" Value="1.2" />
+                                <Setter Property="StrokeJoin" Value="Round" />
+                            </Style>
+                        </PathIcon.Styles>
+                    </PathIcon>
+                    <!-- Title — Vue: text-3xl font-bold mb-4 tracking-tight -->
+                    <TextBlock Classes="Title Strong"
+                               Margin="0,0,0,16"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Text="Get Funded" />
+                    <!-- Description — Vue: font-size 20px, leading-relaxed (1.625), normal weight, mb-8 -->
+                    <TextBlock FontSize="20"
+                               LineHeight="32"
+                               FontWeight="Normal"
+                               Margin="0,0,0,32"
+                               Foreground="{DynamicResource TextMuted}"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Text="Create and launch your own projects to raise funding." />
+                    <!-- Action button — Vue: px-8 py-3 text-base btn-primary -->
+                    <Border HorizontalAlignment="Center" Classes="ButtonShadow">
+                        <Button Content="Launch a Project"
+                                Classes="Primary" />
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+    </controls:ScrollableView>
+</UserControl>

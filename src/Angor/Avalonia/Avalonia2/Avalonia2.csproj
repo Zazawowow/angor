@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>Avalonia2</RootNamespace>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets/**"/>
+        <!-- Link theme-specific app icons located at the solution root to our Assets folder -->
+        <AvaloniaResource Include="../angor-app-icon-light.png">
+            <Link>Assets/angor-app-icon-light.png</Link>
+        </AvaloniaResource>
+        <AvaloniaResource Include="../angor-app-icon-dark.png">
+            <Link>Assets/angor-app-icon-dark.png</Link>
+        </AvaloniaResource>
+    </ItemGroup>
+    <ItemGroup>
+        <!-- Avalonia core -->
+        <PackageReference Include="Avalonia"/>
+        <PackageReference Include="Avalonia.Themes.Fluent"/>
+        <PackageReference Include="Avalonia.Fonts.Inter"/>
+        <PackageReference Include="Avalonia.Labs.Panels"/>
+        <!-- ReactiveUI -->
+        <PackageReference Include="ReactiveUI.Avalonia"/>
+        <PackageReference Include="ReactiveUI.SourceGenerators"/>
+        <!-- Zafiro (UI controls used in shell and shared controls) -->
+        <PackageReference Include="Zafiro"/>
+        <PackageReference Include="Zafiro.Avalonia"/>
+        <PackageReference Include="Zafiro.Avalonia.Dialogs"/>
+        <PackageReference Include="Zafiro.Avalonia.Generators"/>
+        <PackageReference Include="Zafiro.Avalonia.Icons.Svg"/>
+        <PackageReference Include="Zafiro.Avalonia.Icons.Projektanker"/>
+        <!-- Async image loading -->
+        <PackageReference Include="AsyncImageLoader.Avalonia"/>
+        <!-- Utilities -->
+        <PackageReference Include="CSharpFunctionalExtensions"/>
+        <PackageReference Include="Humanizer.Core"/>
+        <PackageReference Include="QRCoder"/>
+    </ItemGroup>
+    <!-- NO SDK project references — visual layer only -->
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+</Project>

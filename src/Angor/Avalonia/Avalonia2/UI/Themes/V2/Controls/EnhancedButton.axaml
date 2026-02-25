@@ -1,0 +1,82 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <StackPanel Spacing="10">
+                <EnhancedButton Width="400"
+                                BorderBrush="Red"
+                                BorderThickness="5"
+                                Background="LightBlue"
+                                HorizontalContentAlignment="Left" Icon="{Icon fa-wallet}" Content="This is the new button">
+                </EnhancedButton>
+                <EnhancedButton Width="300"
+                                BorderBrush="#FFB81C"
+                                BorderThickness="2"
+                                Background="LightBlue"
+                                HorizontalContentAlignment="Left" Icon="{Icon fa-wallet}">
+                </EnhancedButton>
+                <EnhancedButton Icon="{Icon fa-wallet}" />
+                <EnhancedButton Icon="{Icon mdi-close}" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch">Button with icon</EnhancedButton>
+                <EnhancedButton Content="Shadow Button" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <Styles.Resources>
+        <ControlTheme TargetType="EnhancedButton" x:Key="{x:Type EnhancedButton}">
+            <Setter Property="Spacing" Value="8" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="ClipToBounds" Value="False" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <OverlayBorder x:Name="MainBorder" BorderThickness="{TemplateBinding BorderThickness}"
+                                                     Padding="{TemplateBinding Padding}"
+                                                     Background="{TemplateBinding Background}"
+                                                     BorderBrush="{TemplateBinding BorderBrush}"
+                                                     CornerRadius="{TemplateBinding CornerRadius}"
+                                                     BoxShadow="{TemplateBinding BoxShadow}">
+                            <SmartDockPanel HorizontalSpacing="{Binding $parent[EnhancedButton].Spacing}" 
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <ContentPresenter IsVisible="{Binding !!$self.Content}"
+                                                  VerticalAlignment="Center"
+                                                  x:Name="IconPresenter"
+                                                  Content="{TemplateBinding Icon}" />
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                  IsVisible="{Binding !!$self.Content}"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </SmartDockPanel>
+                        </OverlayBorder>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^ /template/ OverlayBorder#MainBorder">
+                <Setter Property="Transitions">
+                    <Setter.Value>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:.075" />
+                        </Transitions>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style Selector="^:pointerover /template/ OverlayBorder#MainBorder">
+                <Setter Property="Opacity" Value="0.7" />
+            </Style>
+            <Style Selector="^:pressed /template/ OverlayBorder#MainBorder">
+                <Setter Property="Opacity" Value="0.7" />
+                <Setter Property="RenderTransform" Value="scale(0.99)" />
+            </Style>
+            <Style Selector="^:disabled /template/ OverlayBorder#MainBorder">
+                <Setter Property="Opacity" Value="0.5" />
+            </Style>
+        </ControlTheme>
+    </Styles.Resources>
+</Styles>
