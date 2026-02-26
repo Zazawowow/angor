@@ -37,6 +37,12 @@ public class InvestmentViewModel
     public int PaymentSegmentsCompleted { get; set; }
     /// <summary>Total number of payment segments</summary>
     public int PaymentSegmentsTotal { get; set; } = 3;
+    /// <summary>Whether segment 1 is completed (for green fill in UI)</summary>
+    public bool IsSegment1Complete => PaymentSegmentsCompleted >= 1;
+    /// <summary>Whether segment 2 is completed</summary>
+    public bool IsSegment2Complete => PaymentSegmentsCompleted >= 2;
+    /// <summary>Whether segment 3 is completed</summary>
+    public bool IsSegment3Complete => PaymentSegmentsCompleted >= 3;
     /// <summary>Banner image URL</summary>
     public string? BannerUrl { get; set; }
     /// <summary>Avatar/logo image URL</summary>

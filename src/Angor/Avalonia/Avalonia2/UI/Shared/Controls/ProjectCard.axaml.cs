@@ -55,6 +55,13 @@ public class ProjectCard : TemplatedControl
         AvaloniaProperty.Register<ProjectCard, string?>(nameof(Status), "Open");
 
     /// <summary>
+    /// When true, shows "Manage Project" + Share buttons at the bottom of the card.
+    /// Vue: showManageFunds prop on ProjectCard — only set on My Projects page.
+    /// </summary>
+    public static readonly StyledProperty<bool> ShowManageFundsProperty =
+        AvaloniaProperty.Register<ProjectCard, bool>(nameof(ShowManageFunds));
+
+    /// <summary>
     /// Vue Find Projects cards always show amounts. This property is kept for
     /// backwards compatibility but amounts are now shown by default.
     /// </summary>
@@ -131,6 +138,12 @@ public class ProjectCard : TemplatedControl
     {
         get => GetValue(StatusProperty);
         set => SetValue(StatusProperty, value);
+    }
+
+    public bool ShowManageFunds
+    {
+        get => GetValue(ShowManageFundsProperty);
+        set => SetValue(ShowManageFundsProperty, value);
     }
 
     public bool ShowAmounts

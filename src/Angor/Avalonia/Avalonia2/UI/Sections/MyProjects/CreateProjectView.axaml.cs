@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 using ReactiveUI;
 
@@ -71,6 +72,11 @@ public partial class CreateProjectView : UserControl
 
         AddHandler(Button.ClickEvent, OnButtonClick, RoutingStrategies.Bubble);
 
+        // Wire avatar border click (it's a Border, not a Button, so Button.ClickEvent won't fire)
+        var avatarBorder = this.FindControl<Border>("UploadAvatarButton");
+        if (avatarBorder != null)
+            avatarBorder.PointerPressed += (_, _) => _ = PickImageAsync(false);
+
         // Update stepper visuals whenever the current step changes
         if (DataContext is CreateProjectViewModel vm)
         {
@@ -88,6 +94,9 @@ public partial class CreateProjectView : UserControl
         base.OnLoaded(e);
         ResolveNamedElements();
         UpdateStepper();
+        // Apply initial unselected styles to all type cards so they don't flash
+        // with XAML defaults before user interaction
+        ApplyTypeCardStyles();
     }
 
     private void ResolveNamedElements()
@@ -181,6 +190,9 @@ public partial class CreateProjectView : UserControl
             };
         }
 
+        // Wire hover effects — Vue: border changes to brand color at 50% opacity on hover
+        WireTypeCardHoverEffects();
+
         // Resolve ListBox preset controls — Step 4
         _investAmountPresets = this.FindControl<ListBox>("InvestAmountPresets");
         _fundAmountPresets = this.FindControl<ListBox>("FundAmountPresets");
@@ -250,7 +262,7 @@ public partial class CreateProjectView : UserControl
                 break;
             // Image upload buttons
             case "UploadBannerButton": _ = PickImageAsync(true); break;
-            case "UploadAvatarButton": _ = PickImageAsync(false); break;
+            // Note: UploadAvatarButton is a Border (not Button) — handled via PointerPressed in constructor
             // Step 5 buttons
             case "GenerateStagesButton": Vm?.GenerateInvestmentStages(); break;
             case "GeneratePayoutsButton": Vm?.GeneratePayoutSchedule(); break;
@@ -353,19 +365,74 @@ public partial class CreateProjectView : UserControl
 
     /// <summary>
     /// Set the selected type card and apply styles to all cards.
-    /// Reference behaviour:
-    ///   Selected: accent-colored 2px border, transparent bg, title turns accent color,
-    ///             icon square gets solid accent bg with white icon,
-    ///             radio becomes solid accent circle with white checkmark.
-    ///   Unselected: SurfaceLow 2px border, Surface bg, TextStrong title,
-    ///               icon square has SurfaceLow bg with original colored icon,
-    ///               radio has SurfaceLow bg/border (empty).
-    ///   No hover effect on either state.
+    /// Vue reference (App.vue lines 3565-3705):
+    ///   Card: min-height 160px, rounded-xl (12px), border-2 always.
+    ///   Dark unselected: bg-gradient-to-br from-[#0A0A0A] to-[#1a1a1a], border-[#404040]
+    ///   Light unselected: bg-gradient-to-br from-white to-gray-50, border-gray-200
+    ///   Selected: border-{brandColor}, bg-{brandColor} bg-opacity-5,
+    ///             icon square solid brand with white icon, title = brand color,
+    ///             radio = filled brand with white checkmark.
+    ///   Hover (unselected): border changes to brand color at 50% opacity.
     /// </summary>
     private void HighlightTypeCard(string type)
     {
         _selectedType = type;
         ApplyTypeCardStyles();
+    }
+
+    /// <summary>
+    /// Get the gradient background brush for unselected cards.
+    /// Dark: from-#0A0A0A to-#1a1a1a; Light: from-white to-#F9FAFB
+    /// </summary>
+    private IBrush GetCardDefaultBackground()
+    {
+        bool isDark = Application.Current?.ActualThemeVariant == ThemeVariant.Dark;
+
+        if (isDark)
+        {
+            return new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Color.Parse("#0A0A0A"), 0),
+                    new GradientStop(Color.Parse("#1A1A1A"), 1),
+                }
+            };
+        }
+        else
+        {
+            return new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop(Colors.White, 0),
+                    new GradientStop(Color.Parse("#F9FAFB"), 1),
+                }
+            };
+        }
+    }
+
+    /// <summary>
+    /// Get the selected card background: brand color at 5% opacity.
+    /// Vue: bg-{brandColor} bg-opacity-5
+    /// </summary>
+    private static IBrush GetCardSelectedBackground(Color brandColor)
+    {
+        return new SolidColorBrush(brandColor, 0.05);
+    }
+
+    /// <summary>
+    /// Get the icon background for unselected cards.
+    /// Vue dark: bg-[#1a1a1a]; Vue light: bg-gray-100 (#F3F4F6)
+    /// </summary>
+    private IBrush GetIconDefaultBackground()
+    {
+        bool isDark = Application.Current?.ActualThemeVariant == ThemeVariant.Dark;
+        return new SolidColorBrush(isDark ? Color.Parse("#1A1A1A") : Color.Parse("#F3F4F6"));
     }
 
     /// <summary>
@@ -378,12 +445,14 @@ public partial class CreateProjectView : UserControl
         var types = new[] { "investment", "fund", "subscription" };
         var colors = new[] { InvestColor, FundColor, SubscriptionColor };
 
-        var surfaceLowBrush = this.FindResource("SurfaceLow") as IBrush
-                              ?? new SolidColorBrush(Color.Parse("#E5E7EB"));
-        var borderBrush = this.FindResource("Border") as IBrush
-                          ?? new SolidColorBrush(Color.Parse("#E5E7EB"));
+        var strokeBrush = this.FindResource("Stroke") as IBrush
+                          ?? new SolidColorBrush(Color.Parse("#404040"));
         var textStrongBrush = this.FindResource("TextStrong") as IBrush
-                              ?? new SolidColorBrush(Color.Parse("#0A0A0A"));
+                              ?? new SolidColorBrush(Color.Parse("#FAFAFA"));
+        var defaultBg = GetCardDefaultBackground();
+
+        // Icon bg for unselected: Vue uses bg-[#1a1a1a] (dark) or bg-gray-100 (light)
+        var iconDefaultBg = GetIconDefaultBackground();
 
         for (int i = 0; i < 3; i++)
         {
@@ -400,14 +469,15 @@ public partial class CreateProjectView : UserControl
             if (isSelected)
             {
                 // === SELECTED STATE ===
+                // Vue: border-{brandColor} border-2, bg-{brandColor}/5
                 card.BorderBrush = accentBrush;
                 card.BorderThickness = new Thickness(2);
-                card.Background = Brushes.Transparent;
+                card.Background = GetCardSelectedBackground(accentColor);
 
                 title.Foreground = accentBrush;
 
+                // Icon square: solid brand bg with white icon
                 iconBg.Background = accentBrush;
-                iconBg.BorderBrush = accentBrush;
                 if (IconUsesStroke[i])
                 {
                     iconPath.Stroke = Brushes.White;
@@ -419,6 +489,7 @@ public partial class CreateProjectView : UserControl
                     iconPath.Stroke = null;
                 }
 
+                // Radio: filled brand circle with white checkmark
                 radio.Background = accentBrush;
                 radio.BorderBrush = accentBrush;
                 radio.Child = new Viewbox
@@ -439,14 +510,16 @@ public partial class CreateProjectView : UserControl
             else
             {
                 // === UNSELECTED STATE ===
-                card.BorderBrush = borderBrush;
-                card.BorderThickness = new Thickness(1);
-                card.Background = Brushes.Transparent;
+                // Vue: border-[#404040] border-2, bg-gradient-to-br from-[#0A0A0A] to-[#1a1a1a]
+                card.BorderBrush = strokeBrush;
+                card.BorderThickness = new Thickness(2);
+                card.Background = defaultBg;
 
                 title.Foreground = textStrongBrush;
 
-                iconBg.Background = surfaceLowBrush;
-                iconBg.BorderBrush = Brushes.Transparent;
+                // Icon square: dark surface bg with original colored icon
+                // Vue: bg-[#1a1a1a] (dark) or bg-gray-100 (light)
+                iconBg.Background = iconDefaultBg;
                 if (IconUsesStroke[i])
                 {
                     iconPath.Stroke = i == 0 ? InvestIconStroke : SubscriptionIconStroke;
@@ -458,10 +531,46 @@ public partial class CreateProjectView : UserControl
                     iconPath.Stroke = null;
                 }
 
-                radio.Background = surfaceLowBrush;
-                radio.BorderBrush = surfaceLowBrush;
+                // Radio: transparent bg, stroke border
+                radio.Background = Brushes.Transparent;
+                radio.BorderBrush = strokeBrush;
                 radio.Child = null;
             }
+        }
+    }
+
+    /// <summary>
+    /// Wire hover effects on type cards.
+    /// Vue: on hover (unselected), border changes to brand color at 50% opacity.
+    /// </summary>
+    private void WireTypeCardHoverEffects()
+    {
+        if (_typeCards.Length == 0) return;
+
+        var colors = new[] { InvestColor, FundColor, SubscriptionColor };
+
+        for (int i = 0; i < _typeCards.Length; i++)
+        {
+            var idx = i;
+            var card = _typeCards[i];
+
+            card.PointerEntered += (_, _) =>
+            {
+                var types = new[] { "investment", "fund", "subscription" };
+                if (types[idx] == _selectedType) return; // No hover on selected
+                // Vue: border changes to brand color at 50% opacity on hover
+                card.BorderBrush = new SolidColorBrush(colors[idx], 0.5);
+            };
+
+            card.PointerExited += (_, _) =>
+            {
+                var types = new[] { "investment", "fund", "subscription" };
+                if (types[idx] == _selectedType) return; // No change on selected
+                // Restore default border
+                var strokeBrush = this.FindResource("Stroke") as IBrush
+                                  ?? new SolidColorBrush(Color.Parse("#404040"));
+                card.BorderBrush = strokeBrush;
+            };
         }
     }
 

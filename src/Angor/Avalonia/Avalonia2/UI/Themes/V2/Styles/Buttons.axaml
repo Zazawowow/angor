@@ -144,13 +144,37 @@
         <Setter Property="Padding" Value="16,10" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="ClipToBounds" Value="False" />
+        <!-- Vue: transition all 0.2s ease on buttons -->
+        <Setter Property="RenderTransform" Value="translate(0px, 0px)" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+            </Transitions>
+        </Setter>
     </Style>
 
+    <!-- Smooth opacity transition for button hover/press -->
+    <Style Selector="Button /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- Vue: btn hover → translateY(-1px) + opacity 0.8 -->
     <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Opacity" Value="0.8" />
     </Style>
+    <Style Selector="Button:pointerover">
+        <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
+    </Style>
+    <!-- Vue: btn pressed → opacity 0.7 + translateY(0) (snap back) -->
     <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Opacity" Value="0.7" />
+    </Style>
+    <Style Selector="Button:pressed">
+        <Setter Property="RenderTransform" Value="translate(0px, 0px)" />
     </Style>
 
     <!-- Button.Primary — Vue btn-primary: dark gradient, bold, 12px radius, px-8 py-3 -->

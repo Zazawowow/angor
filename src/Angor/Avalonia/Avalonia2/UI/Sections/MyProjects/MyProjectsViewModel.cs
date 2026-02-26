@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.MyProjects;
@@ -20,11 +22,25 @@ public class MyProjectItemViewModel
     public string? LogoUrl { get; set; }
     public string StartDate { get; set; } = "";
 
+    /// <summary>Banner as Uri for ProjectCard binding.</summary>
+    public Uri? BannerUri => !string.IsNullOrEmpty(BannerUrl) ? new Uri(BannerUrl) : null;
+
+    /// <summary>Logo as Uri for ProjectCard binding.</summary>
+    public Uri? LogoUri => !string.IsNullOrEmpty(LogoUrl) ? new Uri(LogoUrl) : null;
+
     public string TypePillText => ProjectType switch
     {
         "fund" => "Fund",
         "subscription" => "Subscription",
         _ => "Investment"
+    };
+
+    // Vue uses "Invest" for the pill matching; ensure we return the expected value
+    public string TypePillValue => ProjectType switch
+    {
+        "fund" => "Fund",
+        "subscription" => "Subscription",
+        _ => "Invest"
     };
 
     public string InvestorLabel => ProjectType switch
@@ -60,6 +76,24 @@ public partial class MyProjectsViewModel : ReactiveObject
     public bool HasProjects => Projects.Count > 0;
 
     /// <summary>
+    /// Sum of all raised amounts, formatted for display.
+    /// </summary>
+    public string TotalRaised
+    {
+        get
+        {
+            var total = Projects.Sum(p =>
+            {
+                if (double.TryParse(p.Raised, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out var v))
+                    return v;
+                return 0;
+            });
+            return total.ToString("F5");
+        }
+    }
+
+    /// <summary>
     /// List of deployed projects (populated after wizard completion).
     /// </summary>
     public ObservableCollection<MyProjectItemViewModel> Projects { get; } = new();
@@ -90,6 +124,7 @@ public partial class MyProjectsViewModel : ReactiveObject
             LogoUrl = wizardVm.ProfileUrl,
         });
         this.RaisePropertyChanged(nameof(HasProjects));
+        this.RaisePropertyChanged(nameof(TotalRaised));
     }
 
     /// <summary>
@@ -98,5 +133,56 @@ public partial class MyProjectsViewModel : ReactiveObject
     public void CloseCreateWizard()
     {
         ShowCreateWizard = false;
+    }
+
+    /// <summary>
+    /// Populate with sample projects for visual testing of the populated state.
+    /// Called from code-behind when needed for development preview.
+    /// </summary>
+    public void LoadSampleProjects()
+    {
+        Projects.Clear();
+        Projects.Add(new MyProjectItemViewModel
+        {
+            Name = "Hope With Bitcoin",
+            Description = "Supporting communities through Bitcoin adoption and financial literacy programs across developing nations.",
+            ProjectType = "fund",
+            TargetAmount = "2.00000",
+            Status = "Open",
+            InvestorCount = 12,
+            Raised = "0.50000",
+            Progress = 25,
+            StartDate = "2025-03-01",
+            BannerUrl = "https://angor.tx1138.com/projects/hope-with-bitcoin-banner.webp",
+            LogoUrl = "https://angor.tx1138.com/projects/hope-with-bitcoin-logo.webp",
+        });
+        Projects.Add(new MyProjectItemViewModel
+        {
+            Name = "Zap AI",
+            Description = "AI-powered tools for the Bitcoin ecosystem with advanced analytics and lightning-fast predictions.",
+            ProjectType = "investment",
+            TargetAmount = "0.75000",
+            Status = "Open",
+            InvestorCount = 5,
+            Raised = "0.45678",
+            Progress = 61,
+            StartDate = "2025-01-15",
+            BannerUrl = "https://angor.tx1138.com/projects/zap-ai-banner.png",
+            LogoUrl = "https://angor.tx1138.com/projects/zap-ai-logo.png",
+        });
+        Projects.Add(new MyProjectItemViewModel
+        {
+            Name = "Bitcoin Education Hub",
+            Description = "A comprehensive online learning platform dedicated to Bitcoin technology and development.",
+            ProjectType = "subscription",
+            TargetAmount = "1.50000",
+            Status = "Open",
+            InvestorCount = 30,
+            Raised = "1.20000",
+            Progress = 80,
+            StartDate = "2024-11-10",
+        });
+        this.RaisePropertyChanged(nameof(HasProjects));
+        this.RaisePropertyChanged(nameof(TotalRaised));
     }
 }

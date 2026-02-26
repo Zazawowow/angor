@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia2.UI.Sections.Portfolio;
 
 namespace Avalonia2.UI.Sections.FindProjects;
 
@@ -11,6 +12,8 @@ public class ProjectItemViewModel
 {
     public string ProjectName { get; set; } = "";
     public string ShortDescription { get; set; } = "";
+    /// <summary>Full/longer description for the detail page</summary>
+    public string Description { get; set; } = "";
     public int InvestorCount { get; set; }
     /// <summary>"Investors" (invest), "Funders" (fund), or "Subscribers" (subscription)</summary>
     public string InvestorLabel { get; set; } = "Investors";
@@ -23,6 +26,81 @@ public class ProjectItemViewModel
     public string Status { get; set; } = "Open";
     public string? BannerUrl { get; set; }
     public string? AvatarUrl { get; set; }
+    /// <summary>Stubbed project identifier for the detail page</summary>
+    public string ProjectId { get; set; } = "angor1qlcnq2eywn05j205nv5sz6dsdzef2c6wx24h87l";
+    /// <summary>Stubbed founder key for the detail page</summary>
+    public string FounderKey { get; set; } = "023b68543f198be4495e77bdcc68ac205ba4b9c57d3eed0372277e581b85c40f04";
+    /// <summary>Stubbed Nostr npub for the detail page</summary>
+    public string NostrNpub { get; set; } = "npub12l6lg9a9ev6f9szrsrqwu9jfwjz5u5qjckafxeyx46xdsgrqcx9sjpq5xn";
+    /// <summary>Start date string for investment projects</summary>
+    public string StartDate { get; set; } = "07 Nov 2025";
+    /// <summary>End date string for investment projects</summary>
+    public string EndDate { get; set; } = "08 Nov 2025";
+    /// <summary>Expiry date string</summary>
+    public string ExpiryDate { get; set; } = "08 Dec 2025";
+    /// <summary>Penalty days for investment projects</summary>
+    public string PenaltyDays { get; set; } = "30";
+    /// <summary>Payout/funding frequency for fund/subscription projects</summary>
+    public string PayoutFrequency { get; set; } = "Monthly";
+
+    /// <summary>Stages for investment projects (reuse from Portfolio)</summary>
+    public ObservableCollection<InvestmentStageViewModel> Stages { get; set; } = new();
+
+    // ── Type-specific terminology helpers (mirror Portfolio pattern) ──
+    public string OpportunityTitle => ProjectType switch
+    {
+        "Fund" => "Funding Opportunity",
+        "Subscription" => "Subscription Opportunity",
+        _ => "Investment Opportunity"
+    };
+
+    public string ActionButtonText => ProjectType switch
+    {
+        "Fund" => "Fund This Project",
+        "Subscription" => "Subscribe Now",
+        _ => "Invest Now"
+    };
+
+    public string InfoSectionTitle => ProjectType switch
+    {
+        "Fund" => "Funding Information",
+        "Subscription" => "Subscription Information",
+        _ => "Investment Information"
+    };
+
+    public string InvestorNoun => ProjectType switch
+    {
+        "Fund" => "Total Funders",
+        "Subscription" => "Total Subscribers",
+        _ => "Total Investors"
+    };
+
+    public string TargetNoun => ProjectType switch
+    {
+        "Fund" => "Goal Amount",
+        "Subscription" => "Goal Amount",
+        _ => "Target Amount"
+    };
+
+    public string RaisedNoun => ProjectType switch
+    {
+        "Fund" => "Total Funded",
+        "Subscription" => "Total Subscribed",
+        _ => "Total Raised"
+    };
+
+    /// <summary>Whether the project is an investment type (shows stages table)</summary>
+    public bool IsInvestmentType => ProjectType == "Invest";
+    /// <summary>Whether the project is a fund type</summary>
+    public bool IsFundType => ProjectType == "Fund";
+    /// <summary>Whether the project is a subscription type</summary>
+    public bool IsSubscriptionType => ProjectType == "Subscription";
+    /// <summary>Whether status is "Open"</summary>
+    public bool IsOpen => Status == "Open";
+    /// <summary>Whether status is "Funded" or similar success state</summary>
+    public bool IsFunded => Status == "Funded";
+    /// <summary>Whether status is "Funding Closed"</summary>
+    public bool IsFundingClosed => Status == "Funding Closed";
 }
 
 /// <summary>
@@ -35,6 +113,43 @@ public class ProjectItemViewModel
 public partial class FindProjectsViewModel : ReactiveObject
 {
     private const string BaseUrl = "https://angor.tx1138.com";
+
+    /// <summary>
+    /// When set, the detail view for this project is shown instead of the project grid.
+    /// </summary>
+    [Reactive] private ProjectItemViewModel? selectedProject;
+
+    /// <summary>
+    /// When set, the invest page is shown instead of the project detail.
+    /// Third drill-down level: grid → detail → invest.
+    /// </summary>
+    [Reactive] private InvestPageViewModel? investPageViewModel;
+
+    /// <summary>Navigate to project detail view</summary>
+    public void OpenProjectDetail(ProjectItemViewModel project)
+    {
+        SelectedProject = project;
+    }
+
+    /// <summary>Navigate back to project grid from detail view</summary>
+    public void CloseProjectDetail()
+    {
+        SelectedProject = null;
+    }
+
+    /// <summary>Navigate to invest page for the selected project.
+    /// Vue ref: clicking "Invest Now"/"Fund This Project"/"Subscribe Now" on project detail.</summary>
+    public void OpenInvestPage()
+    {
+        if (SelectedProject == null) return;
+        InvestPageViewModel = new InvestPageViewModel(SelectedProject);
+    }
+
+    /// <summary>Navigate back to project detail from invest page.</summary>
+    public void CloseInvestPage()
+    {
+        InvestPageViewModel = null;
+    }
 
     public ObservableCollection<ProjectItemViewModel> Projects { get; } = new()
     {
@@ -67,7 +182,15 @@ public partial class FindProjectsViewModel : ReactiveObject
             ProjectType = "Invest",
             Status = "Open",
             BannerUrl = BaseUrl + "/projects/alchemist-banner.jpg",
-            AvatarUrl = BaseUrl + "/projects/alchemist-logo.jpg"
+            AvatarUrl = BaseUrl + "/projects/alchemist-logo.jpg",
+            Description = "SuriaBit is Alchemist Miners' sustainable Bitcoin mining fund deploying miners at Malaysian hydro-powered facilities. The project combines renewable energy sources with cutting-edge mining hardware to deliver consistent returns while maintaining environmental responsibility.",
+            Stages = new ObservableCollection<InvestmentStageViewModel>
+            {
+                new() { StageNumber = 1, Percentage = "25%", ReleaseDate = "15 Mar 2026", Amount = "0.40000000", Status = "Pending" },
+                new() { StageNumber = 2, Percentage = "25%", ReleaseDate = "15 Jun 2026", Amount = "0.40000000", Status = "Pending" },
+                new() { StageNumber = 3, Percentage = "25%", ReleaseDate = "15 Sep 2026", Amount = "0.40000000", Status = "Pending" },
+                new() { StageNumber = 4, Percentage = "25%", ReleaseDate = "15 Dec 2026", Amount = "0.40000000", Status = "Pending" },
+            }
         },
         new()
         {
@@ -128,7 +251,14 @@ public partial class FindProjectsViewModel : ReactiveObject
             ProjectType = "Invest",
             Status = "Open",
             BannerUrl = BaseUrl + "/projects/angor-ux-banner.gif",
-            AvatarUrl = BaseUrl + "/projects/angor-ux-logo.svg"
+            AvatarUrl = BaseUrl + "/projects/angor-ux-logo.svg",
+            Description = "Creation of Angor's new UX and UI for the desktop app and related screens. This project focuses on delivering a modern, accessible, and visually stunning user experience for the Angor platform.",
+            Stages = new ObservableCollection<InvestmentStageViewModel>
+            {
+                new() { StageNumber = 1, Percentage = "33%", ReleaseDate = "25 May 2026", Amount = "0.33333333", Status = "Pending" },
+                new() { StageNumber = 2, Percentage = "33%", ReleaseDate = "25 Aug 2026", Amount = "0.33333333", Status = "Pending" },
+                new() { StageNumber = 3, Percentage = "34%", ReleaseDate = "25 Nov 2026", Amount = "0.33333334", Status = "Pending" },
+            }
         },
         new()
         {

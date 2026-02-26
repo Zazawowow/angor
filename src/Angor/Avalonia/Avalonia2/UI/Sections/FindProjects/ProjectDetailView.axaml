@@ -1,0 +1,1028 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:fp="clr-namespace:Avalonia2.UI.Sections.FindProjects"
+             xmlns:portfolio="clr-namespace:Avalonia2.UI.Sections.Portfolio"
+             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="1600"
+             x:Class="Avalonia2.UI.Sections.FindProjects.ProjectDetailView"
+             x:DataType="fp:ProjectItemViewModel">
+
+    <!--
+        Vue ProjectDetail.vue layout:
+        1. Back button (sticky nav)
+        2. Top section: project-card-compact (left) + investment/status card (right) — grid 1fr 400px gap 24
+        3. Stats detail card (orange gradient, 3 stat cards + progress bar)
+        4. Investment/Funding/Subscription information card
+        5. Stages table (investment projects only)
+        6. Project Details collapsible section
+        7. Nostr collapsible section
+    -->
+    <controls:ScrollableView ContentPadding="24,24,24,24">
+        <StackPanel Spacing="24" MaxWidth="1400">
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- BACK BUTTON + SHARE                     -->
+            <!-- Vue: sticky-nav-bar, back-button-floating -->
+            <!-- ═══════════════════════════════════════ -->
+            <DockPanel>
+                <Border Name="BackButton"
+                        Background="{DynamicResource Surface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        BoxShadow="{DynamicResource ItemShadow}"
+                        Padding="12,8"
+                        Cursor="Hand"
+                        DockPanel.Dock="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Viewbox Width="20" Height="20" VerticalAlignment="Center">
+                            <Path Data="M15 19l-7-7 7-7"
+                                  Stroke="{DynamicResource TextStrong}"
+                                  StrokeThickness="2"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Width="24" Height="24" Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock Text="Back"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Share button (right) -->
+                <Border Background="{DynamicResource Surface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        BoxShadow="{DynamicResource ItemShadow}"
+                        Padding="12,8"
+                        Cursor="Hand"
+                        DockPanel.Dock="Right"
+                        HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Viewbox Width="18" Height="18" VerticalAlignment="Center">
+                            <Path Data="{StaticResource Share}"
+                                  Stroke="{DynamicResource TextStrong}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Width="24" Height="24" Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock Text="Share"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <Panel /> <!-- spacer -->
+            </DockPanel>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- TOP SECTION: 2-column grid              -->
+            <!-- Vue: grid 1fr 400px, gap 24px           -->
+            <!-- ═══════════════════════════════════════ -->
+            <Grid ColumnDefinitions="*,400">
+
+                <!-- LEFT: Project Card Compact -->
+                <!-- Vue: white bg, border-radius 16px, shadow 0 2px 8px rgba(0,0,0,0.1) -->
+                <Border Grid.Column="0"
+                        Background="{DynamicResource Surface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="16"
+                        BoxShadow="{DynamicResource ItemShadow}"
+                        ClipToBounds="True"
+                        Margin="0,0,24,0">
+                    <StackPanel>
+                        <!-- Banner — Vue: height 180px -->
+                        <Panel Height="180">
+                            <Border Background="{DynamicResource SurfaceLow}" />
+                            <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
+                                                            Source="{Binding BannerUrl}" />
+                            <!-- Logo — Vue: 64x64, circle, absolute bottom -32px left 24px -->
+                            <Panel VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                                   Margin="24,0,0,-32">
+                                <Border CornerRadius="32" Width="64" Height="64"
+                                        Background="{DynamicResource Surface}"
+                                        BoxShadow="0 4 12 0 #26000000"
+                                        ClipToBounds="True">
+                                    <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
+                                                                    Source="{Binding AvatarUrl}" />
+                                </Border>
+                            </Panel>
+                        </Panel>
+
+                        <!-- Content — Vue: padding 48px 24px 24px 24px -->
+                        <StackPanel Margin="24,48,24,24" Spacing="8">
+                            <TextBlock Text="{Binding ProjectName}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource TextStrong}"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding ShortDescription}"
+                                       FontSize="15"
+                                       Foreground="{DynamicResource TextMuted}"
+                                       TextWrapping="Wrap"
+                                       LineHeight="22" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- RIGHT: Investment/Status Card -->
+                <Panel Grid.Column="1">
+
+                    <!-- OPEN: Green gradient investment card -->
+                    <!-- Vue: linear-gradient(135deg, #2d5a3d 0%, #4a8f5f 100%), white text, centered -->
+                    <Border IsVisible="{Binding IsOpen}"
+                            CornerRadius="16"
+                            Padding="32,24"
+                            ClipToBounds="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#2d5a3d" Offset="0" />
+                                <GradientStop Color="#4a8f5f" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!-- Bitcoin icon circle — Vue: 64x64, rgba(255,255,255,0.2) bg -->
+                            <Border Width="64" Height="64" CornerRadius="32"
+                                    Background="#33FFFFFF"
+                                    HorizontalAlignment="Center">
+                                <Viewbox Width="32" Height="32">
+                                    <Path Data="{StaticResource BitcoinSymbol}"
+                                          Fill="White"
+                                          Width="24" Height="24" Stretch="Uniform" />
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Text="{Binding OpportunityTitle}"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="Join this project and be part of its journey to success"
+                                       FontSize="15"
+                                       Foreground="#CCFFFFFF"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                            <!-- Invest button — Vue: white bg, color #2d5a3d, full width, border-radius 8px -->
+                            <Border Name="InvestButton"
+                                    Background="White"
+                                    CornerRadius="8"
+                                    Padding="24,14"
+                                    Cursor="Hand"
+                                    HorizontalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                    <Viewbox Width="20" Height="20" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource BitcoinSymbol}"
+                                              Fill="#2d5a3d"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="{Binding ActionButtonText}"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Foreground="#2d5a3d"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- FUNDED: Green gradient success card -->
+                    <!-- Vue: linear-gradient(135deg, #4B7C5A, #3d6448), checkmark -->
+                    <Border IsVisible="{Binding IsFunded}"
+                            CornerRadius="16"
+                            Padding="32,24"
+                            ClipToBounds="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#4B7C5A" Offset="0" />
+                                <GradientStop Color="#3d6448" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Border Width="64" Height="64" CornerRadius="32"
+                                    Background="#33FFFFFF"
+                                    HorizontalAlignment="Center">
+                                <Viewbox Width="32" Height="32">
+                                    <Path Data="{StaticResource CheckCircle}"
+                                          Stroke="White"
+                                          StrokeThickness="2"
+                                          StrokeLineCap="Round"
+                                          StrokeJoin="Round"
+                                          Width="24" Height="24" Stretch="Uniform" />
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Text="Project Successfully Funded!"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Foreground="#CCFFFFFF"
+                                       FontSize="15"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       HorizontalAlignment="Center">
+                                <Run Text="Reached goal of " /><Run Text="{Binding Target}" /><Run Text=" BTC (" /><Run Text="{Binding Progress, StringFormat={}{0:0}}" /><Run Text="% of target)" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- FUNDING CLOSED: Gray card -->
+                    <!-- Vue: bg #f9fafb, border #e5e7eb, gray text -->
+                    <Border IsVisible="{Binding IsFundingClosed}"
+                            Background="{DynamicResource SurfaceMedium}"
+                            BorderBrush="{DynamicResource Stroke}"
+                            BorderThickness="1"
+                            CornerRadius="16"
+                            Padding="32,24"
+                            ClipToBounds="True">
+                        <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Border Width="64" Height="64" CornerRadius="32"
+                                    Background="{DynamicResource SurfaceLow}"
+                                    HorizontalAlignment="Center">
+                                <Viewbox Width="32" Height="32">
+                                    <Path Data="{StaticResource Clock}"
+                                          Stroke="{DynamicResource TextMuted}"
+                                          StrokeThickness="2"
+                                          StrokeLineCap="Round"
+                                          StrokeJoin="Round"
+                                          Width="24" Height="24" Stretch="Uniform" />
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Text="Investment Period Closed"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource TextStrong}"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Foreground="{DynamicResource TextMuted}"
+                                       FontSize="15"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       HorizontalAlignment="Center">
+                                <Run Text="Raised " /><Run Text="{Binding Raised}" /><Run Text=" BTC of " /><Run Text="{Binding Target}" /><Run Text=" BTC goal (" /><Run Text="{Binding Progress, StringFormat={}{0:0}}" /><Run Text="% funded)" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                </Panel>
+            </Grid>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- PROJECT STATISTICS CARD                  -->
+            <!-- Vue: stats-detail-card, orange gradient  -->
+            <!-- ═══════════════════════════════════════ -->
+            <Border Background="{DynamicResource StatsDetailCardBackground}"
+                    BorderBrush="{DynamicResource StatsDetailCardBorder}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="24"
+                    BoxShadow="{DynamicResource ItemShadow}">
+                <StackPanel Spacing="20">
+
+                    <!-- Header: bitcoin icon + title -->
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <!-- Vue: bitcoin-icon-circle 40x40, gradient #F7931A → #FFA500 -->
+                        <Border Width="40" Height="40" CornerRadius="20">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                    <GradientStop Color="#F7931A" Offset="0" />
+                                    <GradientStop Color="#FFA500" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Viewbox Width="20" Height="20">
+                                <Path Data="{StaticResource BitcoinSymbol}"
+                                      Fill="White"
+                                      Width="24" Height="24" Stretch="Uniform" />
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="Project Statistics"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource StatsDetailLabel}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- 3 stat cards in a row -->
+                    <!-- Vue: stat-card bg rgba(255,255,255,0.7), border 2px rgba(253,186,116,0.4), radius 12, padding 20 -->
+                    <Grid ColumnDefinitions="*,16,*,16,*">
+                        <!-- Target Amount -->
+                        <Border Grid.Column="0"
+                                Background="{DynamicResource StatsDetailInnerBackground}"
+                                BorderBrush="{DynamicResource StatsDetailInnerBorder}"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="{Binding TargetNoun}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource StatsDetailLabel}"
+                                               VerticalAlignment="Center" />
+                                    <Viewbox Width="20" Height="20" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource BitcoinSymbol}"
+                                              Fill="{DynamicResource StatsDetailLabel}"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock FontSize="24" FontWeight="Bold"
+                                           Foreground="{DynamicResource StatsDetailValue}">
+                                    <Run Text="{Binding Target}" /><Run Text=" BTC" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Total Raised -->
+                        <Border Grid.Column="2"
+                                Background="{DynamicResource StatsDetailInnerBackground}"
+                                BorderBrush="{DynamicResource StatsDetailInnerBorder}"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="{Binding RaisedNoun}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource StatsDetailLabel}"
+                                               VerticalAlignment="Center" />
+                                    <Viewbox Width="20" Height="20" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource NavIconTrendUp}"
+                                              Stroke="{DynamicResource StatsDetailLabel}"
+                                              StrokeThickness="2"
+                                              StrokeLineCap="Round"
+                                              StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock FontSize="24" FontWeight="Bold"
+                                           Foreground="{DynamicResource StatsDetailValue}">
+                                    <Run Text="{Binding Raised}" /><Run Text=" BTC" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Total Investors -->
+                        <Border Grid.Column="4"
+                                Background="{DynamicResource StatsDetailInnerBackground}"
+                                BorderBrush="{DynamicResource StatsDetailInnerBorder}"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="{Binding InvestorNoun}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource StatsDetailLabel}"
+                                               VerticalAlignment="Center" />
+                                    <Viewbox Width="20" Height="20" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource NavIconUsers}"
+                                              Stroke="{DynamicResource StatsDetailLabel}"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round"
+                                              StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock Text="{Binding InvestorCount}"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource StatsDetailValue}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Progress Bar (not shown for subscription) -->
+                    <!-- Vue: progress-bar-large height 12px, bg #e8e8e8, fill gradient #2d5a3d → #4a8f5f, radius 6 -->
+                    <StackPanel Spacing="8"
+                                IsVisible="{Binding !IsSubscriptionType}">
+                        <DockPanel>
+                            <TextBlock Text="Funding Progress"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource StatsDetailLabel}" />
+                            <TextBlock FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ProgressPercentage}"
+                                       HorizontalAlignment="Right">
+                                <Run Text="{Binding Progress, StringFormat={}{0:0}}" /><Run Text="%" />
+                            </TextBlock>
+                        </DockPanel>
+                        <Panel Height="12">
+                            <Border CornerRadius="6"
+                                    Background="{DynamicResource StatsDetailProgressTrack}" />
+                            <Border Name="ProgressFill"
+                                    CornerRadius="6"
+                                    HorizontalAlignment="Left">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                        <GradientStop Color="#2d5a3d" Offset="0" />
+                                        <GradientStop Color="#4a8f5f" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Panel>
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- INVESTMENT/FUNDING/SUBSCRIPTION INFO     -->
+            <!-- ═══════════════════════════════════════ -->
+            <Border Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="24"
+                    BoxShadow="{DynamicResource ItemShadow}">
+                <StackPanel Spacing="20">
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Viewbox Width="24" Height="24">
+                            <Path Data="{StaticResource BitcoinSymbol}"
+                                  Fill="#F7931A"
+                                  Width="24" Height="24" Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock Text="{Binding InfoSectionTitle}"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Investment info (4 cards) — shown for Invest type -->
+                    <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,16,Auto"
+                          IsVisible="{Binding IsInvestmentType}">
+                        <!-- Start Date -->
+                        <Border Grid.Row="0" Grid.Column="0"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="Investment Start Date" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource Calendar}"
+                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock Text="{Binding StartDate}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- End Date -->
+                        <Border Grid.Row="0" Grid.Column="2"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="Investment End Date" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource Calendar}"
+                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock Text="{Binding EndDate}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- Penalty Duration -->
+                        <Border Grid.Row="2" Grid.Column="0"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="Penalty Duration" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource Clock}"
+                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}">
+                                    <Run Text="{Binding PenaltyDays}" /><Run Text=" days" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                        <!-- Expiry Date -->
+                        <Border Grid.Row="2" Grid.Column="2"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="Project Expiry Date" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource Calendar}"
+                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock Text="{Binding ExpiryDate}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Fund info (2 cards) — shown for Fund type -->
+                    <Grid ColumnDefinitions="*,16,*"
+                          IsVisible="{Binding IsFundType}">
+                        <Border Grid.Column="0"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="Funding Frequency" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource Clock}"
+                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock Text="{Binding PayoutFrequency}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <DockPanel>
+                                    <TextBlock Text="Penalty Duration" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextMuted}" />
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                        <Path Data="{StaticResource Clock}"
+                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </DockPanel>
+                                <TextBlock FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}">
+                                    <Run Text="{Binding PenaltyDays}" /><Run Text=" days" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Subscription info (3 cards) — shown for Subscription type -->
+                    <Grid ColumnDefinitions="*,16,*,16,*"
+                          IsVisible="{Binding IsSubscriptionType}">
+                        <Border Grid.Column="0"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Subscription Price" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <TextBlock Text="20,000 Sats" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Frequency" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <TextBlock Text="{Binding PayoutFrequency}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="4"
+                                Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="12" Padding="20">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Installments" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <TextBlock Text="3/6/12" FontSize="20" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- STAGES TABLE (investment only)           -->
+            <!-- Vue: detail-card with table              -->
+            <!-- ═══════════════════════════════════════ -->
+            <Border Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="24"
+                    BoxShadow="{DynamicResource ItemShadow}"
+                    IsVisible="{Binding IsInvestmentType}">
+                <StackPanel Spacing="20">
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Viewbox Width="24" Height="24">
+                            <Path Data="{StaticResource Box}"
+                                  Stroke="{DynamicResource TextStrong}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Width="24" Height="24" Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock Text="Stages"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Table header row -->
+                    <!-- Vue: th padding 12px, font-size 13px, font-weight 600, border-bottom 2px solid #e0e0e0 -->
+                    <Border BorderBrush="{DynamicResource Stroke}"
+                            BorderThickness="0,0,0,2"
+                            Padding="12,12,12,12">
+                        <Grid ColumnDefinitions="80,100,*,140,*">
+                            <TextBlock Grid.Column="0" Text="Stage" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <TextBlock Grid.Column="1" Text="Stage %" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <TextBlock Grid.Column="2" Text="Release Date" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <TextBlock Grid.Column="3" Text="Days Until Stage" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <TextBlock Grid.Column="4" Text="Amount Per Stage" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}"
+                                       HorizontalAlignment="Right" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Table rows -->
+                    <ItemsControl ItemsSource="{Binding Stages}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="portfolio:InvestmentStageViewModel">
+                                <Border Padding="12,16,12,16"
+                                        BorderBrush="{DynamicResource Stroke}"
+                                        BorderThickness="0,0,0,1">
+                                    <Grid ColumnDefinitions="80,100,*,140,*">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding StageNumber}"
+                                                   FontSize="14" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextStrong}" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Percentage}"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource TextStrong}" />
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding ReleaseDate}"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource TextStrong}" />
+                                        <TextBlock Grid.Column="3"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource TextMuted}">
+                                            <Run Text="{Binding Status}" />
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="4"
+                                                   FontSize="14" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource StageAmountGreen}"
+                                                   HorizontalAlignment="Right">
+                                            <Run Text="{Binding Amount}" /><Run Text=" BTC" />
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- PROJECT DETAILS (collapsible)            -->
+            <!-- Vue: detail-card, collapsible-header     -->
+            <!-- ═══════════════════════════════════════ -->
+            <Border Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="24"
+                    BoxShadow="{DynamicResource ItemShadow}">
+                <StackPanel Spacing="0">
+                    <!-- Collapsible header -->
+                    <Border Name="DetailsHeader" Cursor="Hand" Margin="0,0,0,0">
+                        <DockPanel>
+                            <Viewbox Width="24" Height="24" DockPanel.Dock="Left" Margin="0,0,12,0">
+                                <Path Data="{StaticResource InfoCircle}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="24" Height="24" Stretch="Uniform" />
+                            </Viewbox>
+                            <TextBlock Text="Project Details"
+                                       FontSize="20" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextStrong}"
+                                       VerticalAlignment="Center" />
+                            <Viewbox Width="20" Height="20"
+                                     DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                     VerticalAlignment="Center">
+                                <Path Name="DetailsChevron"
+                                      Data="{StaticResource ChevronDown}"
+                                      Stroke="{DynamicResource TextMuted}"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="24" Height="24" Stretch="Uniform"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform Angle="0" />
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Viewbox>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Collapsible content -->
+                    <StackPanel Name="DetailsContent" Spacing="16" Margin="0,20,0,0">
+                        <!-- Explorer -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Explorer" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <Border Background="{DynamicResource SurfaceMedium}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="8" Padding="12,10">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Viewbox Width="18" Height="18">
+                                        <Path Data="{StaticResource ExternalLink}"
+                                              Stroke="{DynamicResource TextMuted}"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="View the transaction"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource Brand}"
+                                               TextDecorations="Underline" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Project ID -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Project ID" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <Border Background="{DynamicResource SurfaceMedium}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="8" Padding="12,10">
+                                <DockPanel>
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Left" Margin="0,0,8,0">
+                                        <Path Data="{StaticResource Cloud}"
+                                              Stroke="{DynamicResource TextMuted}"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <Border Name="CopyProjectIdBtn" Cursor="Hand"
+                                            DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                            Margin="8,0,0,0">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource Copy}"
+                                                  Stroke="{DynamicResource TextMuted}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeLineCap="Round" StrokeJoin="Round"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Text="{Binding ProjectId}"
+                                               FontSize="13"
+                                               FontFamily="Cascadia Code,Consolas,monospace"
+                                               Foreground="{DynamicResource TextStrong}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Founder Key -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Founder Key" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <Border Background="{DynamicResource SurfaceMedium}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="8" Padding="12,10">
+                                <DockPanel>
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Left" Margin="0,0,8,0">
+                                        <Path Data="{StaticResource Key}"
+                                              Stroke="{DynamicResource TextMuted}"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <Border Name="CopyFounderKeyBtn" Cursor="Hand"
+                                            DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                            Margin="8,0,0,0">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource Copy}"
+                                                  Stroke="{DynamicResource TextMuted}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeLineCap="Round" StrokeJoin="Round"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Text="{Binding FounderKey}"
+                                               FontSize="13"
+                                               FontFamily="Cascadia Code,Consolas,monospace"
+                                               Foreground="{DynamicResource TextStrong}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- NOSTR SECTION (collapsible)              -->
+            <!-- Vue: detail-card, Nostr npub + hex + relays -->
+            <!-- ═══════════════════════════════════════ -->
+            <Border Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="24"
+                    BoxShadow="{DynamicResource ItemShadow}">
+                <StackPanel Spacing="0">
+                    <!-- Collapsible header -->
+                    <Border Name="NostrHeader" Cursor="Hand">
+                        <DockPanel>
+                            <Viewbox Width="24" Height="24" DockPanel.Dock="Left" Margin="0,0,12,0">
+                                <Path Data="{StaticResource ChatBubble}"
+                                      Stroke="{DynamicResource TextStrong}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="24" Height="24" Stretch="Uniform" />
+                            </Viewbox>
+                            <TextBlock Text="Nostr"
+                                       FontSize="20" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextStrong}"
+                                       VerticalAlignment="Center" />
+                            <Viewbox Width="20" Height="20"
+                                     DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                     VerticalAlignment="Center">
+                                <Path Name="NostrChevron"
+                                      Data="{StaticResource ChevronDown}"
+                                      Stroke="{DynamicResource TextMuted}"
+                                      StrokeThickness="2"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round"
+                                      Width="24" Height="24" Stretch="Uniform"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Path.RenderTransform>
+                                        <RotateTransform Angle="0" />
+                                    </Path.RenderTransform>
+                                </Path>
+                            </Viewbox>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Collapsible content -->
+                    <StackPanel Name="NostrContent" Spacing="16" Margin="0,20,0,0">
+                        <!-- Nostr npub -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Nostr Public Key (npub)" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            <Border Background="{DynamicResource SurfaceMedium}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="8" Padding="12,10">
+                                <DockPanel>
+                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Left" Margin="0,0,8,0">
+                                        <Path Data="{StaticResource User}"
+                                              Stroke="{DynamicResource TextMuted}"
+                                              StrokeThickness="1.5"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <Border Name="CopyNpubBtn" Cursor="Hand"
+                                            DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                            Margin="8,0,0,0">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource Copy}"
+                                                  Stroke="{DynamicResource TextMuted}"
+                                                  StrokeThickness="1.5"
+                                                  StrokeLineCap="Round" StrokeJoin="Round"
+                                                  Width="24" Height="24" Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Text="{Binding NostrNpub}"
+                                               FontSize="13"
+                                               FontFamily="Cascadia Code,Consolas,monospace"
+                                               Foreground="{DynamicResource TextStrong}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Open in Angor Projects button -->
+                        <Border Background="{DynamicResource SurfaceMedium}"
+                                BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="16,12"
+                                Cursor="Hand">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                <Viewbox Width="18" Height="18">
+                                    <Path Data="{StaticResource ExternalLink}"
+                                          Stroke="{DynamicResource TextStrong}"
+                                          StrokeThickness="1.5"
+                                          StrokeLineCap="Round" StrokeJoin="Round"
+                                          Width="24" Height="24" Stretch="Uniform" />
+                                </Viewbox>
+                                <TextBlock Text="Open in Angor Projects"
+                                           FontSize="14" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Relays -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Relays" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextStrong}" />
+                            <Border Background="{DynamicResource SurfaceMedium}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="8" Padding="12,10">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Viewbox Width="16" Height="16">
+                                        <Path Data="{StaticResource Lightning}"
+                                              Fill="{DynamicResource Brand}"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="wss://relay.angor.io"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource Brand}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Background="{DynamicResource SurfaceMedium}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="8" Padding="12,10">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Viewbox Width="16" Height="16">
+                                        <Path Data="{StaticResource Lightning}"
+                                              Fill="{DynamicResource Brand}"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                    <TextBlock Text="wss://relay2.angor.io"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource Brand}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </controls:ScrollableView>
+</UserControl>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mp="clr-namespace:Avalonia2.UI.Sections.MyProjects"
+             xmlns:deploy="clr-namespace:Avalonia2.UI.Sections.MyProjects.Deploy"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
              x:Class="Avalonia2.UI.Sections.MyProjects.CreateProjectView"
@@ -18,10 +19,25 @@
         Navigation footer at bottom of right column.
     -->
 
+    <!-- Vue: transition-all on project-type-card — smooth border/background changes -->
+    <UserControl.Styles>
+        <Style Selector="Border.TypeCard">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- MAIN WIZARD LAYOUT — two columns: stepper + content    -->
     <!-- Stepper always visible; welcome card shown in right col -->
     <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- Root panel to allow deploy overlay on top of wizard -->
+    <Panel>
+
     <Grid ColumnDefinitions="250,*" Margin="0">
 
             <!-- ─── LEFT COLUMN: Vertical Stepper ─── -->
@@ -188,6 +204,7 @@
 
                         <!-- Next button (steps 1-5) — uses default PrimaryButton dark gradient from theme -->
                         <Panel Grid.Column="2">
+                            <!-- Next button — shown on steps 1-5 -->
                             <Border Classes="ButtonShadow" IsVisible="{Binding !IsLastStep}">
                                 <Button Name="NextStepButton" CornerRadius="10" Padding="24,10"
                                         FontSize="14" FontWeight="SemiBold">
@@ -197,6 +214,24 @@
                                     </StackPanel>
                                 </Button>
                             </Border>
+
+                            <!-- Deploy Now button — shown on step 6 (IsLastStep) -->
+                            <!-- Vue: footer primary button triggers openDeployModal -->
+                            <Button Name="DeployButton" IsVisible="{Binding IsLastStep}"
+                                    CornerRadius="10" Padding="24,12"
+                                    FontSize="14" FontWeight="Bold"
+                                    IsEnabled="{Binding !IsDeploying}"
+                                    Foreground="White" Cursor="Hand">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                        <GradientStop Color="{DynamicResource PrimaryGreen}" Offset="0" />
+                                        <GradientStop Color="{DynamicResource PrimaryGreenHover}" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="Deploy Now" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
                         </Panel>
                     </Grid>
                 </Border>
@@ -286,10 +321,12 @@
                                            FontSize="14" Foreground="{DynamicResource TextMuted}" />
 
                                 <!-- Investment card — Border (not Button) to prevent hover chrome -->
-                                <Border Name="TypeInvestCard" CornerRadius="20"
-                                        Background="Transparent"
-                                        BorderBrush="{DynamicResource Border}" BorderThickness="1"
-                                        Cursor="Hand">
+                                <!-- Vue: rounded-xl (12px), border-2, gradient bg from-[#0A0A0A] to-[#1a1a1a] (dark) -->
+                                <!-- Bg set via code-behind ApplyTypeCardStyles() on load -->
+                                <Border Name="TypeInvestCard" Classes="TypeCard" CornerRadius="12"
+                                        BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                        Background="{DynamicResource Surface}"
+                                        Cursor="Hand" MinHeight="140">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="20,24">
                                         <!-- Icon square -->
                                         <Border Grid.Column="0" Name="IconBgInvest"
@@ -316,17 +353,18 @@
                                         <!-- Radio circle -->
                                         <Border Grid.Column="2" Name="RadioInvest"
                                                 Width="24" Height="24" CornerRadius="12"
-                                                BorderBrush="{DynamicResource SurfaceLow}" BorderThickness="2"
-                                                Background="{DynamicResource SurfaceLow}"
+                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                                Background="Transparent"
                                                 VerticalAlignment="Center" />
                                     </Grid>
                                 </Border>
 
                                 <!-- Fund card — Border (not Button) to prevent hover chrome -->
-                                <Border Name="TypeFundCard" CornerRadius="20"
-                                        Background="Transparent"
-                                        BorderBrush="{DynamicResource Border}" BorderThickness="1"
-                                        Cursor="Hand">
+                                <!-- Vue: rounded-xl (12px), border-2, gradient bg -->
+                                <Border Name="TypeFundCard" Classes="TypeCard" CornerRadius="12"
+                                        BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                        Background="{DynamicResource Surface}"
+                                        Cursor="Hand" MinHeight="140">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="20,24">
                                         <!-- Icon square -->
                                         <Border Grid.Column="0" Name="IconBgFund"
@@ -352,17 +390,18 @@
                                         <!-- Radio circle -->
                                         <Border Grid.Column="2" Name="RadioFund"
                                                 Width="24" Height="24" CornerRadius="12"
-                                                BorderBrush="{DynamicResource SurfaceLow}" BorderThickness="2"
-                                                Background="{DynamicResource SurfaceLow}"
+                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                                Background="Transparent"
                                                 VerticalAlignment="Center" />
                                     </Grid>
                                 </Border>
 
                                 <!-- Subscription card — Border (not Button) to prevent hover chrome -->
-                                <Border Name="TypeSubscriptionCard" CornerRadius="20"
-                                        Background="Transparent"
-                                        BorderBrush="{DynamicResource Border}" BorderThickness="1"
-                                        Cursor="Hand">
+                                <!-- Vue: rounded-xl (12px), border-2, gradient bg -->
+                                <Border Name="TypeSubscriptionCard" Classes="TypeCard" CornerRadius="12"
+                                        BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                        Background="{DynamicResource Surface}"
+                                        Cursor="Hand" MinHeight="140">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="20,24">
                                         <!-- Icon square -->
                                         <Border Grid.Column="0" Name="IconBgSubscription"
@@ -389,8 +428,8 @@
                                         <!-- Radio circle -->
                                         <Border Grid.Column="2" Name="RadioSubscription"
                                                 Width="24" Height="24" CornerRadius="12"
-                                                BorderBrush="{DynamicResource SurfaceLow}" BorderThickness="2"
-                                                Background="{DynamicResource SurfaceLow}"
+                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                                Background="Transparent"
                                                 VerticalAlignment="Center" />
                                     </Grid>
                                 </Border>
@@ -516,19 +555,26 @@
                                         <!-- Content area: avatar + project info -->
                                         <StackPanel Margin="24,-64,24,24" Spacing="16">
                                             <!-- Circular avatar placeholder overlapping banner — clickable -->
-                                            <Button Name="UploadAvatarButton" Background="Transparent"
-                                                    BorderThickness="0" Padding="0" Cursor="Hand"
-                                                    CornerRadius="60" ClipToBounds="True"
+                                            <Border Name="UploadAvatarButton" Background="Transparent"
+                                                    Cursor="Hand"
                                                     Width="120" Height="120"
-                                                    HorizontalAlignment="Left">
+                                                    HorizontalAlignment="Left"
+                                                    ClipToBounds="False">
                                                 <Border Width="120" Height="120" CornerRadius="60"
                                                         Background="{DynamicResource SurfaceMedium}"
                                                         BorderBrush="{DynamicResource Surface}" BorderThickness="6"
                                                         BoxShadow="0 10 30 0 #22000000" ClipToBounds="True">
                                                     <Panel>
-                                                        <!-- Avatar image preview (shown when avatar is selected) -->
+                                                        <!-- Avatar image preview — EllipseGeometry clip for
+                                                             perfect circle (CornerRadius on parent Border can
+                                                             distort when FluentTheme injects chrome) -->
                                                         <Image Name="AvatarPreviewImage" Stretch="UniformToFill"
-                                                               IsVisible="False" />
+                                                               Width="108" Height="108"
+                                                               IsVisible="False">
+                                                            <Image.Clip>
+                                                                <EllipseGeometry Center="54,54" RadiusX="54" RadiusY="54" />
+                                                            </Image.Clip>
+                                                        </Image>
                                                         <!-- Upload icon (shown when no avatar) -->
                                                         <Viewbox Name="AvatarUploadIcon" Width="32" Height="32">
                                                             <Path Data="{StaticResource CloudUpload}"
@@ -538,7 +584,7 @@
                                                         </Viewbox>
                                                     </Panel>
                                                 </Border>
-                                            </Button>
+                                            </Border>
 
                                             <!-- Project name + description preview -->
                                             <StackPanel Spacing="4">
@@ -1502,51 +1548,31 @@
                                 </Border>
 
                                 <!-- ═══════════════════════════════════════════════ -->
-                                <!-- DEPLOY — simple placeholder (rebuild pending) -->
+                                <!-- DEPLOY — Vue: review-card-deploy with Angor logo -->
+                                <!-- Deploy Now button is in the FOOTER, not here      -->
                                 <!-- ═══════════════════════════════════════════════ -->
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource Accent}" BorderThickness="1"
                                         Background="{DynamicResource BrandWash}" ClipToBounds="True"
                                         Padding="30">
                                     <StackPanel Spacing="16" HorizontalAlignment="Center">
+                                        <!-- Angor logo circle — matches Vue deploy card -->
+                                        <Border Width="64" Height="64" CornerRadius="32"
+                                                HorizontalAlignment="Center">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="#4B7C5A" Opacity="0.12" />
+                                            </Border.Background>
+                                            <Viewbox Width="32" Height="32">
+                                                <Svg Path="/Assets/logo.svg" />
+                                            </Viewbox>
+                                        </Border>
+
                                         <TextBlock Text="Ready to Deploy" FontSize="20" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextStrong}" TextAlignment="Center"
                                                    HorizontalAlignment="Center" />
-                                        <TextBlock Text="Your project is ready to be deployed on-chain."
+                                        <TextBlock Text="Your project is ready to be deployed on-chain. Click Deploy Now in the footer to begin."
                                                    FontSize="14" Foreground="{DynamicResource TextMuted}"
                                                    TextAlignment="Center" HorizontalAlignment="Center"
-                                                   TextWrapping="Wrap" />
-
-                                        <!-- Deployed success message -->
-                                        <Border IsVisible="{Binding IsDeployed}" HorizontalAlignment="Center"
-                                                CornerRadius="12" Padding="24,12">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="{DynamicResource SoftGreen}" />
-                                            </Border.Background>
-                                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <Viewbox Width="20" Height="20">
-                                                    <Path Data="{StaticResource CheckCircle}"
-                                                          Stroke="{DynamicResource Accent}" StrokeThickness="2"
-                                                          StrokeLineCap="Round" StrokeJoin="Round"
-                                                          Width="24" Height="24" Stretch="Uniform" />
-                                                </Viewbox>
-                                                <TextBlock Text="Project Deployed Successfully!" FontSize="16"
-                                                           FontWeight="Bold" Foreground="{DynamicResource Accent}"
-                                                           VerticalAlignment="Center" />
-                                            </StackPanel>
-                                        </Border>
-
-                                        <!-- Deploy button -->
-                                        <Button Name="DeployButton" HorizontalAlignment="Center"
-                                                CornerRadius="10" Padding="24,12"
-                                                FontSize="14" FontWeight="Bold"
-                                                IsVisible="{Binding !IsDeployed}"
-                                                IsEnabled="{Binding !IsDeploying}"
-                                                Foreground="White">
-                                            <Button.Background>
-                                                <SolidColorBrush Color="#2D5A3D" />
-                                            </Button.Background>
-                                            <TextBlock Text="Deploy Project" />
-                                        </Button>
+                                                   TextWrapping="Wrap" MaxWidth="400" />
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -1558,5 +1584,10 @@
                 </Panel>
             </DockPanel>
         </Grid>
+
+    <!-- Deploy flow overlay — sits on top of wizard content -->
+    <deploy:DeployFlowOverlay DataContext="{Binding DeployFlow}" />
+
+    </Panel>
 
 </UserControl>

@@ -176,6 +176,20 @@
             <SolidColorBrush x:Key="BadgeApprovedForeground" Color="#155724" />
             <SolidColorBrush x:Key="BadgePendingBackground" Color="#FEF3C7" />
             <SolidColorBrush x:Key="BadgePendingForeground" Color="#92400E" />
+            <!-- Released: Vue light bg=#d4edda, color=#155724, border=#c3e6cb -->
+            <SolidColorBrush x:Key="BadgeReleasedBackground" Color="#D4EDDA" />
+            <SolidColorBrush x:Key="BadgeReleasedForeground" Color="#155724" />
+            <!-- Not Spent: Vue light bg=#f9fafb, color=#6b7280, border=#e5e7eb -->
+            <SolidColorBrush x:Key="BadgeNotSpentBackground" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="BadgeNotSpentForeground" Color="#6B7280" />
+            <!-- Recovered: Vue light bg=#dbeafe, color=#1e40af, border=#bfdbfe -->
+            <SolidColorBrush x:Key="BadgeRecoveredBackground" Color="#DBEAFE" />
+            <SolidColorBrush x:Key="BadgeRecoveredForeground" Color="#1E40AF" />
+            
+            <!-- Stage amount green (Vue: #2d5a3d light, #5FAF78 dark) -->
+            <SolidColorBrush x:Key="StageAmountGreen" Color="#2D5A3D" />
+            <!-- Progress percentage (Vue: #2d5a3d light, #5FAF78 dark) -->
+            <SolidColorBrush x:Key="ProgressPercentage" Color="#2D5A3D" />
 
             <!-- Waiting card (Step 1): Vue linear-gradient(to bottom right, #fef3c7, #fde68a), border #fbbf24 -->
             <LinearGradientBrush x:Key="WaitingCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
@@ -203,6 +217,36 @@
                 <GradientStop Color="#D1D5DB" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="1" />
             </LinearGradientBrush>
+
+            <!-- ── Deploy Flow Modals (light) ── -->
+            <!-- Vue light: white backgrounds, gray borders, standard text -->
+            <SolidColorBrush x:Key="DeployModalBackground" Color="White" />
+            <SolidColorBrush x:Key="DeployModalBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="DeployModalInputBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="DeployModalQrBg" Color="#F3F4F6" />
+            <SolidColorBrush x:Key="DeploySuccessBg" Color="White" />
+            <SolidColorBrush x:Key="DeploySuccessIconBg" Color="#DCFCE7" />
+            <SolidColorBrush x:Key="DeploySuccessCheck" Color="#16A34A" />
+            <SolidColorBrush x:Key="DeployInfoBannerBg" Color="#F0FDF4" />
+            <SolidColorBrush x:Key="DeployInfoBannerBorder" Color="#86EFAC" />
+            <SolidColorBrush x:Key="DeployInfoBannerText" Color="#166534" />
+            <SolidColorBrush x:Key="DeployFeeBarBg" Color="#FFF7ED" />
+            <SolidColorBrush x:Key="DeployFeeBarBorder" Color="#FDBA74" />
+            <SolidColorBrush x:Key="DeployFeeLabel" Color="#9A3412" />
+            <SolidColorBrush x:Key="DeployFeeValue" Color="#7C2D12" />
+            <SolidColorBrush x:Key="DeployFeePillBg" Color="#FFFBEB" />
+            <SolidColorBrush x:Key="DeployFeePillBorder" Color="#FDE68A" />
+            <SolidColorBrush x:Key="DeployFeePillText" Color="#854D0E" />
+            <SolidColorBrush x:Key="DeployTabSelectedBg" Color="#1A4B7C5A" />
+            <SolidColorBrush x:Key="DeployTabUnselectedBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="DeployTabUnselectedText" Color="#6B7280" />
+            <SolidColorBrush x:Key="DeployWalletItemBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="DeployWalletIconBg" Color="#F3F4F6" />
+            <SolidColorBrush x:Key="DeploySecondaryBtnBorder" Color="#33000000" />
+            <SolidColorBrush x:Key="DeployQrBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="DeployQrIconFill" Color="#9CA3AF" />
+            <!-- Modal backdrop: light mode uses subtle gray to avoid harsh black look -->
+            <SolidColorBrush x:Key="ModalBackdrop" Color="#33000000" />
 
         </ResourceDictionary>
 
@@ -352,6 +396,20 @@
             <SolidColorBrush x:Key="BadgeApprovedForeground" Color="#86EFAC" />
             <SolidColorBrush x:Key="BadgePendingBackground" Color="#26FBBF24" />
             <SolidColorBrush x:Key="BadgePendingForeground" Color="#FDE68A" />
+            <!-- Released dark: Vue rgba(34,197,94,0.15), color #4ade80 -->
+            <SolidColorBrush x:Key="BadgeReleasedBackground" Color="#2622C55E" />
+            <SolidColorBrush x:Key="BadgeReleasedForeground" Color="#4ADE80" />
+            <!-- Not Spent dark: Vue rgba(107,114,128,0.15), color #9ca3af -->
+            <SolidColorBrush x:Key="BadgeNotSpentBackground" Color="#266B7280" />
+            <SolidColorBrush x:Key="BadgeNotSpentForeground" Color="#9CA3AF" />
+            <!-- Recovered dark: Vue rgba(59,130,246,0.15), color #60a5fa -->
+            <SolidColorBrush x:Key="BadgeRecoveredBackground" Color="#263B82F6" />
+            <SolidColorBrush x:Key="BadgeRecoveredForeground" Color="#60A5FA" />
+            
+            <!-- Stage amount green (dark: #5FAF78) -->
+            <SolidColorBrush x:Key="StageAmountGreen" Color="#5FAF78" />
+            <!-- Progress percentage (dark: #5FAF78) -->
+            <SolidColorBrush x:Key="ProgressPercentage" Color="#5FAF78" />
 
             <!-- Waiting card (Step 1) dark: amber-tinted dark bg -->
             <LinearGradientBrush x:Key="WaitingCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
@@ -379,6 +437,36 @@
                 <GradientStop Color="#4B5563" Offset="0.5" />
                 <GradientStop Color="Transparent" Offset="1" />
             </LinearGradientBrush>
+
+            <!-- ── Deploy Flow Modals (dark) ── -->
+            <!-- Vue dark: bg-[#111] border-[#2a2a2a] -->
+            <SolidColorBrush x:Key="DeployModalBackground" Color="#111111" />
+            <SolidColorBrush x:Key="DeployModalBorder" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="DeployModalInputBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="DeployModalQrBg" Color="#222222" />
+            <SolidColorBrush x:Key="DeploySuccessBg" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="DeploySuccessIconBg" Color="#14532D" />
+            <SolidColorBrush x:Key="DeploySuccessCheck" Color="#22C55E" />
+            <SolidColorBrush x:Key="DeployInfoBannerBg" Color="#052E16" />
+            <SolidColorBrush x:Key="DeployInfoBannerBorder" Color="#86EFAC" />
+            <SolidColorBrush x:Key="DeployInfoBannerText" Color="#BBF7D0" />
+            <SolidColorBrush x:Key="DeployFeeBarBg" Color="#331A0A" />
+            <SolidColorBrush x:Key="DeployFeeBarBorder" Color="#9A3412" />
+            <SolidColorBrush x:Key="DeployFeeLabel" Color="#FDBA74" />
+            <SolidColorBrush x:Key="DeployFeeValue" Color="#FED7AA" />
+            <SolidColorBrush x:Key="DeployFeePillBg" Color="#33422006" />
+            <SolidColorBrush x:Key="DeployFeePillBorder" Color="#854D0E" />
+            <SolidColorBrush x:Key="DeployFeePillText" Color="#FDE68A" />
+            <SolidColorBrush x:Key="DeployTabSelectedBg" Color="#194B7C5A" />
+            <SolidColorBrush x:Key="DeployTabUnselectedBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="DeployTabUnselectedText" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="DeployWalletItemBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="DeployWalletIconBg" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="DeploySecondaryBtnBorder" Color="#33FFFFFF" />
+            <SolidColorBrush x:Key="DeployQrBorder" Color="#374151" />
+            <SolidColorBrush x:Key="DeployQrIconFill" Color="#555555" />
+            <!-- Modal backdrop: dark mode uses standard black at 50% -->
+            <SolidColorBrush x:Key="ModalBackdrop" Color="#80000000" />
 
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>

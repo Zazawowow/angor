@@ -12,6 +12,14 @@
         <portfolio:PortfolioViewModel />
     </Design.DataContext>
 
+    <!-- Vue: .investment-card:hover → translateY(-4px) + box-shadow 0 8px 24px rgba(0,0,0,0.15), 0.3s ease -->
+    <UserControl.Styles>
+        <Style Selector="Border#InvestmentCardBorder:pointerover">
+            <Setter Property="RenderTransform" Value="translate(0px, -4px)" />
+            <Setter Property="BoxShadow" Value="{DynamicResource ItemShadowHover}" />
+        </Style>
+    </UserControl.Styles>
+
     <Panel>
         <!-- ═══════════════════════════════════════════════════════ -->
         <!-- EMPTY STATE: shown when HasInvestments = false          -->
@@ -50,7 +58,7 @@
                         Background="{DynamicResource Surface}"
                         BorderBrush="{DynamicResource Stroke}"
                         BorderThickness="1"
-                        CornerRadius="12"
+                        CornerRadius="16"
                         BoxShadow="{DynamicResource ItemShadow}"
                         Padding="24"
                         Margin="0,0,24,0"
@@ -263,13 +271,23 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="portfolio:InvestmentViewModel">
+                                <!-- Vue: .investment-card hover → translateY(-4px) + enhanced shadow, 0.3s ease -->
                                 <Border Background="{DynamicResource Surface}"
                                         BorderBrush="{DynamicResource Stroke}"
                                         BorderThickness="1"
-                                        CornerRadius="12"
-                                        ClipToBounds="True"
+                                        CornerRadius="16"
+                                        ClipToBounds="False"
                                         BoxShadow="{DynamicResource ItemShadow}"
-                                        Name="InvestmentCardBorder">
+                                        Name="InvestmentCardBorder"
+                                        RenderTransform="translate(0px, 0px)">
+                                    <Border.Transitions>
+                                        <Transitions>
+                                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
+                                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.3" />
+                                        </Transitions>
+                                    </Border.Transitions>
+                                    <!-- Inner clip border for banner image overflow -->
+                                    <Border CornerRadius="15" ClipToBounds="True">
                                     <StackPanel Spacing="0">
 
                                         <!-- Banner + Avatar — fixed height matching ProjectCard -->
@@ -348,17 +366,35 @@
                                                 </TextBlock>
                                             </DockPanel>
 
-                                            <!-- Progress segments (visual bars) -->
+                                            <!-- Progress segments (visual bars) — green for completed, stroke for pending -->
                                             <Grid ColumnDefinitions="*,8,*,8,*">
                                                 <!-- Segment 1 -->
-                                                <Border Grid.Column="0" Height="6" CornerRadius="3"
-                                                        Background="{DynamicResource Stroke}" />
+                                                <Panel Grid.Column="0">
+                                                    <Border Height="6" CornerRadius="3"
+                                                            Background="{DynamicResource Stroke}"
+                                                            IsVisible="{Binding !IsSegment1Complete}" />
+                                                    <Border Height="6" CornerRadius="3"
+                                                            Background="#4B7C5A"
+                                                            IsVisible="{Binding IsSegment1Complete}" />
+                                                </Panel>
                                                 <!-- Segment 2 -->
-                                                <Border Grid.Column="2" Height="6" CornerRadius="3"
-                                                        Background="{DynamicResource Stroke}" />
+                                                <Panel Grid.Column="2">
+                                                    <Border Height="6" CornerRadius="3"
+                                                            Background="{DynamicResource Stroke}"
+                                                            IsVisible="{Binding !IsSegment2Complete}" />
+                                                    <Border Height="6" CornerRadius="3"
+                                                            Background="#4B7C5A"
+                                                            IsVisible="{Binding IsSegment2Complete}" />
+                                                </Panel>
                                                 <!-- Segment 3 -->
-                                                <Border Grid.Column="4" Height="6" CornerRadius="3"
-                                                        Background="{DynamicResource Stroke}" />
+                                                <Panel Grid.Column="4">
+                                                    <Border Height="6" CornerRadius="3"
+                                                            Background="{DynamicResource Stroke}"
+                                                            IsVisible="{Binding !IsSegment3Complete}" />
+                                                    <Border Height="6" CornerRadius="3"
+                                                            Background="#4B7C5A"
+                                                            IsVisible="{Binding IsSegment3Complete}" />
+                                                </Panel>
                                             </Grid>
 
                                             <!-- Manage button — text only, NO icon per Vue reference -->
@@ -374,6 +410,7 @@
                                             </Button>
                                         </StackPanel>
                                     </StackPanel>
+                                    </Border>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

@@ -80,6 +80,15 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}"
                             ClipToBounds="False">
+                        <!-- Vue: nav link transition background-color 0.2s ease, color 0.2s ease -->
+                        <!-- NOTE: BrushTransition on Background removed because Avalonia interpolates
+                             Transparent (#00FFFFFF) → dark color through visible white intermediate frames.
+                             BorderBrush transition is safe since both ends are opaque or same-hue. -->
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                            </Transitions>
+                        </Border.Transitions>
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"

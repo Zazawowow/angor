@@ -33,6 +33,12 @@
         <Setter Property="Foreground" Value="{DynamicResource ProgressBrush}" />
         <Setter Property="Background" Value="{DynamicResource ProgressBarBackground}" />
         <Setter Property="CornerRadius" Value="6" />
+        <!-- Vue: .progress-fill { transition: width 0.3s ease } -->
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Value" Duration="0:0:0.3" />
+            </Transitions>
+        </Setter>
     </Style>
 
     <Style Selector="ProgressBar.Red">

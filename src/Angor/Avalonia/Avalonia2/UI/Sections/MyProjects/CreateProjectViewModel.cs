@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia2.UI.Sections.MyProjects.Deploy;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.MyProjects;
@@ -88,8 +89,17 @@ public partial class CreateProjectViewModel : ReactiveObject
     [Reactive] private bool isDeploying;
     [Reactive] private bool isDeployed;
 
-    /// <summary>Callback to notify parent when project is deployed.</summary>
+    /// <summary>
+    /// Callback to notify parent when project is deployed.
+    /// Called with the wizard VM so the parent can extract project data,
+    /// add it to the list, and close the wizard.
+    /// In the Vue prototype, goToMyProjects() does all of this in one shot:
+    /// creates project, adds to list, closes wizard, navigates to my-projects.
+    /// </summary>
     public Action? OnProjectDeployed { get; set; }
+
+    /// <summary>The deploy flow overlay ViewModel.</summary>
+    public DeployFlowViewModel DeployFlow { get; } = new();
 
     public CreateProjectViewModel()
     {
@@ -289,17 +299,20 @@ public partial class CreateProjectViewModel : ReactiveObject
     }
 
     /// <summary>
-    /// Start deployment — simple stub for now.
+    /// Start deployment — launches the deploy flow overlay.
+    /// Vue ref: openDeployModal() → wallet picker or QR modal → success → goToMyProjects().
+    /// goToMyProjects() creates the project, adds to list, closes wizard, navigates to my-projects.
     /// </summary>
-    public async void Deploy()
+    public void Deploy()
     {
-        IsDeploying = true;
-        this.RaisePropertyChanged(nameof(DeployButtonText));
-        await Task.Delay(2000);
-        IsDeployed = true;
-        IsDeploying = false;
-        this.RaisePropertyChanged(nameof(DeployButtonText));
-        OnProjectDeployed?.Invoke();
+        DeployFlow.OnDeployCompleted = () =>
+        {
+            IsDeployed = true;
+            this.RaisePropertyChanged(nameof(DeployButtonText));
+            // Matches Vue goToMyProjects(): add project to list + close wizard + navigate to list
+            OnProjectDeployed?.Invoke();
+        };
+        DeployFlow.Show(ProjectName ?? "My Project");
     }
 
     // ── Step 5: Payout frequency visibility (Fund/Subscription) ──

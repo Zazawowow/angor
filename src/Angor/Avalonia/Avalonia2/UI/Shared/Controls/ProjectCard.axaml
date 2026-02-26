@@ -17,6 +17,7 @@
                                           Progress="25"
                                           ProjectType="Fund"
                                           Status="Open"
+                                          ShowManageFunds="True"
                                           Banner="https://angor.tx1138.com/projects/hope-with-bitcoin-banner.webp"
                                           Avatar="https://angor.tx1138.com/projects/hope-with-bitcoin-logo.webp" />
                 </Border>
@@ -55,12 +56,22 @@
     <Style Selector="controls|ProjectCard">
         <Setter Property="Template">
             <ControlTemplate TargetType="controls:ProjectCard">
-                <Border Background="{DynamicResource Surface}"
+                <Border x:Name="PART_CardRoot"
+                        Background="{DynamicResource Surface}"
                         BorderBrush="{DynamicResource Stroke}"
                         BorderThickness="1"
                         CornerRadius="12"
-                        ClipToBounds="True"
-                        BoxShadow="{DynamicResource ItemShadow}">
+                        ClipToBounds="False"
+                        BoxShadow="{DynamicResource ItemShadow}"
+                        RenderTransform="translate(0px, 0px)">
+                    <Border.Transitions>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
+                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.3" />
+                        </Transitions>
+                    </Border.Transitions>
+                    <!-- Inner clip border: clips banner overflow while outer border allows shadow to extend -->
+                    <Border CornerRadius="11" ClipToBounds="True">
                     <StackPanel Spacing="0">
                         <!-- Banner area — fixed height for consistent card sizing -->
                         <Panel Height="150">
@@ -177,11 +188,54 @@
                             <ProgressBar Value="{TemplateBinding Progress}"
                                          Minimum="0" Maximum="100"
                                          Height="8" />
+
+                            <!-- 7. Action buttons — Vue: shown when showManageFunds=true (My Projects only) -->
+                            <!--    "Manage Project" button: border 2px solid #4B7C5A, transparent bg, 8px radius -->
+                            <!--    Share button: 45x45, same border, contains share icon -->
+                            <StackPanel x:Name="PART_ActionButtons"
+                                        Orientation="Horizontal" Spacing="12"
+                                        Margin="0,12,0,0"
+                                        IsVisible="False">
+                                <!-- Manage Project button -->
+                                <Button x:Name="PART_ManageButton"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        Padding="16,10"
+                                        Background="Transparent"
+                                        BorderBrush="#4B7C5A"
+                                        BorderThickness="2"
+                                        CornerRadius="8"
+                                        Foreground="#4B7C5A"
+                                        FontSize="14" FontWeight="SemiBold"
+                                        Content="Manage Project" />
+                                <!-- Share button -->
+                                <Button x:Name="PART_ShareButton"
+                                        Width="45" Height="45"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        BorderBrush="#4B7C5A"
+                                        BorderThickness="2"
+                                        CornerRadius="8">
+                                    <Viewbox Width="18" Height="18">
+                                        <Path Data="{StaticResource Share}"
+                                              Stroke="#4B7C5A"
+                                              StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
+                    </Border>
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <!-- Vue: .project-card hover → translateY(-2px) + enhanced shadow, 0.3s ease -->
+    <Style Selector="controls|ProjectCard:pointerover /template/ Border#PART_CardRoot">
+        <Setter Property="RenderTransform" Value="translate(0px, -2px)" />
+        <Setter Property="BoxShadow" Value="{DynamicResource ItemShadowHover}" />
     </Style>
 
     <!-- Show correct type pill based on ProjectType value -->
@@ -215,6 +269,23 @@
     </Style>
     <Style Selector="controls|ProjectCard[ShowAmounts=False] /template/ DockPanel#PART_TargetRow">
         <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <!-- Show action buttons when ShowManageFunds=True (My Projects page) -->
+    <Style Selector="controls|ProjectCard[ShowManageFunds=True] /template/ StackPanel#PART_ActionButtons">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- Manage Project button hover: Vue rgba(75,124,90,0.1) bg, #3d6448 border+text -->
+    <Style Selector="controls|ProjectCard /template/ Button#PART_ManageButton:pointerover">
+        <Setter Property="Background" Value="#1A4B7C5A" />
+        <Setter Property="BorderBrush" Value="#3D6448" />
+        <Setter Property="Foreground" Value="#3D6448" />
+    </Style>
+    <!-- Share button hover: same green tint -->
+    <Style Selector="controls|ProjectCard /template/ Button#PART_ShareButton:pointerover">
+        <Setter Property="Background" Value="#1A4B7C5A" />
+        <Setter Property="BorderBrush" Value="#3D6448" />
     </Style>
 
 </Styles>

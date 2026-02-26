@@ -437,10 +437,16 @@
         </controls:ScrollableView>
 
         <!-- ═══ Network Selection Modal Overlay ═══ -->
+        <!-- Vue: modal-fade → backdrop fade + content scale(0.95→1) over 0.3s -->
         <Border Background="#80000000"
                 IsVisible="{Binding IsNetworkModalOpen}"
                 IsHitTestVisible="{Binding IsNetworkModalOpen}"
                 PointerPressed="OnModalBackdropPressed">
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
+                </Transitions>
+            </Border.Transitions>
 
             <Border Background="{DynamicResource CardSurface}"
                     BorderBrush="{DynamicResource Stroke}"
@@ -450,7 +456,14 @@
                     MaxWidth="400"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    PointerPressed="OnModalContentPressed">
+                    PointerPressed="OnModalContentPressed"
+                    RenderTransformOrigin="50%,50%"
+                    RenderTransform="scale(1)">
+                <Border.Transitions>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
+                    </Transitions>
+                </Border.Transitions>
                 <StackPanel Spacing="20">
                     <TextBlock Text="Select Network"
                                FontSize="20"

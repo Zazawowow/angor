@@ -11,13 +11,16 @@ public partial class MyProjectsView : UserControl
     public MyProjectsView()
     {
         InitializeComponent();
-        DataContext = new MyProjectsViewModel();
+        var vm = new MyProjectsViewModel();
+        DataContext = vm;
+
+        // Load sample projects for development/visual testing of populated state
+        vm.LoadSampleProjects();
 
         AddHandler(Button.ClickEvent, OnButtonClick, RoutingStrategies.Bubble);
 
         // Manage panel visibility based on ViewModel state
-        if (DataContext is MyProjectsViewModel vm)
-            SubscribeToVisibility(vm);
+        SubscribeToVisibility(vm);
 
         // Check if we should auto-open the wizard (from Home "Launch a Project" button)
         AttachedToVisualTree += OnAttachedToVisualTree;
@@ -98,11 +101,14 @@ public partial class MyProjectsView : UserControl
         vm.LaunchCreateWizard();
 
         // Wire the wizard's deploy callback
+        // Vue ref: goToMyProjects() creates project, adds to list, closes wizard, navigates to my-projects.
+        // Both "Go to My Projects" button AND backdrop click on success modal trigger this.
         if (CreateWizardView?.DataContext is CreateProjectViewModel wizardVm)
         {
             wizardVm.OnProjectDeployed = () =>
             {
                 vm.OnProjectDeployed(wizardVm);
+                vm.CloseCreateWizard(); // Close wizard → shows my-projects list with new project at top
             };
         }
     }
