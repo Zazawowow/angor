@@ -23,12 +23,32 @@ public class QuickAmountOption
 }
 
 /// <summary>Computed stage row for the release schedule column.</summary>
-public class InvestStageRow
+public partial class InvestStageRow : ReactiveObject
 {
-    public int StageNumber { get; set; }
-    public string ReleaseDate { get; set; } = "";
-    public string Percentage { get; set; } = "";
-    public string Amount { get; set; } = "0.00000000";
+    [Reactive] private int stageNumber;
+    [Reactive] private string releaseDate = "";
+    [Reactive] private string percentage = "";
+    [Reactive] private string amount = "0.00000000";
+    /// <summary>Amount in sats for subscription-type rows (null for investment)</summary>
+    [Reactive] private long? amountSats;
+    /// <summary>Preformatted label, e.g. "Stage 1" or "Payment 1"</summary>
+    [Reactive] private string labelText = "";
+    /// <summary>Preformatted amount display, e.g. "0.00100000 BTC" or "50,000 Sats"</summary>
+    [Reactive] private string amountDisplayText = "";
+    /// <summary>Whether this is a subscription-type row (hides percentage badge)</summary>
+    [Reactive] private bool isSubscriptionRow;
+}
+
+/// <summary>Subscription plan option (e.g. "3 Months", "6 Months").</summary>
+public class SubscriptionPlanOption
+{
+    public string PatternId { get; set; } = "";
+    public string Label { get; set; } = "";
+    public int Months { get; set; }
+    public long TotalSats { get; set; }
+    public string PriceText { get; set; } = "";
+    public string Description { get; set; } = "";
+    public bool IsSelected { get; set; }
 }
 
 /// <summary>
@@ -37,11 +57,17 @@ public class InvestStageRow
 /// All data is stubbed — no SDK dependencies.
 ///
 /// Vue ref: InvestPage.vue (2984 lines)
+/// Supports three project types: Invest, Fund, Subscription.
+/// Subscription type shows plan cards (3mo/6mo) instead of BTC amount input.
 /// </summary>
 public partial class InvestPageViewModel : ReactiveObject
 {
     // ── Project Reference ──
     public ProjectItemViewModel Project { get; }
+
+    // ── Type helpers ──
+    public bool IsSubscription => Project.ProjectType == "Subscription";
+    public bool IsNotSubscription => !IsSubscription;
 
     // ── Form State ──
     [Reactive] private string investmentAmount = "";
@@ -51,6 +77,9 @@ public partial class InvestPageViewModel : ReactiveObject
     [Reactive] private bool isProcessing;
     [Reactive] private string paymentStatusText = "Awaiting payment...";
     [Reactive] private bool paymentReceived;
+
+    // ── Subscription State ──
+    [Reactive] private string? selectedSubscriptionPattern;
 
     // ── Derived visibility ──
     public bool IsInvestForm => CurrentScreen == InvestScreen.InvestForm;
@@ -62,7 +91,7 @@ public partial class InvestPageViewModel : ReactiveObject
         ? $"Pay with {SelectedWallet.Name}"
         : "Choose Wallet";
 
-    // ── Quick Amounts ──
+    // ── Quick Amounts (investment type only) ──
     // Vue ref: quickAmounts grid — 4 items
     public ObservableCollection<QuickAmountOption> QuickAmounts { get; } = new()
     {
@@ -72,7 +101,11 @@ public partial class InvestPageViewModel : ReactiveObject
         new() { Amount = 0.5, AmountText = "0.5", Label = "50M sats" }
     };
 
-    // ── Release Schedule (computed from project stages + amount) ──
+    // ── Subscription Plans (subscription type only) ──
+    // Vue ref: subscription-patterns — 2 plan buttons
+    public ObservableCollection<SubscriptionPlanOption> SubscriptionPlans { get; } = new();
+
+    // ── Release Schedule / Payment Schedule ──
     public ObservableCollection<InvestStageRow> Stages { get; } = new();
 
     // ── Transaction Details (stubbed) ──
@@ -84,7 +117,39 @@ public partial class InvestPageViewModel : ReactiveObject
     public string TotalAmount => ComputeTotal();
     public string FormattedAmount => string.IsNullOrWhiteSpace(InvestmentAmount) ? "0.00000000" : $"{ParseAmount():F8}";
     public string AngorFeeAmount => $"{ParseAmount() * 0.01:F8} BTC";
-    public bool CanSubmit => ParseAmount() >= 0.001;
+
+    // Vue ref: subscription shows sats in transaction details
+    public string TransactionAmountLabel => IsSubscription ? "Amount to Subscribe" : "Investment Amount";
+    public string TransactionAmountValue => IsSubscription
+        ? $"{BtcToSats(ParseAmount()):N0} Sats"
+        : $"{FormattedAmount} BTC";
+
+    public bool CanSubmit => IsSubscription
+        ? SelectedSubscriptionPattern != null && ParseAmount() > 0
+        : ParseAmount() >= 0.001;
+
+    // Vue ref: footer-summary stages/payments count
+    public string StagesSummary => Project.ProjectType switch
+    {
+        "Subscription" => $"{Stages.Count} payment{(Stages.Count != 1 ? "s" : "")} of {Project.SubscriptionPrice:N0} Sats",
+        "Fund" => $"{Stages.Count} payment{(Stages.Count != 1 ? "s" : "")}",
+        _ => $"{Stages.Count} release{(Stages.Count != 1 ? "s" : "")}"
+    };
+
+    public string StagesLabel => Project.ProjectType switch
+    {
+        "Subscription" or "Fund" => "Plan:",
+        _ => "Stages:"
+    };
+
+    // Vue ref: column 2 header
+    public string ScheduleTitle => IsSubscription ? "Payment Schedule" : "Release Schedule";
+    public string ScheduleDescription => IsSubscription
+        ? "Your subscription payments:"
+        : "Funds are released in stages based on project milestones";
+
+    // Vue ref: row label prefix
+    public string StageRowPrefix => IsSubscription ? "Payment" : "Stage";
 
     // ── Success message ──
     public string SuccessTitle => Project.ProjectType switch
@@ -141,11 +206,78 @@ public partial class InvestPageViewModel : ReactiveObject
                 this.RaisePropertyChanged(nameof(AngorFeeAmount));
                 this.RaisePropertyChanged(nameof(CanSubmit));
                 this.RaisePropertyChanged(nameof(SuccessDescription));
+                this.RaisePropertyChanged(nameof(StagesSummary));
+                this.RaisePropertyChanged(nameof(TransactionAmountValue));
                 RecomputeStages();
             });
 
+        // Recompute when subscription pattern changes
+        this.WhenAnyValue(x => x.SelectedSubscriptionPattern)
+            .Subscribe(_ =>
+            {
+                this.RaisePropertyChanged(nameof(CanSubmit));
+            });
+
+        // Initialize subscription plans if subscription type
+        if (IsSubscription)
+        {
+            InitializeSubscriptionPlans();
+            // Auto-select pattern1
+            SelectSubscriptionPlan("pattern1");
+        }
+
         // Initialize stages from project
         RecomputeStages();
+    }
+
+    // ── Subscription helpers ──
+
+    private static long BtcToSats(double btc) => (long)Math.Round(btc * 100_000_000);
+    private static double SatsToBtc(long sats) => sats / 100_000_000.0;
+
+    private long CalculateSubscriptionPrice(string pattern)
+    {
+        var pricePerMonth = Project.SubscriptionPrice;
+        var months = pattern == "pattern1" ? 3 : 6;
+        return pricePerMonth * months;
+    }
+
+    private void InitializeSubscriptionPlans()
+    {
+        var price = Project.SubscriptionPrice;
+        SubscriptionPlans.Add(new SubscriptionPlanOption
+        {
+            PatternId = "pattern1",
+            Label = "3 Months",
+            Months = 3,
+            TotalSats = price * 3,
+            PriceText = $"{(price * 3):N0} Sats",
+            Description = "Monthly payments"
+        });
+        SubscriptionPlans.Add(new SubscriptionPlanOption
+        {
+            PatternId = "pattern2",
+            Label = "6 Months",
+            Months = 6,
+            TotalSats = price * 6,
+            PriceText = $"{(price * 6):N0} Sats",
+            Description = "Monthly payments"
+        });
+    }
+
+    /// <summary>Select a subscription plan pattern.
+    /// Vue ref: clicking a subscription-pattern-btn sets selectedSubscriptionPattern
+    /// and computes investmentAmount = satsToBTC(calculateSubscriptionPrice(pattern)).</summary>
+    public void SelectSubscriptionPlan(string patternId)
+    {
+        SelectedSubscriptionPattern = patternId;
+        foreach (var plan in SubscriptionPlans)
+            plan.IsSelected = plan.PatternId == patternId;
+
+        var totalSats = CalculateSubscriptionPrice(patternId);
+        InvestmentAmount = SatsToBtc(totalSats).ToString("F8", System.Globalization.CultureInfo.InvariantCulture);
+
+        this.RaisePropertyChanged(nameof(SubscriptionPlans));
     }
 
     private double ParseAmount()
@@ -167,41 +299,115 @@ public partial class InvestPageViewModel : ReactiveObject
 
     private void RecomputeStages()
     {
-        Stages.Clear();
+        // Subscription: generate payment schedule from selected plan
+        if (IsSubscription && SelectedSubscriptionPattern != null)
+        {
+            var months = SelectedSubscriptionPattern == "pattern1" ? 3 : 6;
+            var pricePerMonth = Project.SubscriptionPrice;
+            var today = DateTime.Now;
+
+            var newRows = new List<InvestStageRow>(months);
+            for (var i = 0; i < months; i++)
+            {
+                var paymentDate = new DateTime(today.Year, today.Month, 1).AddMonths(i + 1);
+                var satsAmount = pricePerMonth;
+                newRows.Add(new InvestStageRow
+                {
+                    StageNumber = i + 1,
+                    ReleaseDate = paymentDate.ToString("dd MMM yyyy"),
+                    Percentage = $"{(int)Math.Floor(100.0 / months)}%",
+                    Amount = SatsToBtc(pricePerMonth).ToString("F8", System.Globalization.CultureInfo.InvariantCulture),
+                    AmountSats = satsAmount,
+                    LabelText = $"Payment {i + 1}",
+                    AmountDisplayText = $"{satsAmount:N0} Sats",
+                    IsSubscriptionRow = true
+                });
+            }
+
+            UpdateStagesInPlace(newRows);
+            return;
+        }
+
+        // Investment/Fund: use project stages
         var amount = ParseAmount();
+        var prefix = StageRowPrefix;
+        var newInvestRows = new List<InvestStageRow>();
 
         if (Project.Stages.Count > 0)
         {
             foreach (var s in Project.Stages)
             {
-                // Parse percentage from string like "25%"
                 var pctStr = s.Percentage.Replace("%", "");
                 double.TryParse(pctStr, System.Globalization.NumberStyles.Float,
                     System.Globalization.CultureInfo.InvariantCulture, out var pct);
                 var stageAmount = amount * (pct / 100.0);
 
-                Stages.Add(new InvestStageRow
+                newInvestRows.Add(new InvestStageRow
                 {
                     StageNumber = s.StageNumber,
                     ReleaseDate = s.ReleaseDate,
                     Percentage = s.Percentage,
-                    Amount = $"{stageAmount:F8}"
+                    Amount = $"{stageAmount:F8}",
+                    LabelText = $"{prefix} {s.StageNumber}",
+                    AmountDisplayText = $"{stageAmount:F8} BTC",
+                    IsSubscriptionRow = false
                 });
             }
         }
         else
         {
-            // Default 4 equal stages if project has none
             for (var i = 1; i <= 4; i++)
             {
-                Stages.Add(new InvestStageRow
+                var stageAmount = amount * 0.25;
+                newInvestRows.Add(new InvestStageRow
                 {
                     StageNumber = i,
                     ReleaseDate = $"Stage {i}",
                     Percentage = "25%",
-                    Amount = $"{amount * 0.25:F8}"
+                    Amount = $"{stageAmount:F8}",
+                    LabelText = $"{prefix} {i}",
+                    AmountDisplayText = $"{stageAmount:F8} BTC",
+                    IsSubscriptionRow = false
                 });
             }
+        }
+
+        UpdateStagesInPlace(newInvestRows);
+    }
+
+    /// <summary>
+    /// Update the Stages collection in-place to avoid destroying/recreating ItemsControl children.
+    /// Updates existing items' properties, adds new items at end, or removes excess items from end.
+    /// This prevents the jarring visual jump that occurs when Clear() + Add() rebuilds all children.
+    /// </summary>
+    private void UpdateStagesInPlace(List<InvestStageRow> newRows)
+    {
+        // Update existing rows in-place
+        var minCount = Math.Min(Stages.Count, newRows.Count);
+        for (var i = 0; i < minCount; i++)
+        {
+            var existing = Stages[i];
+            var updated = newRows[i];
+            existing.StageNumber = updated.StageNumber;
+            existing.ReleaseDate = updated.ReleaseDate;
+            existing.Percentage = updated.Percentage;
+            existing.Amount = updated.Amount;
+            existing.AmountSats = updated.AmountSats;
+            existing.LabelText = updated.LabelText;
+            existing.AmountDisplayText = updated.AmountDisplayText;
+            existing.IsSubscriptionRow = updated.IsSubscriptionRow;
+        }
+
+        // Add new rows if the new list is longer
+        for (var i = Stages.Count; i < newRows.Count; i++)
+        {
+            Stages.Add(newRows[i]);
+        }
+
+        // Remove excess rows if the new list is shorter (remove from end to avoid index shifting)
+        while (Stages.Count > newRows.Count)
+        {
+            Stages.RemoveAt(Stages.Count - 1);
         }
     }
 

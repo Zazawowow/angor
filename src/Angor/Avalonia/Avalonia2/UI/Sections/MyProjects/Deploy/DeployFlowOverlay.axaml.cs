@@ -1,16 +1,22 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.VisualTree;
+using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.MyProjects.Deploy;
 
-public partial class DeployFlowOverlay : UserControl
+/// <summary>
+/// Shell-level modal overlay for the Deploy flow.
+/// Implements IBackdropCloseable so the shell can notify on backdrop clicks.
+/// </summary>
+public partial class DeployFlowOverlay : UserControl, IBackdropCloseable
 {
-    // Vue ref: selected border = #4B7C5A, selected bg = #4B7C5A/20 (same in both themes)
-    private static readonly SolidColorBrush SelectedBorderBrush = new(Color.Parse("#4B7C5A"));
-    private static readonly SolidColorBrush SelectedBackground = new(Color.Parse("#194B7C5A")); // ~10% green
+    /// <summary>
+    /// Callback invoked when the user completes the deploy flow (success → "Go to My Projects").
+    /// The parent (CreateProjectView) sets this to handle post-deploy navigation.
+    /// </summary>
+    public Action? OnDeployCompleted { get; set; }
 
     public DeployFlowOverlay()
     {
@@ -22,6 +28,30 @@ public partial class DeployFlowOverlay : UserControl
 
     private DeployFlowViewModel? Vm => DataContext as DeployFlowViewModel;
 
+    private ShellViewModel? GetShellVm()
+    {
+        // Walk up the visual tree to find ShellView → ShellViewModel
+        var shellView = this.FindAncestorOfType<ShellView>();
+        return shellView?.DataContext as ShellViewModel;
+    }
+
+    /// <summary>
+    /// Called by the shell when the backdrop is clicked.
+    /// Handles cleanup logic (resetting VM state) before the shell closes the modal.
+    /// </summary>
+    public void OnBackdropCloseRequested()
+    {
+        if (Vm?.IsSuccess == true)
+        {
+            Vm.GoToMyProjects();
+            OnDeployCompleted?.Invoke();
+        }
+        else
+        {
+            Vm?.Close();
+        }
+    }
+
     private void OnButtonClick(object? sender, RoutedEventArgs e)
     {
         if (e.Source is not Button btn) return;
@@ -32,6 +62,7 @@ public partial class DeployFlowOverlay : UserControl
             case "CloseWalletSelector":
                 // Vue ref: X button / backdrop click → showDeployWalletModal = false (returns to step 6)
                 Vm?.Close();
+                GetShellVm()?.HideModal();
                 break;
             case "PayWithWalletButton":
                 // Vue ref: payWithDeployWallet() → shows QR with "received" → success
@@ -46,6 +77,7 @@ public partial class DeployFlowOverlay : UserControl
             case "ClosePayFee":
                 // Vue ref: closeDeployModal() → resets all state, back to step 6
                 Vm?.Close();
+                GetShellVm()?.HideModal();
                 break;
             case "BackToWalletsButton":
                 Vm?.BackToWalletSelector();
@@ -58,29 +90,16 @@ public partial class DeployFlowOverlay : UserControl
             case "GoToMyProjectsButton":
                 // Vue ref: goToMyProjects() — creates project, adds to list, closes wizard
                 Vm?.GoToMyProjects();
+                GetShellVm()?.HideModal();
+                OnDeployCompleted?.Invoke();
                 break;
             case "CompleteProfileButton":
                 // Vue ref: completeProfile() opens /profile/{id} in new tab, does NOT close modal.
                 // Desktop stub: just go to my projects (same as "Go to My Projects").
                 Vm?.GoToMyProjects();
+                GetShellVm()?.HideModal();
+                OnDeployCompleted?.Invoke();
                 break;
-        }
-    }
-
-    /// <summary>
-    /// Handle backdrop click — Vue ref: @click.self on success modal calls goToMyProjects(),
-    /// on wallet modal closes it, on deploy modal calls closeDeployModal().
-    /// </summary>
-    protected override void OnPointerPressed(Avalonia.Input.PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-
-        // Only react to clicks directly on the backdrop (not bubbled from children)
-        if (e.Source is Border border && border.Name == "Backdrop")
-        {
-            // Vue: backdrop click on success modal = goToMyProjects()
-            // Vue: backdrop click on wallet/deploy modal = close modal
-            Vm?.GoToMyProjects();
         }
     }
 
@@ -113,17 +132,14 @@ public partial class DeployFlowOverlay : UserControl
 
     /// <summary>
     /// Update wallet item borders to show selection state.
-    /// Vue ref: unselected = theme border/bg, selected = border-[#4B7C5A] bg-[#4B7C5A]/20
-    /// Finds all WalletBorder elements directly (no Button wrapper).
+    /// Uses CSS class toggling — the "WalletCard" base style sets DynamicResource
+    /// bg/border for unselected state, and "WalletSelected" modifier class overrides
+    /// with selected-state DynamicResource values. BrushTransition provides smooth
+    /// 150ms animation. No FindResource() or ClearValue() — eliminates flash and
+    /// wrong-theme bugs in modals.
     /// </summary>
     private void UpdateWalletSelection()
     {
-        // Resolve theme-aware unselected colors
-        var unselectedBorder = this.FindResource("Border") as IBrush
-                               ?? new SolidColorBrush(Color.Parse("#404040"));
-        var unselectedBg = this.FindResource("DeployWalletItemBg") as IBrush
-                           ?? new SolidColorBrush(Color.Parse("#1a1a1a"));
-
         var walletBorders = this.GetVisualDescendants()
             .OfType<Border>()
             .Where(b => b.Name == "WalletBorder");
@@ -131,8 +147,7 @@ public partial class DeployFlowOverlay : UserControl
         foreach (var border in walletBorders)
         {
             var isSelected = border.DataContext is WalletItem w && w.IsSelected;
-            border.BorderBrush = isSelected ? SelectedBorderBrush : unselectedBorder;
-            border.Background = isSelected ? SelectedBackground : unselectedBg;
+            border.Classes.Set("WalletSelected", isSelected);
         }
     }
 

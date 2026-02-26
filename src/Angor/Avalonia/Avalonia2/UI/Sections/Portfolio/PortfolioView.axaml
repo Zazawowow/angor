@@ -47,12 +47,12 @@
         <!-- and no investment detail is selected                    -->
         <!-- ═══════════════════════════════════════════════════════ -->
         <!-- Portfolio list visible when: has investments AND no detail selected -->
-        <controls:ScrollableView ContentPadding="24,24,24,24"
-                                 Name="PortfolioListPanel">
-            <Grid ColumnDefinitions="380,*" >
+        <!-- Grid with fixed left column + scrollable right column -->
+        <Grid ColumnDefinitions="380,*" RowDefinitions="*" Margin="24" Name="PortfolioListPanel">
 
                 <!-- ═══════════════════════════════════════ -->
                 <!-- LEFT PANEL: Portfolio Summary Card      -->
+                <!-- (STICKY — does not scroll)              -->
                 <!-- ═══════════════════════════════════════ -->
                 <Border Grid.Column="0"
                         Background="{DynamicResource Surface}"
@@ -253,8 +253,10 @@
 
                 <!-- ═══════════════════════════════════════ -->
                 <!-- RIGHT PANEL: Your Investments           -->
+                <!-- (Scrollable — only this column scrolls) -->
                 <!-- ═══════════════════════════════════════ -->
-                <StackPanel Grid.Column="1" Spacing="16">
+                <controls:ScrollableView Grid.Column="1" ContentPadding="0,0,16,0">
+                <StackPanel Spacing="16">
 
                     <!-- Section heading -->
                     <TextBlock Text="Your Investments"
@@ -290,8 +292,8 @@
                                     <Border CornerRadius="15" ClipToBounds="True">
                                     <StackPanel Spacing="0">
 
-                                        <!-- Banner + Avatar — fixed height matching ProjectCard -->
-                                        <Panel Height="150">
+                                        <!-- Banner + Avatar — Vue: .investment-card-header h:120px, .investment-logo bottom:-32px left:20px -->
+                                        <Panel Height="120">
                                             <Border Background="{DynamicResource SurfaceLow}" />
                                             <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
                                                                             Source="{Binding BannerUrl}" />
@@ -308,29 +310,94 @@
                                             </Panel>
                                         </Panel>
 
-                                        <!-- Content area -->
+                                        <!-- Content area — Vue: padding 20px, padding-top 48px -->
                                         <StackPanel Spacing="12" Margin="20,48,20,20">
 
-                                            <!-- Status pills -->
+                                            <!-- Type + Status pills -->
+                                            <!-- Vue: .investment-pills gap:8px, .investment-type-pill, .stage-status -->
                                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <ContentControl Classes="Pill Green"
-                                                                Content="{Binding StatusPill1}" />
-                                                <ContentControl Classes="Pill Orange"
-                                                                Content="{Binding StatusPill2}" />
+                                                <!-- Type pill: Investment (blue), Funding (amber), Subscription (purple) -->
+                                                <!-- Uses DynamicResource for theme-aware colors -->
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        Background="{DynamicResource TypeInvestBackground}"
+                                                        IsVisible="{Binding IsTypeInvest}">
+                                                    <TextBlock Text="{Binding TypeLabel}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TypeInvestForeground}" />
+                                                </Border>
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        Background="{DynamicResource TypeFundBackground}"
+                                                        IsVisible="{Binding IsTypeFund}">
+                                                    <TextBlock Text="{Binding TypeLabel}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TypeFundForeground}" />
+                                                </Border>
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        Background="{DynamicResource TypeSubscriptionBackground}"
+                                                        IsVisible="{Binding IsTypeSubscription}">
+                                                    <TextBlock Text="{Binding TypeLabel}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TypeSubscriptionForeground}" />
+                                                </Border>
+
+                                                <!-- Status pill — color varies by StatusClass, using DynamicResource -->
+                                                <!-- Awaiting Approval (waiting) -->
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding IsStatusWaiting}"
+                                                        Background="{DynamicResource StatusWaitingBackground}"
+                                                        BorderBrush="{DynamicResource StatusWaitingBorder}">
+                                                    <TextBlock Text="{Binding StatusText}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource StatusWaitingForeground}" />
+                                                </Border>
+
+                                                <!-- Transaction signed (signed) -->
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding IsStatusSigned}"
+                                                        Background="{DynamicResource StatusSignedBackground}"
+                                                        BorderBrush="{DynamicResource StatusSignedBorder}">
+                                                    <TextBlock Text="{Binding StatusText}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource StatusSignedForeground}" />
+                                                </Border>
+
+                                                <!-- Investment Active (active) — same colors as signed -->
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding IsStatusActive}"
+                                                        Background="{DynamicResource StatusSignedBackground}"
+                                                        BorderBrush="{DynamicResource StatusSignedBorder}">
+                                                    <TextBlock Text="{Binding StatusText}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource StatusSignedForeground}" />
+                                                </Border>
+
+                                                <!-- Funds recovered -->
+                                                <Border CornerRadius="12" Padding="12,4"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding IsStatusRecovered}"
+                                                        Background="{DynamicResource StatusRecoveredBackground}"
+                                                        BorderBrush="{DynamicResource StatusRecoveredBorder}">
+                                                    <TextBlock Text="{Binding StatusText}"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource StatusRecoveredForeground}" />
+                                                </Border>
                                             </StackPanel>
 
-                                            <!-- Project name -->
+                                            <!-- Project name — Vue: .investment-title font-size:16px font-weight:700 -->
                                             <TextBlock Text="{Binding ProjectName}"
-                                                       FontSize="18"
+                                                       FontSize="16"
                                                        FontWeight="Bold"
                                                        Foreground="{DynamicResource TextStrong}" />
 
-                                            <!-- Funding info -->
+                                            <!-- Funding info — Vue: .investment-stats flex justify-between -->
                                             <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto"
                                                   Margin="0,4,0,0">
                                                 <TextBlock Grid.Row="0" Grid.Column="0"
                                                            Text="Funding:"
-                                                           FontSize="14"
+                                                           FontSize="13"
                                                            Foreground="{DynamicResource TextMuted}"
                                                            Margin="0,0,0,8" />
                                                 <TextBlock Grid.Row="0" Grid.Column="1"
@@ -342,71 +409,125 @@
 
                                                 <TextBlock Grid.Row="1" Grid.Column="0"
                                                            Text="Date:"
-                                                           FontSize="14"
+                                                           FontSize="13"
                                                            Foreground="{DynamicResource TextMuted}" />
                                                 <TextBlock Grid.Row="1" Grid.Column="1"
                                                            Text="{Binding FundingDate}"
-                                                           FontSize="14"
-                                                           Foreground="{DynamicResource TextStrong}"
+                                                           FontSize="13"
+                                                           Foreground="{DynamicResource TextMuted}"
                                                            HorizontalAlignment="Right" />
                                             </Grid>
 
-                                            <!-- Payment Progress -->
-                                            <DockPanel Margin="0,4,0,0">
-                                                <TextBlock Text="Payment Progress"
-                                                           FontSize="13"
-                                                           Foreground="{DynamicResource TextMuted}"
-                                                           DockPanel.Dock="Left"
-                                                           VerticalAlignment="Center" />
-                                                <TextBlock HorizontalAlignment="Right"
-                                                           FontSize="13"
-                                                           Foreground="{DynamicResource TextMuted}"
-                                                           VerticalAlignment="Center">
-                                                    <Run Text="{Binding PaymentSegmentsCompleted}" /><Run Text="/" /><Run Text="{Binding PaymentSegmentsTotal}" />
-                                                </TextBlock>
-                                            </DockPanel>
+                                            <!-- Payment Progress (subscription/fund type with payment plan) -->
+                                            <!-- Vue: .subscription-payment-bar-container -->
+                                            <StackPanel IsVisible="{Binding HasPaymentPlan}">
+                                                <DockPanel Margin="0,4,0,0">
+                                                    <TextBlock Text="Payment Progress"
+                                                               FontSize="13"
+                                                               Foreground="{DynamicResource TextMuted}"
+                                                               DockPanel.Dock="Left"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock HorizontalAlignment="Right"
+                                                               FontSize="13"
+                                                               Foreground="#4B7C5A"
+                                                               FontWeight="Bold"
+                                                               VerticalAlignment="Center">
+                                                        <Run Text="{Binding PaymentSegmentsCompleted}" /><Run Text="/" /><Run Text="{Binding PaymentSegmentsTotal}" />
+                                                    </TextBlock>
+                                                </DockPanel>
 
-                                            <!-- Progress segments (visual bars) — green for completed, stroke for pending -->
-                                            <Grid ColumnDefinitions="*,8,*,8,*">
-                                                <!-- Segment 1 -->
-                                                <Panel Grid.Column="0">
-                                                    <Border Height="6" CornerRadius="3"
-                                                            Background="{DynamicResource Stroke}"
-                                                            IsVisible="{Binding !IsSegment1Complete}" />
-                                                    <Border Height="6" CornerRadius="3"
-                                                            Background="#4B7C5A"
-                                                            IsVisible="{Binding IsSegment1Complete}" />
-                                                </Panel>
-                                                <!-- Segment 2 -->
-                                                <Panel Grid.Column="2">
-                                                    <Border Height="6" CornerRadius="3"
-                                                            Background="{DynamicResource Stroke}"
-                                                            IsVisible="{Binding !IsSegment2Complete}" />
-                                                    <Border Height="6" CornerRadius="3"
-                                                            Background="#4B7C5A"
-                                                            IsVisible="{Binding IsSegment2Complete}" />
-                                                </Panel>
-                                                <!-- Segment 3 -->
-                                                <Panel Grid.Column="4">
-                                                    <Border Height="6" CornerRadius="3"
-                                                            Background="{DynamicResource Stroke}"
-                                                            IsVisible="{Binding !IsSegment3Complete}" />
-                                                    <Border Height="6" CornerRadius="3"
-                                                            Background="#4B7C5A"
-                                                            IsVisible="{Binding IsSegment3Complete}" />
-                                                </Panel>
-                                            </Grid>
+                                                <!-- Progress segments — Vue: .subscription-payment-segments gap:4px -->
+                                                <Grid ColumnDefinitions="*,4,*,4,*" Margin="0,8,0,0">
+                                                    <Panel Grid.Column="0">
+                                                        <Border Height="6" CornerRadius="3"
+                                                                Background="{DynamicResource Stroke}"
+                                                                IsVisible="{Binding !IsSegment1Complete}" />
+                                                        <Border Height="6" CornerRadius="3"
+                                                                IsVisible="{Binding IsSegment1Complete}">
+                                                            <Border.Background>
+                                                                <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                                                    <GradientStop Color="#4B7C5A" Offset="0" />
+                                                                    <GradientStop Color="#3D6448" Offset="1" />
+                                                                </LinearGradientBrush>
+                                                            </Border.Background>
+                                                        </Border>
+                                                    </Panel>
+                                                    <Panel Grid.Column="2">
+                                                        <Border Height="6" CornerRadius="3"
+                                                                Background="{DynamicResource Stroke}"
+                                                                IsVisible="{Binding !IsSegment2Complete}" />
+                                                        <Border Height="6" CornerRadius="3"
+                                                                IsVisible="{Binding IsSegment2Complete}">
+                                                            <Border.Background>
+                                                                <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                                                    <GradientStop Color="#4B7C5A" Offset="0" />
+                                                                    <GradientStop Color="#3D6448" Offset="1" />
+                                                                </LinearGradientBrush>
+                                                            </Border.Background>
+                                                        </Border>
+                                                    </Panel>
+                                                    <Panel Grid.Column="4">
+                                                        <Border Height="6" CornerRadius="3"
+                                                                Background="{DynamicResource Stroke}"
+                                                                IsVisible="{Binding !IsSegment3Complete}" />
+                                                        <Border Height="6" CornerRadius="3"
+                                                                IsVisible="{Binding IsSegment3Complete}">
+                                                            <Border.Background>
+                                                                <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                                                    <GradientStop Color="#4B7C5A" Offset="0" />
+                                                                    <GradientStop Color="#3D6448" Offset="1" />
+                                                                </LinearGradientBrush>
+                                                            </Border.Background>
+                                                        </Border>
+                                                    </Panel>
+                                                </Grid>
+                                            </StackPanel>
 
-                                            <!-- Manage button — text only, NO icon per Vue reference -->
-                                            <Button Classes="Secondary" HorizontalAlignment="Stretch"
+                                            <!-- Progress bar (non-payment-plan) -->
+                                            <!-- Vue: .progress-bar-container h:6px bg:#e5e7eb, .progress-bar-fill gradient -->
+                                            <Panel IsVisible="{Binding !HasPaymentPlan}" Margin="0,12,0,0">
+                                                <Border Height="6" CornerRadius="3"
+                                                        Background="{DynamicResource Stroke}" />
+                                                <!-- Green gradient fill — scales horizontally by Progress (0-100) -->
+                                                <Border Height="6" CornerRadius="3"
+                                                        HorizontalAlignment="Stretch"
+                                                        RenderTransformOrigin="0,0.5">
+                                                    <Border.Background>
+                                                        <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                                            <GradientStop Color="#4B7C5A" Offset="0" />
+                                                            <GradientStop Color="#3D6448" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                    <Border.RenderTransform>
+                                                        <ScaleTransform ScaleX="{Binding ProgressFraction}" ScaleY="1" />
+                                                    </Border.RenderTransform>
+                                                </Border>
+                                            </Panel>
+
+                                            <!-- Manage button — Vue: .manage-investment-card-btn border:2px solid #4B7C5A -->
+                                            <Button HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Center"
-                                                    Padding="16,12" Margin="0,4,0,0"
+                                                    Padding="16,10" Margin="0,4,0,0"
                                                     Name="ManageButton"
-                                                    Tag="{Binding}">
-                                                <TextBlock Text="Manage"
-                                                           FontSize="14"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="{DynamicResource TextStrong}" />
+                                                    Tag="{Binding}"
+                                                    Background="Transparent"
+                                                    BorderBrush="#4B7C5A"
+                                                    BorderThickness="2"
+                                                    CornerRadius="8">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Viewbox Width="16" Height="16" VerticalAlignment="Center">
+                                                        <Path Data="{StaticResource NavIconDocument}"
+                                                              Stroke="#4B7C5A"
+                                                              StrokeThickness="1.5"
+                                                              StrokeLineCap="Round"
+                                                              StrokeJoin="Round"
+                                                              Width="24" Height="24" Stretch="Uniform" />
+                                                    </Viewbox>
+                                                    <TextBlock Text="Manage"
+                                                               FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#4B7C5A" />
+                                                </StackPanel>
                                             </Button>
                                         </StackPanel>
                                     </StackPanel>
@@ -416,7 +537,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
+                </controls:ScrollableView>
             </Grid>
-        </controls:ScrollableView>
     </Panel>
 </UserControl>

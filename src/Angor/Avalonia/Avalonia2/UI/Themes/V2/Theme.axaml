@@ -66,6 +66,13 @@
         <Setter Property="FontFamily" Value="{StaticResource FontFamilySans}" />
         <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
     </Style>
+
+    <!-- Global fix: prevent anti-aliasing gap between background fill and border stroke
+         at rounded corners. CenterBorder extends the background to the middle of the
+         stroke instead of stopping at its inner edge, eliminating the dark-pixel seam. -->
+    <Style Selector="Border">
+        <Setter Property="BackgroundSizing" Value="CenterBorder" />
+    </Style>
     
     <Style Selector="Separator">
         <Setter Property="Height" Value="1" />

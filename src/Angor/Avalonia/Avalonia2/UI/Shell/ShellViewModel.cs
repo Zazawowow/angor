@@ -38,6 +38,13 @@ public partial class ShellViewModel : ReactiveObject
     /// </summary>
     [Reactive] private bool pendingLaunchWizard;
 
+    /// <summary>
+    /// Shell-level modal overlay state. Any section can push a modal view here
+    /// to have it rendered above the entire app (sidebar + content).
+    /// </summary>
+    [Reactive] private bool isModalOpen;
+    [Reactive] private object? modalContent;
+
     public ShellViewModel()
     {
         NavEntries = new ObservableCollection<NavEntry>
@@ -115,6 +122,25 @@ public partial class ShellViewModel : ReactiveObject
         {
             SelectedNavItem = findProjectsItem;
         }
+    }
+
+    /// <summary>
+    /// Show a modal overlay above the entire app window.
+    /// The content control will be displayed centered over a backdrop scrim.
+    /// </summary>
+    public void ShowModal(object content)
+    {
+        ModalContent = content;
+        IsModalOpen = true;
+    }
+
+    /// <summary>
+    /// Close the shell-level modal overlay.
+    /// </summary>
+    public void HideModal()
+    {
+        IsModalOpen = false;
+        ModalContent = null;
     }
 
     public bool IsDarkThemeEnabled

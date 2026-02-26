@@ -1,21 +1,17 @@
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 using Avalonia.VisualTree;
-using Avalonia2.UI.Sections.MyProjects.Deploy;
+using Avalonia2.UI.Shell;
+using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.FindProjects;
 
 public partial class InvestPageView : UserControl
 {
-    // Vue ref: selected border = #4B7C5A, selected bg = #4B7C5A/20 (same in both themes)
-    private static readonly SolidColorBrush SelectedBorderBrush = new(Color.Parse("#4B7C5A"));
-    private static readonly SolidColorBrush SelectedBackground = new(Color.Parse("#194B7C5A")); // ~10% green
-    // Quick amount selected: Vue bg #2d5a3d, border #2d5a3d, color white
-    private static readonly SolidColorBrush QuickSelectedBg = new(Color.Parse("#2D5A3D"));
-    private static readonly SolidColorBrush QuickSelectedBorder = new(Color.Parse("#2D5A3D"));
+    private IDisposable? _screenSubscription;
 
     public InvestPageView()
     {
@@ -23,11 +19,73 @@ public partial class InvestPageView : UserControl
 
         // Wire up button clicks
         AddHandler(Button.ClickEvent, OnButtonClick);
-        // Wallet card clicks via PointerPressed on Border (no Button chrome)
+        // Quick amount + submit + subscription plan border clicks
         AddHandler(Border.PointerPressedEvent, OnBorderPressed, RoutingStrategies.Bubble);
     }
 
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+
+        _screenSubscription?.Dispose();
+        _screenSubscription = null;
+
+        if (DataContext is InvestPageViewModel vm)
+        {
+            // Watch for screen changes to show/hide shell-level modal
+            _screenSubscription = vm.WhenAnyValue(x => x.CurrentScreen)
+                .Subscribe(screen =>
+                {
+                    if (screen != InvestScreen.InvestForm)
+                    {
+                        ShowShellModal(vm);
+                    }
+                });
+
+            // If subscription, apply initial plan selection styling after layout
+            if (vm.IsSubscription)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    UpdateSubscriptionPlanSelection(), Avalonia.Threading.DispatcherPriority.Loaded);
+            }
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _screenSubscription?.Dispose();
+        _screenSubscription = null;
+    }
+
     private InvestPageViewModel? Vm => DataContext as InvestPageViewModel;
+
+    private ShellViewModel? GetShellVm()
+    {
+        var shellView = this.FindAncestorOfType<ShellView>();
+        return shellView?.DataContext as ShellViewModel;
+    }
+
+    /// <summary>
+    /// Create InvestModalsView and push it to the shell-level modal overlay.
+    /// </summary>
+    private void ShowShellModal(InvestPageViewModel vm)
+    {
+        var shellVm = GetShellVm();
+        if (shellVm == null || shellVm.IsModalOpen) return;
+
+        var modalsView = new InvestModalsView
+        {
+            DataContext = vm,
+            OnNavigateBackToList = () =>
+            {
+                // Navigate back to project list after success
+                NavigateBackToList();
+            }
+        };
+
+        shellVm.ShowModal(modalsView);
+    }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
     {
@@ -35,36 +93,16 @@ public partial class InvestPageView : UserControl
 
         switch (btn.Name)
         {
-            // Wallet selector
-            case "CloseWalletSelector":
-                Vm?.CloseModal();
-                break;
-            case "PayWithWalletButton":
-                Vm?.PayWithWallet();
-                break;
-            case "PayInvoiceInsteadButton":
-                Vm?.ShowInvoice();
-                break;
-
-            // Invoice
-            case "CloseInvoice":
-                Vm?.CloseModal();
-                break;
-            case "CopyInvoiceButton":
-                CopyToClipboard(Vm?.InvoiceString);
-                break;
-
-            // Success
-            case "ViewInvestmentsButton":
-                // Navigate back to project list
-                NavigateBackToList();
+            // Back button (standardized: Button inside Border)
+            case "BackButton":
+                NavigateBackToDetail();
                 break;
         }
     }
 
     /// <summary>
-    /// Handle clicks on Border elements — wallet cards, quick amounts, back button, submit, copy, QR.
-    /// Walks up from clicked element to find the target Border by name.
+    /// Handle clicks on Border elements — quick amounts, submit button, copy project ID,
+    /// and subscription plan buttons.
     /// </summary>
     private void OnBorderPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -72,17 +110,13 @@ public partial class InvestPageView : UserControl
         Border? found = null;
         string? foundName = null;
 
-        // Walk up to find a named border we care about
         while (source != null)
         {
             if (source is Border b && !string.IsNullOrEmpty(b.Name))
             {
                 var name = b.Name;
-                if (name == "WalletBorder" || name == "QuickAmountBorder" ||
-                    name == "BackButton" || name == "SubmitButton" ||
-                    name == "CopyProjectIdButton" || name == "QrCodePlaceholder" ||
-                    name == "WalletBackdrop" || name == "InvoiceBackdrop" ||
-                    name == "SuccessBackdrop")
+                if (name == "QuickAmountBorder" || name == "SubmitButton" ||
+                    name == "CopyProjectIdButton" || name == "SubPlanBorder")
                 {
                     found = b;
                     foundName = name;
@@ -96,11 +130,6 @@ public partial class InvestPageView : UserControl
 
         switch (foundName)
         {
-            case "BackButton":
-                NavigateBackToDetail();
-                e.Handled = true;
-                break;
-
             case "SubmitButton":
                 Vm?.Submit();
                 e.Handled = true;
@@ -115,38 +144,17 @@ public partial class InvestPageView : UserControl
                 }
                 break;
 
-            case "WalletBorder":
-                if (found.DataContext is WalletItem wallet)
+            case "SubPlanBorder":
+                if (found.DataContext is SubscriptionPlanOption plan)
                 {
-                    Vm?.SelectWallet(wallet);
-                    UpdateWalletSelection();
+                    Vm?.SelectSubscriptionPlan(plan.PatternId);
+                    UpdateSubscriptionPlanSelection();
                     e.Handled = true;
                 }
                 break;
 
             case "CopyProjectIdButton":
                 CopyToClipboard(Vm?.ProjectId);
-                e.Handled = true;
-                break;
-
-            case "QrCodePlaceholder":
-                // Simulate payment received on QR click (Vue ref: clicking QR triggers payment)
-                Vm?.PayViaInvoice();
-                e.Handled = true;
-                break;
-
-            case "WalletBackdrop":
-            case "InvoiceBackdrop":
-                // Backdrop click = close modal
-                if (e.Source is Border backdrop && (backdrop.Name == "WalletBackdrop" || backdrop.Name == "InvoiceBackdrop"))
-                    Vm?.CloseModal();
-                e.Handled = true;
-                break;
-
-            case "SuccessBackdrop":
-                // Backdrop click on success = navigate back
-                if (e.Source is Border successBg && successBg.Name == "SuccessBackdrop")
-                    NavigateBackToList();
                 e.Handled = true;
                 break;
         }
@@ -173,35 +181,13 @@ public partial class InvestPageView : UserControl
         }
     }
 
-    /// <summary>Update wallet item borders to show selection state (identical to DeployFlowOverlay).</summary>
-    private void UpdateWalletSelection()
-    {
-        var unselectedBorder = this.FindResource("Border") as IBrush
-                               ?? new SolidColorBrush(Color.Parse("#404040"));
-        var unselectedBg = this.FindResource("DeployWalletItemBg") as IBrush
-                           ?? new SolidColorBrush(Color.Parse("#1a1a1a"));
-
-        var walletBorders = this.GetVisualDescendants()
-            .OfType<Border>()
-            .Where(b => b.Name == "WalletBorder");
-
-        foreach (var border in walletBorders)
-        {
-            var isSelected = border.DataContext is WalletItem w && w.IsSelected;
-            border.BorderBrush = isSelected ? SelectedBorderBrush : unselectedBorder;
-            border.Background = isSelected ? SelectedBackground : unselectedBg;
-        }
-    }
-
-    /// <summary>Update quick amount borders to show selection state.
-    /// Vue ref: selected bg #2d5a3d, border #2d5a3d, text white.</summary>
+    /// <summary>Update quick amount borders via CSS class toggling.
+    /// The "QuickAmountBtn" base style sets DynamicResource bg/border for unselected state.
+    /// The "QuickAmountSelected" modifier class overrides with brand green + white text.
+    /// BrushTransition provides smooth 150ms animation on bg, border, and text foreground.
+    /// No ClearValue() — eliminates flash.</summary>
     private void UpdateQuickAmountSelection()
     {
-        var unselectedBg = this.FindResource("StatsDetailInnerBackground") as IBrush
-                           ?? new SolidColorBrush(Color.Parse("#FFFFFF"));
-        var unselectedBorder = this.FindResource("StatsDetailInnerBorder") as IBrush
-                               ?? new SolidColorBrush(Color.Parse("#40FDBA74"));
-
         var quickBorders = this.GetVisualDescendants()
             .OfType<Border>()
             .Where(b => b.Name == "QuickAmountBorder");
@@ -211,26 +197,26 @@ public partial class InvestPageView : UserControl
             var isSelected = border.DataContext is QuickAmountOption opt
                              && Vm?.SelectedQuickAmount != null
                              && Math.Abs(opt.Amount - Vm.SelectedQuickAmount.Value) < 0.0000001;
+            border.Classes.Set("QuickAmountSelected", isSelected);
+        }
+    }
 
-            border.Background = isSelected ? QuickSelectedBg : unselectedBg;
-            border.BorderBrush = isSelected ? QuickSelectedBorder : unselectedBorder;
+    /// <summary>Update subscription plan borders via CSS class toggling.
+    /// The "SubPlanBtn" base style sets DynamicResource bg/border for unselected state.
+    /// The "SubPlanSelected" modifier class overrides with selected-state DynamicResource values.
+    /// BrushTransition on the Border provides smooth 200ms animation.
+    /// No FindResource() or ClearValue() — eliminates flash and wrong-theme bugs.</summary>
+    private void UpdateSubscriptionPlanSelection()
+    {
+        var planBorders = this.GetVisualDescendants()
+            .OfType<Border>()
+            .Where(b => b.Name == "SubPlanBorder");
 
-            // Update text colors for children
-            var texts = border.GetVisualDescendants().OfType<TextBlock>().ToList();
-            foreach (var tb in texts)
-            {
-                if (isSelected)
-                    tb.Foreground = Brushes.White;
-                else
-                {
-                    // Restore theme colors
-                    var resourceKey = tb.FontWeight == Avalonia.Media.FontWeight.Bold
-                        ? "StatsDetailValue"
-                        : "StatsDetailLabel";
-                    if (this.FindResource(resourceKey) is IBrush brush)
-                        tb.Foreground = brush;
-                }
-            }
+        foreach (var border in planBorders)
+        {
+            var isSelected = border.DataContext is SubscriptionPlanOption plan
+                             && plan.PatternId == Vm?.SelectedSubscriptionPattern;
+            border.Classes.Set("SubPlanSelected", isSelected);
         }
     }
 

@@ -12,7 +12,7 @@
 
     <!--
         Vue ProjectDetail.vue layout:
-        1. Back button (sticky nav)
+        1. Back button (sticky nav) + project name + share button
         2. Top section: project-card-compact (left) + investment/status card (right) — grid 1fr 400px gap 24
         3. Stats detail card (orange gradient, 3 stat cards + progress bar)
         4. Investment/Funding/Subscription information card
@@ -20,69 +20,148 @@
         6. Project Details collapsible section
         7. Nostr collapsible section
     -->
-    <controls:ScrollableView ContentPadding="24,24,24,24">
-        <StackPanel Spacing="24" MaxWidth="1400">
 
-            <!-- ═══════════════════════════════════════ -->
-            <!-- BACK BUTTON + SHARE                     -->
-            <!-- Vue: sticky-nav-bar, back-button-floating -->
-            <!-- ═══════════════════════════════════════ -->
-            <DockPanel>
-                <Border Name="BackButton"
-                        Background="{DynamicResource Surface}"
-                        BorderBrush="{DynamicResource Stroke}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        BoxShadow="{DynamicResource ItemShadow}"
-                        Padding="12,8"
-                        Cursor="Hand"
-                        DockPanel.Dock="Left">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                            <Path Data="M15 19l-7-7 7-7"
-                                  Stroke="{DynamicResource TextStrong}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
+    <UserControl.Styles>
+        <!-- Vue: .back-button-floating hover → translateY(-1px) + enhanced shadow -->
+        <Style Selector="Border.BackButton:pointerover">
+            <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
+            <Setter Property="BoxShadow" Value="0 6 16 0 #33000000" />
+        </Style>
+        <Style Selector="Border.FloatingBtn:pointerover">
+            <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
+            <Setter Property="BoxShadow" Value="0 6 16 0 #33000000" />
+        </Style>
+        <!-- Kill FluentTheme button chrome on the back button -->
+        <Style Selector="Button.BackBtn">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="Button.BackBtn:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.BackBtn:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Layout: fixed nav bar on top + scrollable content below -->
+    <Panel>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- STICKY NAV BAR (fixed to top)           -->
+        <!-- Vue: sticky, top:0, z-index:100, transparent bg, pointer-events:none -->
+        <!-- ═══════════════════════════════════════ -->
+        <DockPanel VerticalAlignment="Top"
+                   ZIndex="100"
+                   Margin="24,24,24,0"
+                   IsHitTestVisible="True">
+
+            <!-- LEFT: Back Button -->
+            <Border DockPanel.Dock="Left"
+                    Classes="BackButton"
+                    Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    BoxShadow="0 4 12 0 #26000000"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    RenderTransform="translate(0px, 0px)">
+                <Border.Transitions>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                    </Transitions>
+                </Border.Transitions>
+                <Button Name="BackButton"
+                        Classes="BackBtn"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Viewbox Width="10" Height="16">
+                            <Path Data="{StaticResource ChevronLeftThick}"
+                                  Fill="{DynamicResource TextStrong}"
+                                  Width="320" Height="512" Stretch="Uniform" />
                         </Viewbox>
                         <TextBlock Text="Back"
                                    FontSize="14"
-                                   FontWeight="SemiBold"
+                                   FontWeight="Medium"
                                    Foreground="{DynamicResource TextStrong}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
-                </Border>
+                </Button>
+            </Border>
 
-                <!-- Share button (right) -->
-                <Border Background="{DynamicResource Surface}"
-                        BorderBrush="{DynamicResource Stroke}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        BoxShadow="{DynamicResource ItemShadow}"
-                        Padding="12,8"
-                        Cursor="Hand"
-                        DockPanel.Dock="Right"
-                        HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-                            <Path Data="{StaticResource Share}"
-                                  Stroke="{DynamicResource TextStrong}"
-                                  StrokeThickness="1.5"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
-                        <TextBlock Text="Share"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextStrong}"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-                </Border>
+            <!-- RIGHT: Share Button -->
+            <Border DockPanel.Dock="Right"
+                    Classes="FloatingBtn"
+                    Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    BoxShadow="0 4 12 0 #26000000"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    RenderTransform="translate(0px, 0px)">
+                <Border.Transitions>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                    </Transitions>
+                </Border.Transitions>
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Viewbox Width="18" Height="18" VerticalAlignment="Center">
+                        <Path Data="{StaticResource Share}"
+                              Stroke="{DynamicResource TextStrong}"
+                              StrokeThickness="1.5"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Width="24" Height="24" Stretch="Uniform" />
+                    </Viewbox>
+                    <TextBlock Text="Share"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextStrong}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
 
-                <Panel /> <!-- spacer -->
-            </DockPanel>
+            <!-- CENTER: Project Name pill -->
+            <Border Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    BoxShadow="0 4 12 0 #26000000"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    Margin="12,0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left">
+                <TextBlock Text="{Binding ProjectName}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextStrong}"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="400" />
+            </Border>
+        </DockPanel>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SCROLLABLE CONTENT                      -->
+        <!-- ═══════════════════════════════════════ -->
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="24" MaxWidth="1400" Margin="24,0,24,24">
+
+            <!-- Spacer: 24px nav top margin + 44px nav height + 24px gap = 92px -->
+            <Panel Height="92" />
 
             <!-- ═══════════════════════════════════════ -->
             <!-- TOP SECTION: 2-column grid              -->
@@ -1024,5 +1103,6 @@
             </Border>
 
         </StackPanel>
-    </controls:ScrollableView>
+        </ScrollViewer>
+    </Panel>
 </UserControl>

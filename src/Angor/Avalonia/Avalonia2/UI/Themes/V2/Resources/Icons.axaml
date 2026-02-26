@@ -94,4 +94,16 @@
     <StreamGeometry x:Key="User">M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z</StreamGeometry>
     <!-- Cloud icon (Heroicons outline, 24x24) — for project identifier -->
     <StreamGeometry x:Key="Cloud">M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z</StreamGeometry>
+    <!-- Checkmark icon (Heroicons outline, 24x24) — for approve actions -->
+    <StreamGeometry x:Key="Checkmark">M5 13l4 4L19 7</StreamGeometry>
+    <!-- Badge-check icon (Heroicons outline, 24x24) — checkmark inside decorative seal/starburst -->
+    <StreamGeometry x:Key="BadgeCheck">M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z</StreamGeometry>
+    <!-- Badge-check filled icon (solid, 24x24) — wavy seal with checkmark, use with Fill -->
+    <StreamGeometry x:Key="BadgeCheckSolid">M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zM15.572 9.97a.75.75 0 00-1.144-.97l-3.47 4.11-1.665-1.663a.75.75 0 00-1.061 1.06l2.25 2.25a.75.75 0 001.102-.045l4-4.742z</StreamGeometry>
+    <!-- Check-circle filled icon (solid, 512x512 viewBox) — filled circle with checkmark cutout, use with Fill -->
+    <StreamGeometry x:Key="CheckCircleSolid">M256 512A256 256 0 10256 0a256 256 0 100 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z</StreamGeometry>
+    <!-- Chevron-left thick icon (solid, 320x512 viewBox) — bold left chevron, use with Fill -->
+    <StreamGeometry x:Key="ChevronLeftThick">M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z</StreamGeometry>
+    <!-- Chevron-right thick icon (solid, 320x512 viewBox) — bold right chevron, use with Fill -->
+    <StreamGeometry x:Key="ChevronRightThick">M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z</StreamGeometry>
 </ResourceDictionary>

@@ -14,11 +14,18 @@ public class InvestmentStageViewModel
     public string Status { get; set; } = "Pending"; // Pending, Released, Available, Not Spent
     /// <summary>Stage label prefix: "Stage" for invest, "Payment" for fund/subscription</summary>
     public string StagePrefix { get; set; } = "Stage";
+
+    // Status visibility helpers for per-status badge coloring
+    public bool IsStatusPending => Status == "Pending";
+    public bool IsStatusReleased => Status == "Released";
+    public bool IsStatusNotSpent => Status == "Not Spent";
+    public bool IsStatusRecovered => Status == "Recovered";
 }
 
 /// <summary>
 /// A funded project investment shown in the "Your Investments" panel.
 /// Data from Vue reference — Hope With Bitcoin investment.
+/// Vue: investment-card in App.vue (desktop Investments page) and HubInvestments.vue
 /// </summary>
 public class InvestmentViewModel
 {
@@ -28,6 +35,8 @@ public class InvestmentViewModel
     public string AvailableToClaim { get; set; } = "0.00000000";
     public string Spent { get; set; } = "0.00000000";
     public double Progress { get; set; }
+    /// <summary>Progress as a fraction 0.0–1.0 for ScaleTransform binding</summary>
+    public double ProgressFraction => Progress / 100.0;
     public string Status { get; set; } = "Active";
     /// <summary>Funding amount displayed on the investment card</summary>
     public string FundingAmount { get; set; } = "0.0000";
@@ -47,9 +56,31 @@ public class InvestmentViewModel
     public string? BannerUrl { get; set; }
     /// <summary>Avatar/logo image URL</summary>
     public string? AvatarUrl { get; set; }
-    /// <summary>Status pill text (e.g. "Funding")</summary>
+
+    // ── Type and Status pills (Vue: .investment-pills, .investment-type-pill, .stage-status) ──
+    /// <summary>Type pill label: Investment, Funding, Subscription</summary>
+    public string TypeLabel { get; set; } = "Investment";
+    /// <summary>Status pill text: Awaiting Approval, Transaction signed, Investment Active, Funds recovered</summary>
+    public string StatusText { get; set; } = "Transaction signed";
+    /// <summary>Status class: waiting, signed, active, recovered</summary>
+    public string StatusClass { get; set; } = "signed";
+
+    // Status visibility helpers for XAML binding
+    public bool IsStatusWaiting => StatusClass == "waiting";
+    public bool IsStatusSigned => StatusClass == "signed";
+    public bool IsStatusActive => StatusClass == "active";
+    public bool IsStatusRecovered => StatusClass == "recovered";
+
+    // Type visibility helpers for XAML binding (invest=blue, fund=amber, subscription=purple)
+    public bool IsTypeInvest => ProjectType == "invest";
+    public bool IsTypeFund => ProjectType == "fund";
+    public bool IsTypeSubscription => ProjectType == "subscription";
+
+    /// <summary>Whether this is a subscription/fund type with payment plan progress</summary>
+    public bool HasPaymentPlan { get; set; }
+
+    // Legacy pill properties — kept for InvestmentDetailView compatibility
     public string StatusPill1 { get; set; } = "Funding";
-    /// <summary>Second status pill text (e.g. "Transaction signed")</summary>
     public string StatusPill2 { get; set; } = "Transaction signed";
     /// <summary>Project type: invest, fund, subscription</summary>
     public string ProjectType { get; set; } = "invest";
@@ -173,26 +204,31 @@ public partial class PortfolioViewModel : ReactiveObject
     /// </summary>
     [Reactive] private InvestmentViewModel? selectedInvestment;
 
-    // ── Left panel stats ──
-    public int FundedProjects { get; } = 1;
-    public string TotalInvested { get; } = "0.5000";
-    public string RecoveredToPenalty { get; } = "0.0000";
-    public int ProjectsInRecovery { get; } = 0;
+    // ── Left panel stats (reflect all sample investments) ──
+    public int FundedProjects { get; } = 4;
+    public string TotalInvested { get; } = "2.3500";
+    public string RecoveredToPenalty { get; } = "0.2500";
+    public int ProjectsInRecovery { get; } = 1;
 
     /// <summary>Total available to claim across all projects</summary>
-    public string TotalAvailable { get; } = "0.00544254";
+    public string TotalAvailable { get; } = "0.08544254";
 
     // ── Right panel investments ──
     public ObservableCollection<InvestmentViewModel> Investments { get; } = new()
     {
+        // ── Card 1: Investment type, signed status, payment plan ──
         new InvestmentViewModel
         {
             ProjectName = "Hope With \u20bfitcoin",
             ShortDescription = "A humanitarian initiative in Benin feeding vulnerable people, supporting orphanages.",
             FundingAmount = "0.5 BTC",
             FundingDate = "2/25/2026",
+            TypeLabel = "Investment",
+            StatusText = "Transaction signed",
+            StatusClass = "signed",
             StatusPill1 = "Funding",
             StatusPill2 = "Transaction signed",
+            HasPaymentPlan = true,
             PaymentSegmentsCompleted = 0,
             PaymentSegmentsTotal = 3,
             BannerUrl = "https://angor.tx1138.com/projects/hope-with-bitcoin-banner.webp",
@@ -238,7 +274,123 @@ public partial class PortfolioViewModel : ReactiveObject
                     Status = "Pending"
                 },
             }
-        }
+        },
+
+        // ── Card 2: Funding type, active status, payment plan with 2/3 paid ──
+        new InvestmentViewModel
+        {
+            ProjectName = "Bitcoin Education Africa",
+            ShortDescription = "Bringing Bitcoin literacy to schools across sub-Saharan Africa through workshops.",
+            FundingAmount = "1.0 BTC",
+            FundingDate = "1/10/2026",
+            TypeLabel = "Funding",
+            StatusText = "Investment Active",
+            StatusClass = "active",
+            StatusPill1 = "Funding",
+            StatusPill2 = "Investment Active",
+            HasPaymentPlan = true,
+            PaymentSegmentsCompleted = 2,
+            PaymentSegmentsTotal = 3,
+            BannerUrl = null,
+            AvatarUrl = null,
+            TotalInvested = "1.00000000",
+            AvailableToClaim = "0.05000000",
+            Spent = "0.66666667",
+            Progress = 67,
+            Status = "Active",
+            ProjectType = "fund",
+            Step = 3,
+            TargetAmount = "10.0000",
+            TotalRaised = "7.2000",
+            TotalInvestors = 24,
+            StartDate = "Jan 10, 2026",
+            EndDate = "Oct 10, 2026",
+            TransactionDate = "Jan 10, 2026",
+            ApprovalStatus = "Approved",
+            Stages = new ObservableCollection<InvestmentStageViewModel>
+            {
+                new() { StageNumber = 1, StagePrefix = "Payment", Percentage = "33%", ReleaseDate = "10 Apr 2026", Amount = "0.33333333", Status = "Released" },
+                new() { StageNumber = 2, StagePrefix = "Payment", Percentage = "33%", ReleaseDate = "10 Jul 2026", Amount = "0.33333333", Status = "Released" },
+                new() { StageNumber = 3, StagePrefix = "Payment", Percentage = "34%", ReleaseDate = "10 Oct 2026", Amount = "0.33333334", Status = "Pending" },
+            }
+        },
+
+        // ── Card 3: Subscription type, waiting status, no payment plan (progress bar) ──
+        new InvestmentViewModel
+        {
+            ProjectName = "Nostr Relay Infrastructure",
+            ShortDescription = "Decentralized relay infrastructure for censorship-resistant communication.",
+            FundingAmount = "0.6 BTC",
+            FundingDate = "2/01/2026",
+            TypeLabel = "Subscription",
+            StatusText = "Awaiting Approval",
+            StatusClass = "waiting",
+            StatusPill1 = "Subscription",
+            StatusPill2 = "Awaiting Approval",
+            HasPaymentPlan = false,
+            PaymentSegmentsCompleted = 0,
+            PaymentSegmentsTotal = 3,
+            BannerUrl = null,
+            AvatarUrl = null,
+            TotalInvested = "0.60000000",
+            AvailableToClaim = "0.00000000",
+            Spent = "0.00000000",
+            Progress = 35,
+            Status = "Pending",
+            ProjectType = "subscription",
+            Step = 1,
+            TargetAmount = "5.0000",
+            TotalRaised = "1.7500",
+            TotalInvestors = 8,
+            StartDate = "Feb 01, 2026",
+            EndDate = "Aug 01, 2026",
+            TransactionDate = "Feb 01, 2026",
+            ApprovalStatus = "Pending",
+            Stages = new ObservableCollection<InvestmentStageViewModel>
+            {
+                new() { StageNumber = 1, StagePrefix = "Payment", Percentage = "50%", ReleaseDate = "01 May 2026", Amount = "0.30000000", Status = "Pending" },
+                new() { StageNumber = 2, StagePrefix = "Payment", Percentage = "50%", ReleaseDate = "01 Aug 2026", Amount = "0.30000000", Status = "Pending" },
+            }
+        },
+
+        // ── Card 4: Investment type, recovered status, no payment plan ──
+        new InvestmentViewModel
+        {
+            ProjectName = "Lightning Mesh Network",
+            ShortDescription = "Building resilient Lightning Network routing across emerging markets.",
+            FundingAmount = "0.25 BTC",
+            FundingDate = "11/15/2025",
+            TypeLabel = "Investment",
+            StatusText = "Funds recovered",
+            StatusClass = "recovered",
+            StatusPill1 = "Funding",
+            StatusPill2 = "Funds recovered",
+            HasPaymentPlan = false,
+            PaymentSegmentsCompleted = 0,
+            PaymentSegmentsTotal = 3,
+            BannerUrl = null,
+            AvatarUrl = null,
+            TotalInvested = "0.25000000",
+            AvailableToClaim = "0.03544254",
+            Spent = "0.21455746",
+            Progress = 86,
+            Status = "Recovered",
+            ProjectType = "invest",
+            Step = 3,
+            TargetAmount = "3.0000",
+            TotalRaised = "2.8000",
+            TotalInvestors = 15,
+            StartDate = "Nov 15, 2025",
+            EndDate = "May 15, 2026",
+            TransactionDate = "Nov 15, 2025",
+            ApprovalStatus = "Approved",
+            Stages = new ObservableCollection<InvestmentStageViewModel>
+            {
+                new() { StageNumber = 1, Percentage = "33%", ReleaseDate = "15 Jan 2026", Amount = "0.08333333", Status = "Released" },
+                new() { StageNumber = 2, Percentage = "33%", ReleaseDate = "15 Mar 2026", Amount = "0.08333333", Status = "Released" },
+                new() { StageNumber = 3, Percentage = "34%", ReleaseDate = "15 May 2026", Amount = "0.08333334", Status = "Not Spent" },
+            }
+        },
     };
 
     /// <summary>Navigate to investment detail view</summary>

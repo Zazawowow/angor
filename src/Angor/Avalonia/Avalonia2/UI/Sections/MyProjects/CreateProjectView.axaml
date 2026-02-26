@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mp="clr-namespace:Avalonia2.UI.Sections.MyProjects"
-             xmlns:deploy="clr-namespace:Avalonia2.UI.Sections.MyProjects.Deploy"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
              x:Class="Avalonia2.UI.Sections.MyProjects.CreateProjectView"
@@ -22,12 +21,220 @@
     <!-- Vue: transition-all on project-type-card — smooth border/background changes -->
     <UserControl.Styles>
         <Style Selector="Border.TypeCard">
+            <Setter Property="Background" Value="{DynamicResource TypeCardDefaultBg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
             <Setter Property="Transitions">
                 <Transitions>
                     <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
                     <BrushTransition Property="Background" Duration="0:0:0.2" />
                 </Transitions>
             </Setter>
+        </Style>
+
+        <!-- ═══ TYPE CARD: Icon Background ═══ -->
+        <Style Selector="Border.TypeCardIconBg">
+            <Setter Property="Background" Value="{DynamicResource TypeCardIconDefaultBg}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <!-- ═══ TYPE CARD: Title Text ═══ -->
+        <Style Selector="TextBlock.TypeCardTitle">
+            <Setter Property="Foreground" Value="{DynamicResource TextStrong}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <!-- ═══ TYPE CARD: Icon Path (stroke-based icons: Invest, Subscription) ═══ -->
+        <Style Selector="Path.TypeCardIconStroke">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Stroke" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <!-- ═══ TYPE CARD: Icon Path (fill-based icon: Fund) ═══ -->
+        <Style Selector="Path.TypeCardIconFill">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Fill" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <!-- ═══ TYPE CARD: Default icon colors ═══ -->
+        <Style Selector="Path.TypeCardIconStroke.IconInvest">
+            <Setter Property="Stroke" Value="#4B7C5A" />
+        </Style>
+        <Style Selector="Path.TypeCardIconStroke.IconSub">
+            <Setter Property="Stroke" Value="#9E9E9E" />
+        </Style>
+        <Style Selector="Path.TypeCardIconFill.IconFund">
+            <Setter Property="Fill" Value="#F7931A" />
+        </Style>
+
+        <!-- ═══ TYPE CARD: Radio circle ═══ -->
+        <Style Selector="Border.TypeCardRadio">
+            <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <!-- ═══ TYPE CARD: INVEST — Hover (unselected) ═══ -->
+        <Style Selector="Border.TypeCard.TypeCardInvest:pointerover">
+            <Setter Property="BorderBrush" Value="#804B7C5A" />
+        </Style>
+        <!-- ═══ TYPE CARD: FUND — Hover (unselected) ═══ -->
+        <Style Selector="Border.TypeCard.TypeCardFund:pointerover">
+            <Setter Property="BorderBrush" Value="#80F7931A" />
+        </Style>
+        <!-- ═══ TYPE CARD: SUB — Hover (unselected) ═══ -->
+        <Style Selector="Border.TypeCard.TypeCardSub:pointerover">
+            <Setter Property="BorderBrush" Value="#809E9E9E" />
+        </Style>
+
+        <!-- ═══ TYPE CARD: INVEST — Selected ═══ -->
+        <Style Selector="Border.TypeCard.TypeCardInvest.TypeCardSelected">
+            <Setter Property="BorderBrush" Value="#4B7C5A" />
+            <Setter Property="Background" Value="{DynamicResource TypeCardInvestSelectedBg}" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardInvest.TypeCardSelected:pointerover">
+            <Setter Property="BorderBrush" Value="#4B7C5A" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardInvest.TypeCardSelected Border.TypeCardIconBg">
+            <Setter Property="Background" Value="#4B7C5A" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardInvest.TypeCardSelected Path.TypeCardIconStroke">
+            <Setter Property="Stroke" Value="White" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardInvest.TypeCardSelected TextBlock.TypeCardTitle">
+            <Setter Property="Foreground" Value="#4B7C5A" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardInvest.TypeCardSelected Border.TypeCardRadio">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- ═══ TYPE CARD: FUND — Selected ═══ -->
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected">
+            <Setter Property="BorderBrush" Value="#F7931A" />
+            <Setter Property="Background" Value="{DynamicResource TypeCardFundSelectedBg}" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected:pointerover">
+            <Setter Property="BorderBrush" Value="#F7931A" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected Border.TypeCardIconBg">
+            <Setter Property="Background" Value="#F7931A" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected Path.TypeCardIconFill">
+            <Setter Property="Fill" Value="White" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected TextBlock.TypeCardTitle">
+            <Setter Property="Foreground" Value="#F7931A" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected Border.TypeCardRadio">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- ═══ TYPE CARD: SUBSCRIPTION — Selected ═══ -->
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected">
+            <Setter Property="BorderBrush" Value="#9E9E9E" />
+            <Setter Property="Background" Value="{DynamicResource TypeCardSubSelectedBg}" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected:pointerover">
+            <Setter Property="BorderBrush" Value="#9E9E9E" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected Border.TypeCardIconBg">
+            <Setter Property="Background" Value="#9E9E9E" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected Path.TypeCardIconStroke">
+            <Setter Property="Stroke" Value="White" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected TextBlock.TypeCardTitle">
+            <Setter Property="Foreground" Value="#9E9E9E" />
+        </Style>
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected Border.TypeCardRadio">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- ═══ STEPPER STYLES ═══ -->
+        <!-- Base stepper circle: smooth transitions on bg/border -->
+        <Style Selector="Border.StepCircle">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource StepInactiveGray}" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <!-- Current step circle: green border, transparent fill -->
+        <Style Selector="Border.StepCircle.StepCurrent">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource StepCurrentGreen}" />
+        </Style>
+        <!-- Completed step circle: green filled -->
+        <Style Selector="Border.StepCircle.StepCompleted">
+            <Setter Property="Background" Value="{DynamicResource StepCompletedGreen}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource StepCompletedGreen}" />
+        </Style>
+
+        <!-- Base step number text: gray -->
+        <Style Selector="TextBlock.StepNum">
+            <Setter Property="Foreground" Value="{DynamicResource StepInactiveGray}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBlock.StepNum.StepCurrent">
+            <Setter Property="Foreground" Value="{DynamicResource StepCurrentGreen}" />
+        </Style>
+        <Style Selector="TextBlock.StepNum.StepCompleted">
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <!-- Base step label: muted text -->
+        <Style Selector="TextBlock.StepLabel">
+            <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBlock.StepLabel.StepCurrent">
+            <Setter Property="Foreground" Value="{DynamicResource TextStrong}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.StepLabel.StepCompleted">
+            <Setter Property="Foreground" Value="{DynamicResource StepCompletedGreen}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <!-- Base step line: stroke color -->
+        <Style Selector="Border.StepLine">
+            <Setter Property="Background" Value="{DynamicResource Stroke}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.StepLine.StepLineCompleted">
+            <Setter Property="Background" Value="{DynamicResource StepLineGreen}" />
         </Style>
     </UserControl.Styles>
 
@@ -56,121 +263,114 @@
                     <Button Name="StepBtn1" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Border Name="StepCircle1" Width="40" Height="40" CornerRadius="20"
-                                    Background="Transparent"
-                                    BorderBrush="#4B7C5A" BorderThickness="1.5">
-                                <TextBlock Name="StepNum1" Text="1" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="#4B7C5A"
+                            <Border Name="StepCircle1" Classes="StepCircle StepCurrent"
+                                    Width="40" Height="40" CornerRadius="20">
+                                <TextBlock Name="StepNum1" Classes="StepNum StepCurrent"
+                                           Text="1" FontSize="13" FontWeight="SemiBold"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Name="StepLabel1" Text="Project Type" FontSize="14"
-                                       Foreground="{DynamicResource TextStrong}"
-                                       FontWeight="Bold"
+                            <TextBlock Name="StepLabel1" Classes="StepLabel StepCurrent"
+                                       Text="Project Type" FontSize="14"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                     <!-- Line 1→2 -->
-                    <Border Name="StepLine1" Width="2" Height="40" Margin="19,0,0,0"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource Stroke}" />
+                    <Border Name="StepLine1" Classes="StepLine"
+                            Width="2" Height="40" Margin="19,0,0,0"
+                            HorizontalAlignment="Left" />
 
                     <!-- Step 2 -->
                     <Button Name="StepBtn2" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Border Name="StepCircle2" Width="40" Height="40" CornerRadius="20"
-                                    Background="Transparent"
-                                    BorderBrush="#888888" BorderThickness="1.5">
-                                <TextBlock Name="StepNum2" Text="2" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="#888888"
+                            <Border Name="StepCircle2" Classes="StepCircle"
+                                    Width="40" Height="40" CornerRadius="20">
+                                <TextBlock Name="StepNum2" Classes="StepNum"
+                                           Text="2" FontSize="13" FontWeight="SemiBold"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Name="StepLabel2" Text="Project Profile" FontSize="14"
-                                       Foreground="{DynamicResource TextMuted}"
+                            <TextBlock Name="StepLabel2" Classes="StepLabel"
+                                       Text="Project Profile" FontSize="14"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                     <!-- Line 2→3 -->
-                    <Border Name="StepLine2" Width="2" Height="40" Margin="19,0,0,0"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource Stroke}" />
+                    <Border Name="StepLine2" Classes="StepLine"
+                            Width="2" Height="40" Margin="19,0,0,0"
+                            HorizontalAlignment="Left" />
 
                     <!-- Step 3 -->
                     <Button Name="StepBtn3" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Border Name="StepCircle3" Width="40" Height="40" CornerRadius="20"
-                                    Background="Transparent"
-                                    BorderBrush="#888888" BorderThickness="1.5">
-                                <TextBlock Name="StepNum3" Text="3" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="#888888"
+                            <Border Name="StepCircle3" Classes="StepCircle"
+                                    Width="40" Height="40" CornerRadius="20">
+                                <TextBlock Name="StepNum3" Classes="StepNum"
+                                           Text="3" FontSize="13" FontWeight="SemiBold"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Name="StepLabel3" Text="Project Images" FontSize="14"
-                                       Foreground="{DynamicResource TextMuted}"
+                            <TextBlock Name="StepLabel3" Classes="StepLabel"
+                                       Text="Project Images" FontSize="14"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                     <!-- Line 3→4 -->
-                    <Border Name="StepLine3" Width="2" Height="40" Margin="19,0,0,0"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource Stroke}" />
+                    <Border Name="StepLine3" Classes="StepLine"
+                            Width="2" Height="40" Margin="19,0,0,0"
+                            HorizontalAlignment="Left" />
 
                     <!-- Step 4 -->
                     <Button Name="StepBtn4" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Border Name="StepCircle4" Width="40" Height="40" CornerRadius="20"
-                                    Background="Transparent"
-                                    BorderBrush="#888888" BorderThickness="1.5">
-                                <TextBlock Name="StepNum4" Text="4" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="#888888"
+                            <Border Name="StepCircle4" Classes="StepCircle"
+                                    Width="40" Height="40" CornerRadius="20">
+                                <TextBlock Name="StepNum4" Classes="StepNum"
+                                           Text="4" FontSize="13" FontWeight="SemiBold"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Name="StepLabel4" Text="Configuration" FontSize="14"
-                                       Foreground="{DynamicResource TextMuted}"
+                            <TextBlock Name="StepLabel4" Classes="StepLabel"
+                                       Text="Configuration" FontSize="14"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                     <!-- Line 4→5 -->
-                    <Border Name="StepLine4" Width="2" Height="40" Margin="19,0,0,0"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource Stroke}" />
+                    <Border Name="StepLine4" Classes="StepLine"
+                            Width="2" Height="40" Margin="19,0,0,0"
+                            HorizontalAlignment="Left" />
 
                     <!-- Step 5 -->
                     <Button Name="StepBtn5" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Border Name="StepCircle5" Width="40" Height="40" CornerRadius="20"
-                                    Background="Transparent"
-                                    BorderBrush="#888888" BorderThickness="1.5">
-                                <TextBlock Name="StepNum5" Text="5" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="#888888"
+                            <Border Name="StepCircle5" Classes="StepCircle"
+                                    Width="40" Height="40" CornerRadius="20">
+                                <TextBlock Name="StepNum5" Classes="StepNum"
+                                           Text="5" FontSize="13" FontWeight="SemiBold"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Name="StepLabel5" Text="Stages" FontSize="14"
-                                       Foreground="{DynamicResource TextMuted}"
+                            <TextBlock Name="StepLabel5" Classes="StepLabel"
+                                       Text="Stages" FontSize="14"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                     <!-- Line 5→6 -->
-                    <Border Name="StepLine5" Width="2" Height="40" Margin="19,0,0,0"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource Stroke}" />
+                    <Border Name="StepLine5" Classes="StepLine"
+                            Width="2" Height="40" Margin="19,0,0,0"
+                            HorizontalAlignment="Left" />
 
                     <!-- Step 6 -->
                     <Button Name="StepBtn6" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand"
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Border Name="StepCircle6" Width="40" Height="40" CornerRadius="20"
-                                    Background="Transparent"
-                                    BorderBrush="#888888" BorderThickness="1.5">
-                                <TextBlock Name="StepNum6" Text="6" FontSize="13" FontWeight="SemiBold"
-                                           Foreground="#888888"
+                            <Border Name="StepCircle6" Classes="StepCircle"
+                                    Width="40" Height="40" CornerRadius="20">
+                                <TextBlock Name="StepNum6" Classes="StepNum"
+                                           Text="6" FontSize="13" FontWeight="SemiBold"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Name="StepLabel6" Text="Review &amp; Deploy" FontSize="14"
-                                       Foreground="{DynamicResource TextMuted}"
+                            <TextBlock Name="StepLabel6" Classes="StepLabel"
+                                       Text="Review &amp; Deploy" FontSize="14"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
@@ -189,28 +389,37 @@
                         BorderThickness="0,1,0,0"
                         Padding="24">
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <!-- Cancel / Previous button — outlined with left chevron -->
+                        <!-- Cancel / Previous button — outlined, standardized sizing -->
                         <Button Grid.Column="0" Name="PrevStepButton"
-                                Padding="20,10" CornerRadius="10"
+                                Height="44" Padding="16,0,16,0" CornerRadius="8"
                                 Background="Transparent"
                                 BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                 Foreground="{DynamicResource TextStrong}"
-                                FontSize="14" FontWeight="Normal">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <TextBlock Text="&#x276E;" FontSize="12" VerticalAlignment="Center" />
+                                FontSize="14" FontWeight="Medium"
+                                Cursor="Hand">
+                            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <Viewbox Width="10" Height="16">
+                                    <Path Data="{StaticResource ChevronLeftThick}"
+                                          Fill="{DynamicResource TextStrong}"
+                                          Width="320" Height="512" Stretch="Uniform" />
+                                </Viewbox>
                                 <TextBlock Text="{Binding BackButtonText}" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
 
-                        <!-- Next button (steps 1-5) — uses default PrimaryButton dark gradient from theme -->
+                        <!-- Next button (steps 1-5) — standardized sizing -->
                         <Panel Grid.Column="2">
                             <!-- Next button — shown on steps 1-5 -->
                             <Border Classes="ButtonShadow" IsVisible="{Binding !IsLastStep}">
-                                <Button Name="NextStepButton" CornerRadius="10" Padding="24,10"
+                                <Button Name="NextStepButton" Height="44" CornerRadius="8" Padding="16,0,16,0"
                                         FontSize="14" FontWeight="SemiBold">
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                         <TextBlock Text="Next" VerticalAlignment="Center" />
-                                        <TextBlock Text="&#x276F;" FontSize="12" VerticalAlignment="Center" />
+                                        <Viewbox Width="10" Height="16">
+                                            <Path Data="{StaticResource ChevronRightThick}"
+                                                  Fill="White"
+                                                  Width="320" Height="512" Stretch="Uniform" />
+                                        </Viewbox>
                                     </StackPanel>
                                 </Button>
                             </Border>
@@ -218,7 +427,7 @@
                             <!-- Deploy Now button — shown on step 6 (IsLastStep) -->
                             <!-- Vue: footer primary button triggers openDeployModal -->
                             <Button Name="DeployButton" IsVisible="{Binding IsLastStep}"
-                                    CornerRadius="10" Padding="24,12"
+                                    Height="44" CornerRadius="8" Padding="16,0,24,0"
                                     FontSize="14" FontWeight="Bold"
                                     IsEnabled="{Binding !IsDeploying}"
                                     Foreground="White" Cursor="Hand">
@@ -228,7 +437,7 @@
                                         <GradientStop Color="{DynamicResource PrimaryGreenHover}" Offset="1" />
                                     </LinearGradientBrush>
                                 </Button.Background>
-                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                     <TextBlock Text="Deploy Now" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
@@ -322,20 +531,19 @@
 
                                 <!-- Investment card — Border (not Button) to prevent hover chrome -->
                                 <!-- Vue: rounded-xl (12px), border-2, gradient bg from-[#0A0A0A] to-[#1a1a1a] (dark) -->
-                                <!-- Bg set via code-behind ApplyTypeCardStyles() on load -->
-                                <Border Name="TypeInvestCard" Classes="TypeCard" CornerRadius="12"
-                                        BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
-                                        Background="{DynamicResource Surface}"
+                                <!-- Styles handle bg/border via TypeCardInvest + TypeCardSelected classes -->
+                                <Border Name="TypeInvestCard" Classes="TypeCard TypeCardInvest" CornerRadius="12"
+                                        BorderThickness="2"
                                         Cursor="Hand" MinHeight="140">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="20,24">
                                         <!-- Icon square -->
-                                        <Border Grid.Column="0" Name="IconBgInvest"
+                                        <Border Grid.Column="0" Name="IconBgInvest" Classes="TypeCardIconBg"
                                                 Width="48" Height="48" CornerRadius="10"
-                                                Background="{DynamicResource SurfaceLow}" VerticalAlignment="Top">
+                                                VerticalAlignment="Top">
                                             <Viewbox Width="22" Height="22">
-                                                <Path Name="IconPathInvest"
+                                                <Path Name="IconPathInvest" Classes="TypeCardIconStroke IconInvest"
                                                       Data="{StaticResource NavIconTrendUp}"
-                                                      Stroke="#4B7C5A" StrokeThickness="2"
+                                                      StrokeThickness="2"
                                                       StrokeLineCap="Round" StrokeJoin="Round"
                                                       Width="24" Height="24" Stretch="Uniform" />
                                             </Viewbox>
@@ -343,74 +551,88 @@
                                         <!-- Title + description -->
                                         <StackPanel Grid.Column="1" Spacing="6" Margin="20,0,20,0"
                                                     VerticalAlignment="Center">
-                                            <TextBlock Name="TitleInvest"
-                                                       Text="I am looking for Investors" FontSize="16" FontWeight="Bold"
-                                                       Foreground="{DynamicResource TextStrong}" />
+                                            <TextBlock Name="TitleInvest" Classes="TypeCardTitle"
+                                                       Text="I am looking for Investors" FontSize="16" FontWeight="Bold" />
                                             <TextBlock Text="Investors can fund during a funding period and then once the goal is met funds start being released in stages."
                                                        FontSize="14" Foreground="{DynamicResource TextMuted}"
                                                        TextWrapping="Wrap" LineHeight="20" />
                                         </StackPanel>
                                         <!-- Radio circle -->
-                                        <Border Grid.Column="2" Name="RadioInvest"
+                                        <Border Grid.Column="2" Name="RadioInvest" Classes="TypeCardRadio"
                                                 Width="24" Height="24" CornerRadius="12"
-                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                                BorderThickness="2"
                                                 Background="Transparent"
-                                                VerticalAlignment="Center" />
+                                                VerticalAlignment="Center">
+                                            <!-- Check icon: shown when selected via code-behind IsVisible -->
+                                            <Viewbox Name="RadioCheckInvest" Width="24" Height="24" IsVisible="False">
+                                                <Panel Width="512" Height="512">
+                                                    <Ellipse Width="400" Height="400" Fill="White"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <Path Data="{StaticResource CheckCircleSolid}"
+                                                          Fill="#4B7C5A" Width="512" Height="512" Stretch="Uniform" />
+                                                </Panel>
+                                            </Viewbox>
+                                        </Border>
                                     </Grid>
                                 </Border>
 
                                 <!-- Fund card — Border (not Button) to prevent hover chrome -->
                                 <!-- Vue: rounded-xl (12px), border-2, gradient bg -->
-                                <Border Name="TypeFundCard" Classes="TypeCard" CornerRadius="12"
-                                        BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
-                                        Background="{DynamicResource Surface}"
+                                <Border Name="TypeFundCard" Classes="TypeCard TypeCardFund" CornerRadius="12"
+                                        BorderThickness="2"
                                         Cursor="Hand" MinHeight="140">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="20,24">
                                         <!-- Icon square -->
-                                        <Border Grid.Column="0" Name="IconBgFund"
+                                        <Border Grid.Column="0" Name="IconBgFund" Classes="TypeCardIconBg"
                                                 Width="48" Height="48" CornerRadius="10"
-                                                Background="{DynamicResource SurfaceLow}" VerticalAlignment="Top">
+                                                VerticalAlignment="Top">
                                             <Viewbox Width="22" Height="22">
-                                                <Path Name="IconPathFund"
+                                                <Path Name="IconPathFund" Classes="TypeCardIconFill IconFund"
                                                       Data="{StaticResource BitcoinSymbol}"
-                                                      Fill="#F7931A"
                                                       Width="24" Height="24" Stretch="Uniform" />
                                             </Viewbox>
                                         </Border>
                                         <!-- Title + description -->
                                         <StackPanel Grid.Column="1" Spacing="6" Margin="20,0,20,0"
                                                     VerticalAlignment="Center">
-                                            <TextBlock Name="TitleFund"
-                                                       Text="I am looking for supporters" FontSize="16" FontWeight="Bold"
-                                                       Foreground="{DynamicResource TextStrong}" />
+                                            <TextBlock Name="TitleFund" Classes="TypeCardTitle"
+                                                       Text="I am looking for supporters" FontSize="16" FontWeight="Bold" />
                                             <TextBlock Text="Supporters can fund you at anytime during the project timeline."
                                                        FontSize="14" Foreground="{DynamicResource TextMuted}"
                                                        TextWrapping="Wrap" LineHeight="20" />
                                         </StackPanel>
                                         <!-- Radio circle -->
-                                        <Border Grid.Column="2" Name="RadioFund"
+                                        <Border Grid.Column="2" Name="RadioFund" Classes="TypeCardRadio"
                                                 Width="24" Height="24" CornerRadius="12"
-                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                                BorderThickness="2"
                                                 Background="Transparent"
-                                                VerticalAlignment="Center" />
+                                                VerticalAlignment="Center">
+                                            <Viewbox Name="RadioCheckFund" Width="24" Height="24" IsVisible="False">
+                                                <Panel Width="512" Height="512">
+                                                    <Ellipse Width="400" Height="400" Fill="White"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <Path Data="{StaticResource CheckCircleSolid}"
+                                                          Fill="#F7931A" Width="512" Height="512" Stretch="Uniform" />
+                                                </Panel>
+                                            </Viewbox>
+                                        </Border>
                                     </Grid>
                                 </Border>
 
                                 <!-- Subscription card — Border (not Button) to prevent hover chrome -->
                                 <!-- Vue: rounded-xl (12px), border-2, gradient bg -->
-                                <Border Name="TypeSubscriptionCard" Classes="TypeCard" CornerRadius="12"
-                                        BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
-                                        Background="{DynamicResource Surface}"
+                                <Border Name="TypeSubscriptionCard" Classes="TypeCard TypeCardSub" CornerRadius="12"
+                                        BorderThickness="2"
                                         Cursor="Hand" MinHeight="140">
                                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="20,24">
                                         <!-- Icon square -->
-                                        <Border Grid.Column="0" Name="IconBgSubscription"
+                                        <Border Grid.Column="0" Name="IconBgSubscription" Classes="TypeCardIconBg"
                                                 Width="48" Height="48" CornerRadius="10"
-                                                Background="{DynamicResource SurfaceLow}" VerticalAlignment="Top">
+                                                VerticalAlignment="Top">
                                             <Viewbox Width="22" Height="22">
-                                                <Path Name="IconPathSubscription"
+                                                <Path Name="IconPathSubscription" Classes="TypeCardIconStroke IconSub"
                                                       Data="{StaticResource RefreshArrows}"
-                                                      Stroke="#9E9E9E" StrokeThickness="2"
+                                                      StrokeThickness="2"
                                                       StrokeLineCap="Round" StrokeJoin="Round"
                                                       Width="24" Height="24" Stretch="Uniform" />
                                             </Viewbox>
@@ -418,19 +640,27 @@
                                         <!-- Title + description -->
                                         <StackPanel Grid.Column="1" Spacing="6" Margin="20,0,20,0"
                                                     VerticalAlignment="Center">
-                                            <TextBlock Name="TitleSubscription"
-                                                       Text="I am looking for paid subscribers" FontSize="16" FontWeight="Bold"
-                                                       Foreground="{DynamicResource TextStrong}" />
+                                            <TextBlock Name="TitleSubscription" Classes="TypeCardTitle"
+                                                       Text="I am looking for paid subscribers" FontSize="16" FontWeight="Bold" />
                                             <TextBlock Text="Subscribers pay for 3, 6, or 12 months up front and funds are released on the day of your choice"
                                                        FontSize="14" Foreground="{DynamicResource TextMuted}"
                                                        TextWrapping="Wrap" LineHeight="20" />
                                         </StackPanel>
                                         <!-- Radio circle -->
-                                        <Border Grid.Column="2" Name="RadioSubscription"
+                                        <Border Grid.Column="2" Name="RadioSubscription" Classes="TypeCardRadio"
                                                 Width="24" Height="24" CornerRadius="12"
-                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="2"
+                                                BorderThickness="2"
                                                 Background="Transparent"
-                                                VerticalAlignment="Center" />
+                                                VerticalAlignment="Center">
+                                            <Viewbox Name="RadioCheckSub" Width="24" Height="24" IsVisible="False">
+                                                <Panel Width="512" Height="512">
+                                                    <Ellipse Width="400" Height="400" Fill="White"
+                                                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <Path Data="{StaticResource CheckCircleSolid}"
+                                                          Fill="#9E9E9E" Width="512" Height="512" Stretch="Uniform" />
+                                                </Panel>
+                                            </Viewbox>
+                                        </Border>
                                     </Grid>
                                 </Border>
                             </StackPanel>
@@ -1585,8 +1815,8 @@
             </DockPanel>
         </Grid>
 
-    <!-- Deploy flow overlay — sits on top of wizard content -->
-    <deploy:DeployFlowOverlay DataContext="{Binding DeployFlow}" />
+    <!-- Deploy flow overlay is now rendered at shell level -->
+    <!-- via DeployFlowOverlay pushed to ShellViewModel.ShowModal() -->
 
     </Panel>
 

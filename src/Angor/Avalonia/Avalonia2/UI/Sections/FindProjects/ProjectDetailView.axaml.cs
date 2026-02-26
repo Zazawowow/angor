@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -15,10 +16,10 @@ public partial class ProjectDetailView : UserControl
     {
         InitializeComponent();
 
-        // Back button
-        var backBtn = this.FindControl<Border>("BackButton");
+        // Back button — now a Button inside a Border wrapper
+        var backBtn = this.FindControl<Button>("BackButton");
         if (backBtn != null)
-            backBtn.PointerPressed += OnBackPressed;
+            backBtn.Click += OnBackClick;
 
         // Invest button — navigate to InvestPage
         var investBtn = this.FindControl<Border>("InvestButton");
@@ -63,7 +64,7 @@ public partial class ProjectDetailView : UserControl
         }
     }
 
-    private void OnBackPressed(object? sender, PointerPressedEventArgs e)
+    private void OnBackClick(object? sender, RoutedEventArgs e)
     {
         // Walk up to find FindProjectsView and call CloseProjectDetail on its ViewModel
         var findProjectsView = this.FindLogicalAncestorOfType<FindProjectsView>();

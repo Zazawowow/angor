@@ -1,13 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using Avalonia.Styling;
 using Avalonia.VisualTree;
+using Avalonia2.UI.Sections.MyProjects.Deploy;
+using Avalonia2.UI.Shell;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.MyProjects;
@@ -21,12 +20,9 @@ public partial class CreateProjectView : UserControl
     private Border[] _stepLines = [];
     private Button[] _stepButtons = [];
 
-    // Type card elements — each card has: border, iconBg, iconPath, title, radio
+    // Type card elements — each card has: border, radio check indicator
     private Border[] _typeCards = [];
-    private Border[] _iconBgs = [];
-    private Path[] _iconPaths = [];
-    private TextBlock[] _titleTexts = [];
-    private Border[] _radioCircles = [];
+    private Viewbox[] _radioChecks = [];
     private string? _selectedType;
 
     // ListBox preset controls — Step 4
@@ -45,25 +41,7 @@ public partial class CreateProjectView : UserControl
     private ListBox? _monthlyDateGrid;
     private ListBox? _weeklyDayList;
 
-    // Stepper colors
-    private static readonly Color CompletedGreen = Color.Parse("#2D5A3D");
-    private static readonly Color CurrentGreen = Color.Parse("#4B7C5A");
-    private static readonly Color InactiveGray = Color.Parse("#888888");
-    private static readonly Color LineGreen = Color.Parse("#2D5A3D");
-
-    // Type card accent colors (match reference: Accent, BitcoinAccent, gray)
-    private static readonly Color InvestColor = Color.Parse("#4B7C5A");
-    private static readonly Color FundColor = Color.Parse("#F7931A");
-    private static readonly Color SubscriptionColor = Color.Parse("#9E9E9E");
-
-    // Original icon colors for the unselected state (stroke or fill)
-    // Invest: stroke #4B7C5A, Fund: fill #F7931A, Subscription: stroke #9E9E9E
-    private static readonly IBrush InvestIconStroke = new SolidColorBrush(InvestColor);
-    private static readonly IBrush FundIconFill = new SolidColorBrush(FundColor);
-    private static readonly IBrush SubscriptionIconStroke = new SolidColorBrush(SubscriptionColor);
-
-    // Track whether each icon uses Stroke (true) or Fill (false)
-    private static readonly bool[] IconUsesStroke = [true, false, true];
+    private IDisposable? _deploySubscription;
 
     public CreateProjectView()
     {
@@ -86,6 +64,14 @@ public partial class CreateProjectView : UserControl
             // Update stepper labels when project type changes (step names change)
             vm.WhenAnyValue(x => x.ProjectType)
                 .Subscribe(_ => UpdateStepperLabels());
+
+            // Watch deploy flow visibility to push modal to shell
+            _deploySubscription = vm.DeployFlow.WhenAnyValue(x => x.IsVisible)
+                .Subscribe(isVisible =>
+                {
+                    if (isVisible)
+                        ShowDeployShellModal(vm);
+                });
         }
     }
 
@@ -97,6 +83,13 @@ public partial class CreateProjectView : UserControl
         // Apply initial unselected styles to all type cards so they don't flash
         // with XAML defaults before user interaction
         ApplyTypeCardStyles();
+    }
+
+    protected override void OnDetachedFromLogicalTree(Avalonia.LogicalTree.LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _deploySubscription?.Dispose();
+        _deploySubscription = null;
     }
 
     private void ResolveNamedElements()
@@ -153,29 +146,11 @@ public partial class CreateProjectView : UserControl
             this.FindControl<Border>("TypeFundCard")!,
             this.FindControl<Border>("TypeSubscriptionCard")!,
         ];
-        _iconBgs =
+        _radioChecks =
         [
-            this.FindControl<Border>("IconBgInvest")!,
-            this.FindControl<Border>("IconBgFund")!,
-            this.FindControl<Border>("IconBgSubscription")!,
-        ];
-        _iconPaths =
-        [
-            this.FindControl<Path>("IconPathInvest")!,
-            this.FindControl<Path>("IconPathFund")!,
-            this.FindControl<Path>("IconPathSubscription")!,
-        ];
-        _titleTexts =
-        [
-            this.FindControl<TextBlock>("TitleInvest")!,
-            this.FindControl<TextBlock>("TitleFund")!,
-            this.FindControl<TextBlock>("TitleSubscription")!,
-        ];
-        _radioCircles =
-        [
-            this.FindControl<Border>("RadioInvest")!,
-            this.FindControl<Border>("RadioFund")!,
-            this.FindControl<Border>("RadioSubscription")!,
+            this.FindControl<Viewbox>("RadioCheckInvest")!,
+            this.FindControl<Viewbox>("RadioCheckFund")!,
+            this.FindControl<Viewbox>("RadioCheckSub")!,
         ];
 
         // Wire up PointerPressed on type cards (Border, not Button)
@@ -190,8 +165,7 @@ public partial class CreateProjectView : UserControl
             };
         }
 
-        // Wire hover effects — Vue: border changes to brand color at 50% opacity on hover
-        WireTypeCardHoverEffects();
+        // Hover effects are handled by :pointerover styles in XAML
 
         // Resolve ListBox preset controls — Step 4
         _investAmountPresets = this.FindControl<ListBox>("InvestAmountPresets");
@@ -281,7 +255,8 @@ public partial class CreateProjectView : UserControl
     #region Stepper
 
     /// <summary>
-    /// Update the vertical stepper circles, lines, and labels based on current step.
+    /// Update the vertical stepper via CSS class toggling.
+    /// Completed: StepCompleted class. Current: StepCurrent class. Future: no modifier class.
     /// </summary>
     private void UpdateStepper()
     {
@@ -292,52 +267,27 @@ public partial class CreateProjectView : UserControl
             for (int i = 0; i < 6; i++)
             {
                 var stepNum = i + 1;
-                var circle = _stepCircles[i];
-                var num = _stepNums[i];
+                var isCompleted = stepNum < Vm.CurrentStep;
+                var isCurrent = stepNum == Vm.CurrentStep;
 
-                if (stepNum < Vm.CurrentStep)
-                {
-                    // Completed — green filled circle with white checkmark
-                    circle.Background = new SolidColorBrush(CompletedGreen);
-                    circle.BorderBrush = new SolidColorBrush(CompletedGreen);
-                    num.Text = "\u2713";
-                    num.Foreground = Brushes.White;
-                    _stepLabels[i].Foreground = new SolidColorBrush(CompletedGreen);
-                    _stepLabels[i].FontWeight = FontWeight.SemiBold;
-                }
-                else if (stepNum == Vm.CurrentStep)
-                {
-                    // Current — green border, transparent fill, green number
-                    circle.Background = Brushes.Transparent;
-                    circle.BorderBrush = new SolidColorBrush(CurrentGreen);
-                    num.Text = stepNum.ToString();
-                    num.Foreground = new SolidColorBrush(CurrentGreen);
-                    _stepLabels[i].Foreground = this.FindResource("TextStrong") as IBrush
-                                                ?? new SolidColorBrush(CurrentGreen);
-                    _stepLabels[i].FontWeight = FontWeight.Bold;
-                }
-                else
-                {
-                    // Future — gray border, transparent fill, gray number
-                    circle.Background = Brushes.Transparent;
-                    circle.BorderBrush = new SolidColorBrush(InactiveGray);
-                    num.Text = stepNum.ToString();
-                    num.Foreground = new SolidColorBrush(InactiveGray);
-                    _stepLabels[i].Foreground = this.FindResource("TextMuted") as IBrush
-                                                ?? new SolidColorBrush(InactiveGray);
-                    _stepLabels[i].FontWeight = FontWeight.Normal;
-                }
+                // Circle
+                _stepCircles[i].Classes.Set("StepCompleted", isCompleted);
+                _stepCircles[i].Classes.Set("StepCurrent", isCurrent);
+
+                // Number text
+                _stepNums[i].Classes.Set("StepCompleted", isCompleted);
+                _stepNums[i].Classes.Set("StepCurrent", isCurrent);
+                _stepNums[i].Text = isCompleted ? "\u2713" : stepNum.ToString();
+
+                // Label
+                _stepLabels[i].Classes.Set("StepCompleted", isCompleted);
+                _stepLabels[i].Classes.Set("StepCurrent", isCurrent);
             }
 
             // Connecting lines — green when the step above is completed
-            var strokeBrush = this.FindResource("Stroke") as IBrush
-                              ?? new SolidColorBrush(InactiveGray);
             for (int i = 0; i < 5; i++)
             {
-                var lineStepNum = i + 1;
-                _stepLines[i].Background = lineStepNum < Vm.CurrentStep
-                    ? new SolidColorBrush(LineGreen)
-                    : strokeBrush;
+                _stepLines[i].Classes.Set("StepLineCompleted", i + 1 < Vm.CurrentStep);
             }
         }, Avalonia.Threading.DispatcherPriority.Loaded);
     }
@@ -364,15 +314,9 @@ public partial class CreateProjectView : UserControl
     #region Type Cards
 
     /// <summary>
-    /// Set the selected type card and apply styles to all cards.
-    /// Vue reference (App.vue lines 3565-3705):
-    ///   Card: min-height 160px, rounded-xl (12px), border-2 always.
-    ///   Dark unselected: bg-gradient-to-br from-[#0A0A0A] to-[#1a1a1a], border-[#404040]
-    ///   Light unselected: bg-gradient-to-br from-white to-gray-50, border-gray-200
-    ///   Selected: border-{brandColor}, bg-{brandColor} bg-opacity-5,
-    ///             icon square solid brand with white icon, title = brand color,
-    ///             radio = filled brand with white checkmark.
-    ///   Hover (unselected): border changes to brand color at 50% opacity.
+    /// Set the selected type card via CSS class toggling.
+    /// Styles handle all visual states — code-behind only toggles TypeCardSelected class
+    /// and shows/hides radio check indicators.
     /// </summary>
     private void HighlightTypeCard(string type)
     {
@@ -381,196 +325,24 @@ public partial class CreateProjectView : UserControl
     }
 
     /// <summary>
-    /// Get the gradient background brush for unselected cards.
-    /// Dark: from-#0A0A0A to-#1a1a1a; Light: from-white to-#F9FAFB
-    /// </summary>
-    private IBrush GetCardDefaultBackground()
-    {
-        bool isDark = Application.Current?.ActualThemeVariant == ThemeVariant.Dark;
-
-        if (isDark)
-        {
-            return new LinearGradientBrush
-            {
-                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
-                GradientStops =
-                {
-                    new GradientStop(Color.Parse("#0A0A0A"), 0),
-                    new GradientStop(Color.Parse("#1A1A1A"), 1),
-                }
-            };
-        }
-        else
-        {
-            return new LinearGradientBrush
-            {
-                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative),
-                GradientStops =
-                {
-                    new GradientStop(Colors.White, 0),
-                    new GradientStop(Color.Parse("#F9FAFB"), 1),
-                }
-            };
-        }
-    }
-
-    /// <summary>
-    /// Get the selected card background: brand color at 5% opacity.
-    /// Vue: bg-{brandColor} bg-opacity-5
-    /// </summary>
-    private static IBrush GetCardSelectedBackground(Color brandColor)
-    {
-        return new SolidColorBrush(brandColor, 0.05);
-    }
-
-    /// <summary>
-    /// Get the icon background for unselected cards.
-    /// Vue dark: bg-[#1a1a1a]; Vue light: bg-gray-100 (#F3F4F6)
-    /// </summary>
-    private IBrush GetIconDefaultBackground()
-    {
-        bool isDark = Application.Current?.ActualThemeVariant == ThemeVariant.Dark;
-        return new SolidColorBrush(isDark ? Color.Parse("#1A1A1A") : Color.Parse("#F3F4F6"));
-    }
-
-    /// <summary>
-    /// Apply visual states to all three type cards based on current selection.
+    /// Apply visual states to all three type cards via CSS class toggling.
+    /// Zero FindResource, zero ClearValue, zero SolidColorBrush construction.
     /// </summary>
     private void ApplyTypeCardStyles()
     {
         if (_typeCards.Length == 0) return;
 
         var types = new[] { "investment", "fund", "subscription" };
-        var colors = new[] { InvestColor, FundColor, SubscriptionColor };
-
-        var strokeBrush = this.FindResource("Stroke") as IBrush
-                          ?? new SolidColorBrush(Color.Parse("#404040"));
-        var textStrongBrush = this.FindResource("TextStrong") as IBrush
-                              ?? new SolidColorBrush(Color.Parse("#FAFAFA"));
-        var defaultBg = GetCardDefaultBackground();
-
-        // Icon bg for unselected: Vue uses bg-[#1a1a1a] (dark) or bg-gray-100 (light)
-        var iconDefaultBg = GetIconDefaultBackground();
 
         for (int i = 0; i < 3; i++)
         {
             var isSelected = types[i] == _selectedType;
-            var accentColor = colors[i];
-            var accentBrush = new SolidColorBrush(accentColor);
 
-            var card = _typeCards[i];
-            var iconBg = _iconBgs[i];
-            var iconPath = _iconPaths[i];
-            var title = _titleTexts[i];
-            var radio = _radioCircles[i];
+            // Toggle selected class on the card border — styles handle everything
+            _typeCards[i].Classes.Set("TypeCardSelected", isSelected);
 
-            if (isSelected)
-            {
-                // === SELECTED STATE ===
-                // Vue: border-{brandColor} border-2, bg-{brandColor}/5
-                card.BorderBrush = accentBrush;
-                card.BorderThickness = new Thickness(2);
-                card.Background = GetCardSelectedBackground(accentColor);
-
-                title.Foreground = accentBrush;
-
-                // Icon square: solid brand bg with white icon
-                iconBg.Background = accentBrush;
-                if (IconUsesStroke[i])
-                {
-                    iconPath.Stroke = Brushes.White;
-                    iconPath.Fill = null;
-                }
-                else
-                {
-                    iconPath.Fill = Brushes.White;
-                    iconPath.Stroke = null;
-                }
-
-                // Radio: filled brand circle with white checkmark
-                radio.Background = accentBrush;
-                radio.BorderBrush = accentBrush;
-                radio.Child = new Viewbox
-                {
-                    Width = 12, Height = 12,
-                    Child = new Path
-                    {
-                        Data = StreamGeometry.Parse("M4 12l5 5L20 7"),
-                        Stroke = Brushes.White,
-                        StrokeThickness = 2.5,
-                        StrokeLineCap = PenLineCap.Round,
-                        StrokeJoin = PenLineJoin.Round,
-                        Width = 24, Height = 24,
-                        Stretch = Stretch.Uniform
-                    }
-                };
-            }
-            else
-            {
-                // === UNSELECTED STATE ===
-                // Vue: border-[#404040] border-2, bg-gradient-to-br from-[#0A0A0A] to-[#1a1a1a]
-                card.BorderBrush = strokeBrush;
-                card.BorderThickness = new Thickness(2);
-                card.Background = defaultBg;
-
-                title.Foreground = textStrongBrush;
-
-                // Icon square: dark surface bg with original colored icon
-                // Vue: bg-[#1a1a1a] (dark) or bg-gray-100 (light)
-                iconBg.Background = iconDefaultBg;
-                if (IconUsesStroke[i])
-                {
-                    iconPath.Stroke = i == 0 ? InvestIconStroke : SubscriptionIconStroke;
-                    iconPath.Fill = null;
-                }
-                else
-                {
-                    iconPath.Fill = FundIconFill;
-                    iconPath.Stroke = null;
-                }
-
-                // Radio: transparent bg, stroke border
-                radio.Background = Brushes.Transparent;
-                radio.BorderBrush = strokeBrush;
-                radio.Child = null;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Wire hover effects on type cards.
-    /// Vue: on hover (unselected), border changes to brand color at 50% opacity.
-    /// </summary>
-    private void WireTypeCardHoverEffects()
-    {
-        if (_typeCards.Length == 0) return;
-
-        var colors = new[] { InvestColor, FundColor, SubscriptionColor };
-
-        for (int i = 0; i < _typeCards.Length; i++)
-        {
-            var idx = i;
-            var card = _typeCards[i];
-
-            card.PointerEntered += (_, _) =>
-            {
-                var types = new[] { "investment", "fund", "subscription" };
-                if (types[idx] == _selectedType) return; // No hover on selected
-                // Vue: border changes to brand color at 50% opacity on hover
-                card.BorderBrush = new SolidColorBrush(colors[idx], 0.5);
-            };
-
-            card.PointerExited += (_, _) =>
-            {
-                var types = new[] { "investment", "fund", "subscription" };
-                if (types[idx] == _selectedType) return; // No change on selected
-                // Restore default border
-                var strokeBrush = this.FindResource("Stroke") as IBrush
-                                  ?? new SolidColorBrush(Color.Parse("#404040"));
-                card.BorderBrush = strokeBrush;
-            };
+            // Show/hide pre-built radio check indicator
+            _radioChecks[i].IsVisible = isSelected;
         }
     }
 
@@ -756,6 +528,29 @@ public partial class CreateProjectView : UserControl
     }
 
     #endregion
+
+    private ShellViewModel? GetShellVm()
+    {
+        var shellView = this.FindAncestorOfType<ShellView>();
+        return shellView?.DataContext as ShellViewModel;
+    }
+
+    /// <summary>
+    /// Create DeployFlowOverlay and push it to the shell-level modal overlay.
+    /// Same pattern as InvestPageView.ShowShellModal().
+    /// </summary>
+    private void ShowDeployShellModal(CreateProjectViewModel vm)
+    {
+        var shellVm = GetShellVm();
+        if (shellVm == null || shellVm.IsModalOpen) return;
+
+        var overlay = new DeployFlowOverlay
+        {
+            DataContext = vm.DeployFlow
+        };
+
+        shellVm.ShowModal(overlay);
+    }
 
     private void NavigateBackToMyProjects()
     {

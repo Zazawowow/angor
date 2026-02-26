@@ -176,20 +176,39 @@
             <SolidColorBrush x:Key="BadgeApprovedForeground" Color="#155724" />
             <SolidColorBrush x:Key="BadgePendingBackground" Color="#FEF3C7" />
             <SolidColorBrush x:Key="BadgePendingForeground" Color="#92400E" />
+            <SolidColorBrush x:Key="BadgePendingBorder" Color="#FDE68A" />
             <!-- Released: Vue light bg=#d4edda, color=#155724, border=#c3e6cb -->
             <SolidColorBrush x:Key="BadgeReleasedBackground" Color="#D4EDDA" />
             <SolidColorBrush x:Key="BadgeReleasedForeground" Color="#155724" />
+            <SolidColorBrush x:Key="BadgeReleasedBorder" Color="#C3E6CB" />
             <!-- Not Spent: Vue light bg=#f9fafb, color=#6b7280, border=#e5e7eb -->
             <SolidColorBrush x:Key="BadgeNotSpentBackground" Color="#F9FAFB" />
             <SolidColorBrush x:Key="BadgeNotSpentForeground" Color="#6B7280" />
+            <SolidColorBrush x:Key="BadgeNotSpentBorder" Color="#E5E7EB" />
             <!-- Recovered: Vue light bg=#dbeafe, color=#1e40af, border=#bfdbfe -->
             <SolidColorBrush x:Key="BadgeRecoveredBackground" Color="#DBEAFE" />
             <SolidColorBrush x:Key="BadgeRecoveredForeground" Color="#1E40AF" />
+            <SolidColorBrush x:Key="BadgeRecoveredBorder" Color="#BFDBFE" />
             
             <!-- Stage amount green (Vue: #2d5a3d light, #5FAF78 dark) -->
             <SolidColorBrush x:Key="StageAmountGreen" Color="#2D5A3D" />
             <!-- Progress percentage (Vue: #2d5a3d light, #5FAF78 dark) -->
             <SolidColorBrush x:Key="ProgressPercentage" Color="#2D5A3D" />
+
+            <!-- Subscription plan button (Vue: .subscription-pattern-btn) -->
+            <!-- Light: bg white, border #e5e7eb, selected border/bg #9e9e9e / rgba(158,158,158,0.1) -->
+            <SolidColorBrush x:Key="SubPlanBtnBg" Color="White" />
+            <SolidColorBrush x:Key="SubPlanBtnBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="SubPlanBtnHoverBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="SubPlanBtnHoverBorder" Color="#9E9E9E" />
+            <SolidColorBrush x:Key="SubPlanBtnSelectedBg" Color="#199E9E9E" />
+            <SolidColorBrush x:Key="SubPlanBtnSelectedBorder" Color="#9E9E9E" />
+            <!-- Vue: .pattern-label #1a1a1a, .pattern-price #9e9e9e, .pattern-description #6b7280 -->
+            <SolidColorBrush x:Key="SubPlanLabel" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="SubPlanPrice" Color="#9E9E9E" />
+            <SolidColorBrush x:Key="SubPlanDescription" Color="#6B7280" />
+            <!-- Vue: .subscription-card-title #7c2d12 (light) -->
+            <SolidColorBrush x:Key="SubCardTitle" Color="#7C2D12" />
 
             <!-- Waiting card (Step 1): Vue linear-gradient(to bottom right, #fef3c7, #fde68a), border #fbbf24 -->
             <LinearGradientBrush x:Key="WaitingCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
@@ -237,16 +256,58 @@
             <SolidColorBrush x:Key="DeployFeePillBg" Color="#FFFBEB" />
             <SolidColorBrush x:Key="DeployFeePillBorder" Color="#FDE68A" />
             <SolidColorBrush x:Key="DeployFeePillText" Color="#854D0E" />
-            <SolidColorBrush x:Key="DeployTabSelectedBg" Color="#1A4B7C5A" />
-            <SolidColorBrush x:Key="DeployTabUnselectedBg" Color="#F9FAFB" />
+            <!-- Vue light: selected tab bg:#f1f7f3 border:#4B7C5A; unselected bg:white border:gray-200 -->
+            <SolidColorBrush x:Key="DeployTabSelectedBg" Color="#F1F7F3" />
+            <SolidColorBrush x:Key="DeployTabUnselectedBg" Color="White" />
             <SolidColorBrush x:Key="DeployTabUnselectedText" Color="#6B7280" />
-            <SolidColorBrush x:Key="DeployWalletItemBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="DeployWalletItemBg" Color="White" />
+            <SolidColorBrush x:Key="DeployWalletItemBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="DeployWalletSelectedBg" Color="#F1F7F3" />
+            <SolidColorBrush x:Key="DeployWalletSelectedBorder" Color="#4B7C5A" />
             <SolidColorBrush x:Key="DeployWalletIconBg" Color="#F3F4F6" />
             <SolidColorBrush x:Key="DeploySecondaryBtnBorder" Color="#33000000" />
             <SolidColorBrush x:Key="DeployQrBorder" Color="#D1D5DB" />
             <SolidColorBrush x:Key="DeployQrIconFill" Color="#9CA3AF" />
-            <!-- Modal backdrop: light mode uses subtle gray to avoid harsh black look -->
-            <SolidColorBrush x:Key="ModalBackdrop" Color="#33000000" />
+            <!-- Modal backdrop: light mode, 50% black (Vue: bg-black bg-opacity-50) -->
+            <SolidColorBrush x:Key="ModalBackdrop" Color="#80000000" />
+
+            <!-- ── Investment Card Type Pill Colors (light) ── -->
+            <!-- Vue: .type-invest bg:#dbeafe color:#1e40af -->
+            <SolidColorBrush x:Key="TypeInvestBackground" Color="#DBEAFE" />
+            <SolidColorBrush x:Key="TypeInvestForeground" Color="#1E40AF" />
+            <!-- Vue: .type-fund bg:#fef3c7 color:#92400e -->
+            <SolidColorBrush x:Key="TypeFundBackground" Color="#FEF3C7" />
+            <SolidColorBrush x:Key="TypeFundForeground" Color="#92400E" />
+            <!-- Vue: .type-subscription bg:#e0e7ff color:#3730a3 -->
+            <SolidColorBrush x:Key="TypeSubscriptionBackground" Color="#E0E7FF" />
+            <SolidColorBrush x:Key="TypeSubscriptionForeground" Color="#3730A3" />
+
+            <!-- ── Investment Card Status Pill Colors (light) ── -->
+
+            <!-- ── Type Card Resources (light) ── -->
+            <!-- Vue: unselected bg-gradient from-white to-#F9FAFB, border gray-200 (#e5e7eb) -->
+            <LinearGradientBrush x:Key="TypeCardDefaultBg" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="White" Offset="0" />
+                <GradientStop Color="#F9FAFB" Offset="1" />
+            </LinearGradientBrush>
+            <!-- Vue: icon bg gray-100 (#F3F4F6) -->
+            <SolidColorBrush x:Key="TypeCardIconDefaultBg" Color="#F3F4F6" />
+            <!-- Vue: selected bg = brandColor at 5% opacity -->
+            <SolidColorBrush x:Key="TypeCardInvestSelectedBg" Color="#0D4B7C5A" />
+            <SolidColorBrush x:Key="TypeCardFundSelectedBg" Color="#0DF7931A" />
+            <SolidColorBrush x:Key="TypeCardSubSelectedBg" Color="#0D9E9E9E" />
+            <!-- Vue: .status-waiting color:#f59e0b bg:rgba(245,158,11,0.1) border:rgba(245,158,11,0.3) -->
+            <SolidColorBrush x:Key="StatusWaitingBackground" Color="#1AF59E0B" />
+            <SolidColorBrush x:Key="StatusWaitingBorder" Color="#4DF59E0B" />
+            <SolidColorBrush x:Key="StatusWaitingForeground" Color="#F59E0B" />
+            <!-- Vue: .status-signed/.status-active color:#4B7C5A bg:rgba(75,124,90,0.1) border:rgba(75,124,90,0.3) -->
+            <SolidColorBrush x:Key="StatusSignedBackground" Color="#1A4B7C5A" />
+            <SolidColorBrush x:Key="StatusSignedBorder" Color="#4D4B7C5A" />
+            <SolidColorBrush x:Key="StatusSignedForeground" Color="#4B7C5A" />
+            <!-- Vue: .status-recovered color:#3b82f6 bg:rgba(59,130,246,0.1) border:rgba(59,130,246,0.3) -->
+            <SolidColorBrush x:Key="StatusRecoveredBackground" Color="#1A3B82F6" />
+            <SolidColorBrush x:Key="StatusRecoveredBorder" Color="#4D3B82F6" />
+            <SolidColorBrush x:Key="StatusRecoveredForeground" Color="#3B82F6" />
 
         </ResourceDictionary>
 
@@ -396,20 +457,39 @@
             <SolidColorBrush x:Key="BadgeApprovedForeground" Color="#86EFAC" />
             <SolidColorBrush x:Key="BadgePendingBackground" Color="#26FBBF24" />
             <SolidColorBrush x:Key="BadgePendingForeground" Color="#FDE68A" />
+            <SolidColorBrush x:Key="BadgePendingBorder" Color="#4DFBBF24" />
             <!-- Released dark: Vue rgba(34,197,94,0.15), color #4ade80 -->
             <SolidColorBrush x:Key="BadgeReleasedBackground" Color="#2622C55E" />
             <SolidColorBrush x:Key="BadgeReleasedForeground" Color="#4ADE80" />
+            <SolidColorBrush x:Key="BadgeReleasedBorder" Color="#4D22C55E" />
             <!-- Not Spent dark: Vue rgba(107,114,128,0.15), color #9ca3af -->
             <SolidColorBrush x:Key="BadgeNotSpentBackground" Color="#266B7280" />
             <SolidColorBrush x:Key="BadgeNotSpentForeground" Color="#9CA3AF" />
+            <SolidColorBrush x:Key="BadgeNotSpentBorder" Color="#4D6B7280" />
             <!-- Recovered dark: Vue rgba(59,130,246,0.15), color #60a5fa -->
             <SolidColorBrush x:Key="BadgeRecoveredBackground" Color="#263B82F6" />
             <SolidColorBrush x:Key="BadgeRecoveredForeground" Color="#60A5FA" />
+            <SolidColorBrush x:Key="BadgeRecoveredBorder" Color="#4D3B82F6" />
             
             <!-- Stage amount green (dark: #5FAF78) -->
             <SolidColorBrush x:Key="StageAmountGreen" Color="#5FAF78" />
             <!-- Progress percentage (dark: #5FAF78) -->
             <SolidColorBrush x:Key="ProgressPercentage" Color="#5FAF78" />
+
+            <!-- Subscription plan button (dark mode) -->
+            <!-- Vue: dark .subscription-pattern-btn bg #1a1a1a, border #404040 -->
+            <SolidColorBrush x:Key="SubPlanBtnBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="SubPlanBtnBorder" Color="#404040" />
+            <SolidColorBrush x:Key="SubPlanBtnHoverBg" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="SubPlanBtnHoverBorder" Color="#B0B0B0" />
+            <SolidColorBrush x:Key="SubPlanBtnSelectedBg" Color="#269E9E9E" />
+            <SolidColorBrush x:Key="SubPlanBtnSelectedBorder" Color="#B0B0B0" />
+            <!-- Vue: dark .pattern-label #fafafa, .pattern-price #d0d0d0, .pattern-description #9ca3af -->
+            <SolidColorBrush x:Key="SubPlanLabel" Color="#FAFAFA" />
+            <SolidColorBrush x:Key="SubPlanPrice" Color="#D0D0D0" />
+            <SolidColorBrush x:Key="SubPlanDescription" Color="#9CA3AF" />
+            <!-- Vue: dark .subscription-card-title #fb923c (orange) -->
+            <SolidColorBrush x:Key="SubCardTitle" Color="#FB923C" />
 
             <!-- Waiting card (Step 1) dark: amber-tinted dark bg -->
             <LinearGradientBrush x:Key="WaitingCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
@@ -461,6 +541,9 @@
             <SolidColorBrush x:Key="DeployTabUnselectedBg" Color="#1A1A1A" />
             <SolidColorBrush x:Key="DeployTabUnselectedText" Color="#D1D5DB" />
             <SolidColorBrush x:Key="DeployWalletItemBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="DeployWalletItemBorder" Color="#404040" />
+            <SolidColorBrush x:Key="DeployWalletSelectedBg" Color="#334B7C5A" />
+            <SolidColorBrush x:Key="DeployWalletSelectedBorder" Color="#4B7C5A" />
             <SolidColorBrush x:Key="DeployWalletIconBg" Color="#2A2A2A" />
             <SolidColorBrush x:Key="DeploySecondaryBtnBorder" Color="#33FFFFFF" />
             <SolidColorBrush x:Key="DeployQrBorder" Color="#374151" />
@@ -468,12 +551,56 @@
             <!-- Modal backdrop: dark mode uses standard black at 50% -->
             <SolidColorBrush x:Key="ModalBackdrop" Color="#80000000" />
 
+            <!-- ── Investment Card Type Pill Colors (dark) ── -->
+            <!-- Vue: .type-invest dark bg:rgba(59,130,246,0.15) color:#60a5fa -->
+            <SolidColorBrush x:Key="TypeInvestBackground" Color="#263B82F6" />
+            <SolidColorBrush x:Key="TypeInvestForeground" Color="#60A5FA" />
+            <!-- Vue: .type-fund dark bg:rgba(245,158,11,0.15) color:#fbbf24 -->
+            <SolidColorBrush x:Key="TypeFundBackground" Color="#26F59E0B" />
+            <SolidColorBrush x:Key="TypeFundForeground" Color="#FBBF24" />
+            <!-- Vue: .type-subscription dark bg:rgba(139,92,246,0.15) color:#a78bfa -->
+            <SolidColorBrush x:Key="TypeSubscriptionBackground" Color="#268B5CF6" />
+            <SolidColorBrush x:Key="TypeSubscriptionForeground" Color="#A78BFA" />
+
+            <!-- ── Investment Card Status Pill Colors (dark) ── -->
+
+            <!-- ── Type Card Resources (dark) ── -->
+            <!-- Vue: unselected bg-gradient from-#0A0A0A to-#1a1a1a, border #404040 -->
+            <LinearGradientBrush x:Key="TypeCardDefaultBg" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#0A0A0A" Offset="0" />
+                <GradientStop Color="#1A1A1A" Offset="1" />
+            </LinearGradientBrush>
+            <!-- Vue: icon bg #1a1a1a -->
+            <SolidColorBrush x:Key="TypeCardIconDefaultBg" Color="#1A1A1A" />
+            <!-- Vue: selected bg = brandColor at 5% opacity -->
+            <SolidColorBrush x:Key="TypeCardInvestSelectedBg" Color="#0D4B7C5A" />
+            <SolidColorBrush x:Key="TypeCardFundSelectedBg" Color="#0DF7931A" />
+            <SolidColorBrush x:Key="TypeCardSubSelectedBg" Color="#0D9E9E9E" />
+            <!-- Vue: .status-waiting dark color:#fbbf24 bg:rgba(251,191,36,0.15) border:rgba(251,191,36,0.3) -->
+            <SolidColorBrush x:Key="StatusWaitingBackground" Color="#26FBBF24" />
+            <SolidColorBrush x:Key="StatusWaitingBorder" Color="#4DFBBF24" />
+            <SolidColorBrush x:Key="StatusWaitingForeground" Color="#FBBF24" />
+            <!-- Vue: .status-signed/.status-active dark color:#4B7C5A bg:rgba(75,124,90,0.15) border same -->
+            <SolidColorBrush x:Key="StatusSignedBackground" Color="#264B7C5A" />
+            <SolidColorBrush x:Key="StatusSignedBorder" Color="#4D4B7C5A" />
+            <SolidColorBrush x:Key="StatusSignedForeground" Color="#4B7C5A" />
+            <!-- Vue: .status-recovered dark color:#60a5fa bg:rgba(96,165,250,0.15) border:rgba(96,165,250,0.3) -->
+            <SolidColorBrush x:Key="StatusRecoveredBackground" Color="#2660A5FA" />
+            <SolidColorBrush x:Key="StatusRecoveredBorder" Color="#4D60A5FA" />
+            <SolidColorBrush x:Key="StatusRecoveredForeground" Color="#60A5FA" />
+
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          SHARED RESOURCES (theme-independent)
          ═══════════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Stepper Colors (same in both themes) ── -->
+    <SolidColorBrush x:Key="StepCompletedGreen" Color="#2D5A3D" />
+    <SolidColorBrush x:Key="StepCurrentGreen" Color="#4B7C5A" />
+    <SolidColorBrush x:Key="StepInactiveGray" Color="#888888" />
+    <SolidColorBrush x:Key="StepLineGreen" Color="#2D5A3D" />
 
     <!--
         App-wide crosshatch texture replicating the web CSS:

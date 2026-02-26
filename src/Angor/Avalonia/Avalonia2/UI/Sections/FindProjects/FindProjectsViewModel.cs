@@ -42,6 +42,8 @@ public class ProjectItemViewModel
     public string PenaltyDays { get; set; } = "30";
     /// <summary>Payout/funding frequency for fund/subscription projects</summary>
     public string PayoutFrequency { get; set; } = "Monthly";
+    /// <summary>Subscription price per month in sats (subscription projects only)</summary>
+    public long SubscriptionPrice { get; set; } = 20000;
 
     /// <summary>Stages for investment projects (reuse from Portfolio)</summary>
     public ObservableCollection<InvestmentStageViewModel> Stages { get; set; } = new();

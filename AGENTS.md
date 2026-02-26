@@ -101,9 +101,43 @@ src/Angor/Avalonia/Avalonia2/
 - Modal fade: Opacity transition on overlay panels
 - Progress bars: Width animation with easing
 
-### 6. Build & Run
+### 6. Uniform 24px Section Spacing
+All section-level spacing MUST use **24px** uniformly. This includes:
+- **Page padding**: `ScrollableView ContentPadding="24"` (or `Margin="24"` on the outermost Grid for two-column layouts)
+- **Top margin**: 24px from the top of the section to the first content element
+- **Nav-to-content gap**: 24px between any fixed nav bar and the scrollable content below it
+- **Between content cards**: `Spacing="24"` on the main vertical StackPanel (the gap between major card sections stacked vertically)
+- **Side margins**: 24px left and right
+- **Bottom margin**: 24px at the bottom of the scroll content
+- **Grid column gap** (two-column layouts): 24px between the left panel and the right content column
+
+**Exceptions** (internal spacing within cards, not section-level):
+- Stat card grids use `gap: 16px` (achieved via 8px margin on each side of inner items)
+- Card internal padding is `24px` (detail cards) or `20px` (stat cards) — per Vue prototype
+- Inner element spacing (icon-to-text, label-to-value) follows the Vue prototype exactly
+
+**For sticky nav bar views** (e.g., InvestmentDetailView): the nav bar uses `VerticalAlignment="Top"` + `ZIndex="100"`, and the scroll content has a spacer Panel whose height = nav top margin (24) + nav height (44) + gap below nav (24) = **92px**.
+
+### 7. Build & Run
 ```bash
 cd src/Angor/Avalonia
 dotnet build Avalonia2.slnx
 dotnet run --project Avalonia2.Desktop
 ```
+
+### 8. Mandatory Dark/Light Mode State Verification for Interactive Elements
+Every interactive element (buttons, cards, list items, tabs, plan selectors, wallet cards) MUST have ALL visual states explicitly defined and verified in BOTH light AND dark themes. Before implementing any clickable/selectable element:
+
+1. **Read the Vue prototype** to extract exact CSS for ALL states in BOTH themes:
+   - Default/inactive state (light + dark)
+   - Hover state (light + dark)
+   - Selected/active state (light + dark)
+   - Disabled state (light + dark, if applicable)
+
+2. **Define `SolidColorBrush` resources** for each state in Colors.axaml with BOTH light and dark variants — never use hardcoded colors that differ between themes.
+
+3. **Prefer `DynamicResource` bindings in XAML over code-behind color assignment.** When code-behind explicitly sets `Background` or `BorderBrush`, it permanently overrides the XAML `{DynamicResource}` binding. For unselected/default states, use `ClearValue(Border.BackgroundProperty)` to restore the XAML binding instead of setting a new brush.
+
+4. **Never use `new SolidColorBrush(Color.Parse(...))` for theme-dependent values** in code-behind — always use `FindResource("ResourceKey") as IBrush` and verify it returns non-null. If the resource is a `Color` (not a `SolidColorBrush`), the `as IBrush` cast returns `null`.
+
+5. **Test both themes** before considering any interactive element complete.

@@ -10,164 +10,315 @@
 
     <!--
         InvestPage — Vue ref: InvestPage.vue (2984 lines)
-        Layout: sticky nav bar → 3-column grid → sticky footer
+        Layout: fixed nav bar (top) + fixed footer (bottom) + scrollable 3-column grid
+        Supports: Investment (BTC amount input) and Subscription (plan selection cards)
         Modals: Wallet Selector → Invoice/QR → Success (overlays on top)
     -->
+
+    <UserControl.Styles>
+        <!-- Vue: .back-button-floating hover → translateY(-1px) + enhanced shadow -->
+        <Style Selector="Border.BackButton:pointerover">
+            <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
+            <Setter Property="BoxShadow" Value="0 6 16 0 #33000000" />
+        </Style>
+        <Style Selector="Border.FloatingBtn:pointerover">
+            <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
+            <Setter Property="BoxShadow" Value="0 6 16 0 #33000000" />
+        </Style>
+        <!-- Kill FluentTheme button chrome on the back button -->
+        <Style Selector="Button.BackBtn">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="Button.BackBtn:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.BackBtn:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <!-- Subscription plan button default state (via style, not inline) -->
+        <Style Selector="Border.SubPlanBtn">
+            <Setter Property="Background" Value="{DynamicResource SubPlanBtnBg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SubPlanBtnBorder}" />
+        </Style>
+        <!-- Subscription plan button hover (Vue: border-color #9e9e9e, bg #f9fafb / dark #2a2a2a) -->
+        <Style Selector="Border.SubPlanBtn:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource SubPlanBtnHoverBorder}" />
+            <Setter Property="Background" Value="{DynamicResource SubPlanBtnHoverBg}" />
+        </Style>
+        <!-- Subscription plan button selected state -->
+        <Style Selector="Border.SubPlanBtn.SubPlanSelected">
+            <Setter Property="Background" Value="{DynamicResource SubPlanBtnSelectedBg}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SubPlanBtnSelectedBorder}" />
+        </Style>
+        <!-- Quick amount button default state (via style, not inline) -->
+        <Style Selector="Border.QuickAmountBtn">
+            <Setter Property="Background" Value="{DynamicResource StatsDetailInnerBackground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource StatsDetailInnerBorder}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <!-- Quick amount: selected = brand green bg + border, white text (same both themes) -->
+        <Style Selector="Border.QuickAmountBtn.QuickAmountSelected">
+            <Setter Property="Background" Value="#2D5A3D" />
+            <Setter Property="BorderBrush" Value="#2D5A3D" />
+        </Style>
+        <!-- Quick amount: text colors follow parent selection state -->
+        <Style Selector="Border.QuickAmountBtn > StackPanel > TextBlock.QuickAmountValue">
+            <Setter Property="Foreground" Value="{DynamicResource StatsDetailValue}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.QuickAmountBtn.QuickAmountSelected > StackPanel > TextBlock.QuickAmountValue">
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style Selector="Border.QuickAmountBtn > StackPanel > TextBlock.QuickAmountLabel">
+            <Setter Property="Foreground" Value="{DynamicResource StatsDetailLabel}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.QuickAmountBtn.QuickAmountSelected > StackPanel > TextBlock.QuickAmountLabel">
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+    </UserControl.Styles>
+
     <Panel>
         <!-- ═══════════════════════════════════════════════════════ -->
-        <!-- MAIN CONTENT (form)                                     -->
+        <!-- FIXED NAV BAR (top, ZIndex=100)                        -->
+        <!-- Vue: sticky top-0, z-index:100, transparent bg          -->
+        <!-- Subscription: hides right-side stats pills              -->
         <!-- ═══════════════════════════════════════════════════════ -->
-        <DockPanel>
-            <!-- ── STICKY NAV BAR ── -->
-            <!-- Vue: sticky top-0, padding 16px 8px, transparent bg -->
-            <Border DockPanel.Dock="Top" Padding="24,16">
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <!-- Back button: Vue white bg, border #e0e0e0, rounded-lg, shadow -->
-                    <Border Name="BackButton" Grid.Column="0"
-                            Background="{DynamicResource Surface}"
-                            BorderBrush="{DynamicResource Stroke}"
-                            BorderThickness="1" CornerRadius="8"
-                            BoxShadow="{DynamicResource ItemShadow}"
-                            Padding="12,8" Cursor="Hand"
-                            VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-                                <Path Data="{StaticResource ChevronLeft}"
-                                      Stroke="{DynamicResource TextStrong}" StrokeThickness="2"
-                                      StrokeLineCap="Round" StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
-                            <TextBlock Text="Back"
-                                       FontSize="14" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextStrong}"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
+        <DockPanel VerticalAlignment="Top"
+                   ZIndex="100"
+                   Margin="24,24,24,0"
+                   IsHitTestVisible="True">
 
-                    <!-- Project title label: Vue same card style -->
-                    <Border Grid.Column="1" HorizontalAlignment="Center"
-                            Background="{DynamicResource Surface}"
-                            BorderBrush="{DynamicResource Stroke}"
-                            BorderThickness="1" CornerRadius="8"
-                            BoxShadow="{DynamicResource ItemShadow}"
-                            Padding="16,8"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Project.ProjectName}"
-                                   FontSize="15" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextStrong}"
-                                   TextTrimming="CharacterEllipsis"
-                                   MaxWidth="400" />
-                    </Border>
-
-                    <!-- Nav stats: Total Raised + Progress -->
-                    <Border Grid.Column="2"
-                            Background="{DynamicResource Surface}"
-                            BorderBrush="{DynamicResource Stroke}"
-                            BorderThickness="1" CornerRadius="8"
-                            BoxShadow="{DynamicResource ItemShadow}"
-                            Padding="16,8"
-                            VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" Spacing="24">
-                            <!-- Total Raised -->
-                            <StackPanel Spacing="0">
-                                <TextBlock Text="{Binding Project.RaisedNoun}"
-                                           FontSize="13" FontWeight="Medium"
-                                           Foreground="{DynamicResource TextMuted}" />
-                                <TextBlock Text="{Binding Project.Raised, StringFormat='{}{0} BTC'}"
-                                           FontSize="13" FontWeight="Bold"
-                                           Foreground="{DynamicResource TextStrong}" />
-                            </StackPanel>
-                            <!-- Progress -->
-                            <StackPanel Spacing="0">
-                                <TextBlock Text="Progress"
-                                           FontSize="13" FontWeight="Medium"
-                                           Foreground="{DynamicResource TextMuted}" />
-                                <TextBlock Text="{Binding Project.Progress, StringFormat='{}{0}%'}"
-                                           FontSize="13" FontWeight="Bold"
-                                           Foreground="{DynamicResource StageAmountGreen}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </Border>
-
-            <!-- ── STICKY FOOTER ── -->
-            <!-- Vue: sticky bottom-0, height 80px, bg white, border-top, shadow -->
-            <Border DockPanel.Dock="Bottom"
-                    Padding="40,20"
-                    BorderThickness="0,1,0,0"
-                    BorderBrush="{DynamicResource Stroke}"
+            <!-- LEFT: Back Button (standardized pattern) -->
+            <Border DockPanel.Dock="Left"
+                    Classes="BackButton"
                     Background="{DynamicResource Surface}"
-                    BoxShadow="0 -4 12 0 #14000000">
-                <Grid ColumnDefinitions="*,Auto" MaxWidth="1400"
-                      HorizontalAlignment="Center">
-                    <!-- Summary items -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="32"
-                                VerticalAlignment="Center">
-                        <StackPanel Spacing="2">
-                            <TextBlock Text="Investment Amount"
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Text="{Binding FormattedAmount, StringFormat='{}{0} BTC'}"
-                                       FontSize="16" FontWeight="Bold"
-                                       Foreground="{DynamicResource TextStrong}" />
-                        </StackPanel>
-                        <StackPanel Spacing="2">
-                            <TextBlock Text="Total (inc. fees)"
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Text="{Binding TotalAmount}"
-                                       FontSize="16" FontWeight="Bold"
-                                       Foreground="{DynamicResource TextStrong}" />
-                        </StackPanel>
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    BoxShadow="0 4 12 0 #26000000"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    RenderTransform="translate(0px, 0px)">
+                <Border.Transitions>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                    </Transitions>
+                </Border.Transitions>
+                <Button Name="BackButton"
+                        Classes="BackBtn"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Viewbox Width="10" Height="16">
+                            <Path Data="{StaticResource ChevronLeftThick}"
+                                  Fill="{DynamicResource TextStrong}"
+                                  Width="320" Height="512" Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock Text="Back"
+                                   FontSize="14"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
                     </StackPanel>
-
-                    <!-- Submit button: Vue gradient #4B7C5A → #3d6448, white text -->
-                    <Border Name="SubmitButton" Grid.Column="1"
-                            CornerRadius="8" Padding="32,14"
-                            Cursor="Hand"
-                            BoxShadow="0 2 8 0 #4D4B7C5A"
-                            VerticalAlignment="Center"
-                            IsEnabled="{Binding CanSubmit}">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                <GradientStop Color="#4B7C5A" Offset="0" />
-                                <GradientStop Color="#3d6448" Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                            <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                                <Path Data="{StaticResource BitcoinSymbol}"
-                                      Fill="White"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
-                            <TextBlock Text="{Binding Project.ActionButtonText}"
-                                       FontSize="16" FontWeight="SemiBold"
-                                       Foreground="White" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                </Button>
             </Border>
 
-            <!-- ── 3-COLUMN CONTENT GRID ── -->
-            <!-- Vue: grid-template-columns: repeat(3, 1fr), gap 24px, padding 8px 8px 24px 8px, max-width 1400px -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled">
-                <Grid ColumnDefinitions="*,*,*" MaxWidth="1400"
-                      HorizontalAlignment="Center"
-                      Margin="24,8,24,24">
+            <!-- RIGHT: Stats pill (Total Raised + Progress) — HIDDEN for subscription -->
+            <!-- Vue: v-if="project.projectType === 'invest'" -->
+            <Border DockPanel.Dock="Right"
+                    Classes="FloatingBtn"
+                    Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    BoxShadow="0 4 12 0 #26000000"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    RenderTransform="translate(0px, 0px)"
+                    IsVisible="{Binding IsNotSubscription}">
+                <Border.Transitions>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                    </Transitions>
+                </Border.Transitions>
+                <StackPanel Orientation="Horizontal" Spacing="24" VerticalAlignment="Center">
+                    <!-- Total Raised -->
+                    <StackPanel Spacing="0">
+                        <TextBlock Text="{Binding Project.RaisedNoun}"
+                                   FontSize="13" FontWeight="Medium"
+                                   Foreground="{DynamicResource TextMuted}" />
+                        <TextBlock Text="{Binding Project.Raised, StringFormat='{}{0} BTC'}"
+                                   FontSize="13" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}" />
+                    </StackPanel>
+                    <!-- Progress -->
+                    <StackPanel Spacing="0">
+                        <TextBlock Text="Progress"
+                                   FontSize="13" FontWeight="Medium"
+                                   Foreground="{DynamicResource TextMuted}" />
+                        <TextBlock Text="{Binding Project.Progress, StringFormat='{}{0}%'}"
+                                   FontSize="13" FontWeight="Bold"
+                                   Foreground="{DynamicResource StageAmountGreen}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- CENTER: Project Name pill (left-aligned, next to back button) -->
+            <Border Background="{DynamicResource Surface}"
+                    BorderBrush="{DynamicResource Stroke}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    BoxShadow="0 4 12 0 #26000000"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    Margin="12,0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left">
+                <TextBlock Text="{Binding Project.ProjectName}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextStrong}"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="400"
+                           VerticalAlignment="Center" />
+            </Border>
+        </DockPanel>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- FIXED FOOTER BAR (bottom, ZIndex=100)                   -->
+        <!-- Vue: sticky bottom-0, bg white, border-top, shadow      -->
+        <!-- Subscription: "Plan: N payments of X Sats" + Subscribe  -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <Border VerticalAlignment="Bottom"
+               ZIndex="100"
+               Padding="24,16"
+               CornerRadius="16,16,0,0"
+               BorderThickness="0,1,0,0"
+               BorderBrush="{DynamicResource Stroke}"
+               Background="{DynamicResource Surface}"
+               BoxShadow="0 -4 12 0 #14000000">
+            <!-- Vue: .footer-content { justify-content: flex-end } -->
+            <StackPanel Orientation="Horizontal" Spacing="24"
+                        HorizontalAlignment="Right" VerticalAlignment="Center"
+                        MaxWidth="1400">
+
+                <!-- Vue: .footer-summary { display: flex; gap: 32px } -->
+                <StackPanel Orientation="Horizontal" Spacing="32"
+                            VerticalAlignment="Center">
+                    <!-- Total (incl. fees) -->
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="Total (incl. fees):"
+                                   FontSize="14" FontWeight="Medium"
+                                   Foreground="{DynamicResource TextMuted}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding TotalAmount}"
+                                   FontSize="16" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                    <!-- Stages/Plan summary -->
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding StagesLabel}"
+                                   FontSize="14" FontWeight="Medium"
+                                   Foreground="{DynamicResource TextMuted}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding StagesSummary}"
+                                   FontSize="16" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Submit button -->
+                <Border Name="SubmitButton"
+                        CornerRadius="8" Padding="32,14"
+                        Cursor="Hand"
+                        BoxShadow="0 2 8 0 #4D4B7C5A"
+                        VerticalAlignment="Center"
+                        IsEnabled="{Binding CanSubmit}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#4B7C5A" Offset="0" />
+                            <GradientStop Color="#3d6448" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <!-- Investment: Bitcoin icon, Subscription: RefreshArrows icon -->
+                        <Viewbox Width="20" Height="20" VerticalAlignment="Center"
+                                 IsVisible="{Binding IsNotSubscription}">
+                            <Path Data="{StaticResource BitcoinSymbol}"
+                                  Fill="White"
+                                  Width="24" Height="24" Stretch="Uniform" />
+                        </Viewbox>
+                        <Viewbox Width="20" Height="20" VerticalAlignment="Center"
+                                 IsVisible="{Binding IsSubscription}">
+                            <Path Data="{StaticResource RefreshArrows}"
+                                  Stroke="White" StrokeThickness="2"
+                                  StrokeLineCap="Round" StrokeJoin="Round"
+                                  Width="24" Height="24" Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock Text="{Binding Project.ActionButtonText}"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="White" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- SCROLLABLE CONTENT (fills entire area, scrolls under    -->
+        <!-- nav bar and footer via spacers)                          -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <!-- Top spacer: nav top margin (24) + nav height (44) + gap (24) = 92px -->
+                <Panel Height="92" />
+
+                <!-- ── 3-COLUMN CONTENT GRID ── -->
+                <!-- Vue: grid-template-columns: repeat(3, 1fr), gap 24px -->
+                <!-- No MaxWidth — columns stretch to fill available space -->
+                <Grid ColumnDefinitions="*,*,*"
+                      HorizontalAlignment="Stretch"
+                      Margin="24,0,24,24">
                     <Grid.ColumnSpacing>24</Grid.ColumnSpacing>
                     <Grid.RowSpacing>24</Grid.RowSpacing>
 
                     <!-- ════════════════════════════════════════════ -->
-                    <!-- COLUMN 1: Amount Card (orange gradient)      -->
-                    <!-- Vue: linear-gradient(to bottom right, #fff7ed, #fef3c7), border #fed7aa -->
+                    <!-- COLUMN 1: Investment Amount Card (invest)    -->
+                    <!--           OR Subscription Plan Card (sub)    -->
                     <!-- ════════════════════════════════════════════ -->
+
+                    <!-- ── INVESTMENT AMOUNT (shown for invest/fund) ── -->
+                    <!-- Vue: linear-gradient(to bottom right, #fff7ed, #fef3c7), border #fed7aa -->
                     <Border Grid.Column="0"
                             CornerRadius="16" Padding="24"
                             BorderThickness="1"
                             Background="{DynamicResource StatsDetailCardBackground}"
-                            BorderBrush="{DynamicResource StatsDetailCardBorder}">
+                            BorderBrush="{DynamicResource StatsDetailCardBorder}"
+                            IsVisible="{Binding IsNotSubscription}">
                         <StackPanel Spacing="20">
                             <!-- Header: Bitcoin icon + title -->
                             <StackPanel Orientation="Horizontal" Spacing="12">
@@ -227,19 +378,18 @@
                                         <DataTemplate x:DataType="fp:QuickAmountOption">
                                             <!-- Vue: padding 10px 12px, bg #f9fafb, border 1px solid #e5e7eb, border-radius 8px -->
                                             <Border Name="QuickAmountBorder"
+                                                    Classes="QuickAmountBtn"
                                                     CornerRadius="8" Padding="10,8" Margin="4"
                                                     Cursor="Hand"
-                                                    BorderThickness="1"
-                                                    Background="{DynamicResource StatsDetailInnerBackground}"
-                                                    BorderBrush="{DynamicResource StatsDetailInnerBorder}">
+                                                    BorderThickness="1">
                                                 <StackPanel HorizontalAlignment="Center" Spacing="2">
-                                                    <TextBlock Text="{Binding AmountText}"
+                                                    <TextBlock Classes="QuickAmountValue"
+                                                               Text="{Binding AmountText}"
                                                                FontSize="15" FontWeight="Bold"
-                                                               Foreground="{DynamicResource StatsDetailValue}"
                                                                HorizontalAlignment="Center" />
-                                                    <TextBlock Text="{Binding Label}"
+                                                    <TextBlock Classes="QuickAmountLabel"
+                                                               Text="{Binding Label}"
                                                                FontSize="11" FontWeight="Medium"
-                                                               Foreground="{DynamicResource StatsDetailLabel}"
                                                                Opacity="0.7"
                                                                HorizontalAlignment="Center" />
                                                 </StackPanel>
@@ -251,8 +401,91 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- ── SUBSCRIPTION PLAN (shown for subscription type) ── -->
+                    <!-- Vue: .subscription-card { background: linear-gradient(to bottom right, #fff7ed, #fef3c7) } -->
+                    <!-- Same warm gradient as investment card but with subscription-specific content -->
+                    <Border Grid.Column="0"
+                            CornerRadius="16" Padding="24"
+                            BorderThickness="1"
+                            Background="{DynamicResource StatsDetailCardBackground}"
+                            BorderBrush="{DynamicResource StatsDetailCardBorder}"
+                            IsVisible="{Binding IsSubscription}">
+                        <StackPanel Spacing="20">
+                            <!-- Header: Recurring arrows icon + "Subscription Plan" -->
+                            <!-- Vue: .subscription-icon-circle (40x40, bg #f97316, border-radius 8px) -->
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Width="40" Height="40" CornerRadius="8"
+                                        Background="#F97316">
+                                    <Viewbox Width="20" Height="20"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Path Data="{StaticResource RefreshArrows}"
+                                              Stroke="White" StrokeThickness="2"
+                                              StrokeLineCap="Round" StrokeJoin="Round"
+                                              Width="24" Height="24" Stretch="Uniform" />
+                                    </Viewbox>
+                                </Border>
+                                <!-- Vue: .subscription-card-title { color: #7c2d12 } / dark { color: #fb923c } -->
+                                <TextBlock Text="Subscription Plan"
+                                           FontSize="18" FontWeight="Bold"
+                                           Foreground="{DynamicResource SubCardTitle}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <!-- Vue: .subscription-patterns { flex-direction: column; gap: 12px; margin-top: 8px } -->
+                            <ItemsControl ItemsSource="{Binding SubscriptionPlans}" Margin="0,8,0,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="12" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="fp:SubscriptionPlanOption">
+                                        <!--
+                                            Vue: .subscription-pattern-btn
+                                            padding: 16px, bg: white, border: 2px solid #e5e7eb,
+                                            border-radius: 12px, cursor: pointer, transition: all 0.2s
+                                        -->
+                                        <Border Name="SubPlanBorder"
+                                                Classes="SubPlanBtn"
+                                                CornerRadius="12" Padding="16"
+                                                Cursor="Hand"
+                                                BorderThickness="2">
+                                            <Border.Transitions>
+                                                <Transitions>
+                                                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                                                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                                                </Transitions>
+                                            </Border.Transitions>
+                                            <StackPanel Spacing="4">
+                                                <!-- Vue: .pattern-header { flex, space-between, center } -->
+                                                <Panel>
+                                                    <!-- Vue: .pattern-label { font-size: 16px; font-weight: 700 } -->
+                                                    <TextBlock Text="{Binding Label}"
+                                                               FontSize="16" FontWeight="Bold"
+                                                               Foreground="{DynamicResource SubPlanLabel}"
+                                                               HorizontalAlignment="Left"
+                                                               VerticalAlignment="Center" />
+                                                    <!-- Vue: .pattern-price { font-size: 16px; font-weight: 700; color: #9e9e9e } -->
+                                                    <TextBlock Text="{Binding PriceText}"
+                                                               FontSize="16" FontWeight="Bold"
+                                                               Foreground="{DynamicResource SubPlanPrice}"
+                                                               HorizontalAlignment="Right"
+                                                               VerticalAlignment="Center" />
+                                                </Panel>
+                                                <!-- Vue: .pattern-description { font-size: 13px; color: #6b7280 } -->
+                                                <TextBlock Text="{Binding Description}"
+                                                           FontSize="13"
+                                                           Foreground="{DynamicResource SubPlanDescription}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
                     <!-- ════════════════════════════════════════════ -->
-                    <!-- COLUMN 2: Release Schedule Card              -->
+                    <!-- COLUMN 2: Release Schedule / Payment Schedule -->
                     <!-- Vue: linear-gradient(135deg, #f9fafb, #f3f4f6) -->
                     <!-- Dark: #1a1a1a → #0f0f0f                      -->
                     <!-- ════════════════════════════════════════════ -->
@@ -267,18 +500,18 @@
                             </LinearGradientBrush>
                         </Border.Background>
                         <StackPanel Spacing="16">
-                            <!-- Header -->
+                            <!-- Header (dynamic: Release Schedule / Payment Schedule) -->
                             <StackPanel Spacing="4">
-                                <TextBlock Text="Release Schedule"
+                                <TextBlock Text="{Binding ScheduleTitle}"
                                            FontSize="18" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}" />
-                                <TextBlock Text="Funds are released in stages based on project milestones"
+                                <TextBlock Text="{Binding ScheduleDescription}"
                                            FontSize="13"
                                            Foreground="{DynamicResource TextMuted}"
                                            TextWrapping="Wrap" />
                             </StackPanel>
 
-                            <!-- Stage rows -->
+                            <!-- Stage/Payment rows -->
                             <ItemsControl ItemsSource="{Binding Stages}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="fp:InvestStageRow">
@@ -288,9 +521,9 @@
                                                 BorderBrush="{DynamicResource Stroke}"
                                                 BorderThickness="1">
                                             <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                                                <!-- Stage number -->
+                                                <!-- Stage/Payment label (bound, no code-behind needed) -->
                                                 <TextBlock Grid.Column="0"
-                                                           Text="{Binding StageNumber, StringFormat='Stage {0}'}"
+                                                           Text="{Binding LabelText}"
                                                            FontSize="14" FontWeight="SemiBold"
                                                            Foreground="{DynamicResource TextStrong}"
                                                            VerticalAlignment="Center" />
@@ -301,18 +534,19 @@
                                                            Foreground="{DynamicResource TextMuted}"
                                                            VerticalAlignment="Center"
                                                            HorizontalAlignment="Center" />
-                                                <!-- Percentage pill: Vue 12px/600, color #2d5a3d, bg #d4edda, padding 2px 8px, border-radius 4px -->
+                                                <!-- Percentage pill: hidden for subscription -->
                                                 <Border Grid.Column="2" CornerRadius="4"
                                                         Padding="8,2" Margin="8,0"
                                                         Background="{DynamicResource BadgeApprovedBackground}"
-                                                        VerticalAlignment="Center">
+                                                        VerticalAlignment="Center"
+                                                        IsVisible="{Binding !IsSubscriptionRow}">
                                                     <TextBlock Text="{Binding Percentage}"
                                                                FontSize="12" FontWeight="SemiBold"
                                                                Foreground="{DynamicResource StageAmountGreen}" />
                                                 </Border>
-                                                <!-- Amount -->
+                                                <!-- Amount display (bound, no code-behind needed) -->
                                                 <TextBlock Grid.Column="3"
-                                                           Text="{Binding Amount, StringFormat='{}{0} BTC'}"
+                                                           Text="{Binding AmountDisplayText}"
                                                            FontSize="14" FontWeight="Bold"
                                                            Foreground="{DynamicResource StageAmountGreen}"
                                                            VerticalAlignment="Center" />
@@ -327,6 +561,7 @@
                     <!-- ════════════════════════════════════════════ -->
                     <!-- COLUMN 3: Transaction Details Card            -->
                     <!-- Vue: standard card (white bg, border-radius 16px, padding 24px) -->
+                    <!-- Subscription: "Amount to Subscribe" + sats   -->
                     <!-- ════════════════════════════════════════════ -->
                     <Border Grid.Column="2"
                             CornerRadius="16" Padding="24"
@@ -374,12 +609,13 @@
                             <!-- Divider -->
                             <Border Height="1" Background="{DynamicResource Stroke}" Margin="0,0,0,12" />
 
-                            <!-- Investment Amount -->
+                            <!-- Investment Amount / Amount to Subscribe -->
+                            <!-- Vue: subscription "Amount to Subscribe" shown in Sats -->
                             <StackPanel Spacing="6" Margin="0,0,0,12">
-                                <TextBlock Text="Investment Amount"
+                                <TextBlock Text="{Binding TransactionAmountLabel}"
                                            FontSize="13" FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextMuted}" />
-                                <TextBlock Text="{Binding FormattedAmount, StringFormat='{}{0} BTC'}"
+                                <TextBlock Text="{Binding TransactionAmountValue}"
                                            FontSize="16" FontWeight="SemiBold"
                                            Foreground="{DynamicResource StageAmountGreen}" />
                             </StackPanel>
@@ -430,436 +666,13 @@
                         </StackPanel>
                     </Border>
                 </Grid>
-            </ScrollViewer>
-        </DockPanel>
 
-        <!-- ═══════════════════════════════════════════════════════ -->
-        <!-- MODAL OVERLAYS (stacked on top of main content)        -->
-        <!-- Following DeployFlowOverlay pattern                     -->
-        <!-- ═══════════════════════════════════════════════════════ -->
+                <!-- Bottom spacer: footer height (~68px) + gap (24px) = 92px -->
+                <Panel Height="92" />
+            </StackPanel>
+        </ScrollViewer>
 
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- MODAL: Wallet Selector                                       -->
-        <!-- Vue: max-w-md, Use an Existing Wallet, wallet list            -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <Panel IsVisible="{Binding IsWalletSelector}">
-            <!-- Backdrop -->
-            <Border Name="WalletBackdrop"
-                    Background="{DynamicResource ModalBackdrop}">
-                <Border.Transitions>
-                    <Transitions>
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                    </Transitions>
-                </Border.Transitions>
-            </Border>
-
-            <!-- Modal card -->
-            <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-                    MinWidth="448" MaxWidth="480"
-                    CornerRadius="16"
-                    Background="{DynamicResource DeployModalBackground}"
-                    BorderBrush="{DynamicResource DeployModalBorder}"
-                    BorderThickness="1"
-                    BoxShadow="0 8 32 0 #40000000"
-                    ClipToBounds="True"
-                    RenderTransformOrigin="50%,50%"
-                    RenderTransform="scale(1)">
-                <Border.Transitions>
-                    <Transitions>
-                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                    </Transitions>
-                </Border.Transitions>
-                <DockPanel>
-                    <!-- Sticky header -->
-                    <Border DockPanel.Dock="Top" Padding="24" BorderThickness="0,0,0,1"
-                            BorderBrush="{DynamicResource DeployModalBorder}"
-                            Background="{DynamicResource DeployModalBackground}">
-                        <StackPanel Spacing="16">
-                            <!-- Title row -->
-                            <Panel>
-                                <TextBlock Text="Use an existing wallet"
-                                           FontSize="20" FontWeight="Bold"
-                                           Foreground="{DynamicResource TextStrong}"
-                                           VerticalAlignment="Center" />
-                                <Button Name="CloseWalletSelector" HorizontalAlignment="Right"
-                                        VerticalAlignment="Center" Background="Transparent"
-                                        Padding="8" Cursor="Hand" BorderThickness="0"
-                                        CornerRadius="8">
-                                    <Viewbox Width="20" Height="20">
-                                        <Path Data="{StaticResource XMark}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
-                                </Button>
-                            </Panel>
-                            <!-- Amount display -->
-                            <Border CornerRadius="8" Padding="16"
-                                    Background="{DynamicResource DeployModalInputBg}"
-                                    BorderBrush="{DynamicResource DeployModalBorder}" BorderThickness="1">
-                                <Panel>
-                                    <TextBlock Text="Amount to Invest"
-                                               FontSize="14" FontWeight="Medium"
-                                               Foreground="{DynamicResource TextMuted}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left" />
-                                    <TextBlock Text="{Binding FormattedAmount, StringFormat='{}{0} BTC'}"
-                                               FontSize="18" FontWeight="Bold"
-                                               Foreground="{DynamicResource TextStrong}"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Right" />
-                                </Panel>
-                            </Border>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Footer buttons -->
-                    <Border DockPanel.Dock="Bottom" Padding="24,16"
-                            BorderThickness="0,1,0,0"
-                            BorderBrush="{DynamicResource DeployModalBorder}"
-                            Background="{DynamicResource DeployModalBackground}">
-                        <StackPanel Spacing="12">
-                            <!-- Primary: Pay with wallet -->
-                            <Button Name="PayWithWalletButton" HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Center"
-                                    CornerRadius="8" Padding="12,14"
-                                    IsEnabled="{Binding HasSelectedWallet}"
-                                    Cursor="Hand" BorderThickness="0">
-                                <Button.Background>
-                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                        <GradientStop Color="#4B7C5A" Offset="0" />
-                                        <GradientStop Color="#3d6448" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Button.Background>
-                                <TextBlock Text="{Binding PayButtonText}"
-                                           FontSize="14" FontWeight="SemiBold"
-                                           Foreground="White" />
-                            </Button>
-                            <!-- Secondary: Or pay an invoice instead -->
-                            <Button Name="PayInvoiceInsteadButton" HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Center"
-                                    CornerRadius="8" Padding="12,14"
-                                    Background="Transparent"
-                                    BorderBrush="#4B7C5A" BorderThickness="2"
-                                    Cursor="Hand">
-                                <TextBlock Text="Or pay an invoice instead"
-                                           FontSize="14" FontWeight="SemiBold"
-                                           Foreground="#4B7C5A" />
-                            </Button>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Wallet list -->
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="24" Spacing="0">
-                            <ItemsControl ItemsSource="{Binding Wallets}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="deploy:WalletItem">
-                                        <Border Name="WalletBorder" CornerRadius="8" Padding="16"
-                                                Margin="0,0,0,8"
-                                                BorderThickness="2"
-                                                Cursor="Hand"
-                                                BorderBrush="{DynamicResource Border}"
-                                                Background="{DynamicResource DeployWalletItemBg}">
-                                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                                <!-- Wallet icon -->
-                                                <Border Grid.Column="0" Width="40" Height="40"
-                                                        CornerRadius="8"
-                                                        Background="{DynamicResource DeployWalletIconBg}"
-                                                        VerticalAlignment="Center">
-                                                    <Viewbox Width="20" Height="20"
-                                                             HorizontalAlignment="Center"
-                                                             VerticalAlignment="Center">
-                                                        <Path Data="{StaticResource BitcoinSymbol}"
-                                                              Fill="#f59e0b"
-                                                              Width="24" Height="24" Stretch="Uniform" />
-                                                    </Viewbox>
-                                                </Border>
-                                                <!-- Name + type -->
-                                                <StackPanel Grid.Column="1" Spacing="2"
-                                                            VerticalAlignment="Center" Margin="12,0,0,0">
-                                                    <TextBlock Text="{Binding Name}"
-                                                               FontSize="14" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource TextStrong}" />
-                                                    <TextBlock Text="{Binding Network}"
-                                                               FontSize="13"
-                                                               Foreground="{DynamicResource TextMuted}" />
-                                                </StackPanel>
-                                                <!-- Balance + checkmark -->
-                                                <StackPanel Grid.Column="2" Orientation="Horizontal"
-                                                            Spacing="8" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Balance}"
-                                                               FontSize="14" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource TextStrong}"
-                                                               VerticalAlignment="Center" />
-                                                    <Viewbox Width="20" Height="20"
-                                                             IsVisible="{Binding IsSelected}"
-                                                             VerticalAlignment="Center">
-                                                        <Path Data="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                              Fill="#4B7C5A"
-                                                              Width="20" Height="20" Stretch="Uniform" />
-                                                    </Viewbox>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ScrollViewer>
-                </DockPanel>
-            </Border>
-        </Panel>
-
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- MODAL: Invoice / QR                                          -->
-        <!-- Vue: max-w-md, Pay Invoice, network tabs, QR, address        -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <Panel IsVisible="{Binding IsInvoice}">
-            <Border Name="InvoiceBackdrop"
-                    Background="{DynamicResource ModalBackdrop}">
-                <Border.Transitions>
-                    <Transitions>
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                    </Transitions>
-                </Border.Transitions>
-            </Border>
-
-            <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-                    MinWidth="448" MaxWidth="480"
-                    CornerRadius="16"
-                    Background="{DynamicResource DeployModalBackground}"
-                    BorderBrush="{DynamicResource DeployModalBorder}"
-                    BorderThickness="1"
-                    BoxShadow="0 8 32 0 #40000000"
-                    Padding="24"
-                    RenderTransformOrigin="50%,50%"
-                    RenderTransform="scale(1)">
-                <Border.Transitions>
-                    <Transitions>
-                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                    </Transitions>
-                </Border.Transitions>
-                <StackPanel Spacing="0">
-                    <!-- Title + close -->
-                    <Panel Margin="0,0,0,16">
-                        <TextBlock Text="Pay Invoice to Invest"
-                                   FontSize="22" FontWeight="Bold"
-                                   Foreground="{DynamicResource TextStrong}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                        <Button Name="CloseInvoice" HorizontalAlignment="Right"
-                                VerticalAlignment="Top" Background="Transparent"
-                                Padding="4" Cursor="Hand" BorderThickness="0">
-                            <Viewbox Width="22" Height="22">
-                                <Path Data="{StaticResource XMark}"
-                                      Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
-                                      StrokeLineCap="Round" StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
-                        </Button>
-                    </Panel>
-
-                    <!-- Network tabs: 2x2 grid (Lightning selected, On-Chain, Liquid, Import) -->
-                    <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,16">
-                        <Grid.ColumnSpacing>8</Grid.ColumnSpacing>
-                        <Border Grid.Column="0" CornerRadius="12" Padding="12,8"
-                                BorderThickness="2" BorderBrush="#4B7C5A"
-                                Background="{DynamicResource DeployTabSelectedBg}">
-                            <TextBlock Text="Lightning" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextStrong}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <Border Grid.Column="1" CornerRadius="12" Padding="12,8"
-                                BorderThickness="2" BorderBrush="{DynamicResource Border}"
-                                Background="{DynamicResource DeployTabUnselectedBg}">
-                            <TextBlock Text="On-Chain" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource DeployTabUnselectedText}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <Border Grid.Column="2" CornerRadius="12" Padding="12,8"
-                                BorderThickness="2" BorderBrush="{DynamicResource Border}"
-                                Background="{DynamicResource DeployTabUnselectedBg}">
-                            <TextBlock Text="Liquid" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource DeployTabUnselectedText}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <Border Grid.Column="3" CornerRadius="12" Padding="12,8"
-                                BorderThickness="2" BorderBrush="{DynamicResource Border}"
-                                Background="{DynamicResource DeployTabUnselectedBg}">
-                            <TextBlock Text="Import" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource DeployTabUnselectedText}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </Grid>
-
-                    <!-- QR Code placeholder: 192x192, border-4 frame -->
-                    <Border HorizontalAlignment="Center" Margin="0,0,0,16"
-                            Padding="16" CornerRadius="16"
-                            BorderThickness="4" BorderBrush="{DynamicResource DeployQrBorder}"
-                            Background="{DynamicResource DeployModalInputBg}">
-                        <Border Width="192" Height="192" CornerRadius="8"
-                                Background="{DynamicResource DeployModalQrBg}"
-                                Name="QrCodePlaceholder" Cursor="Hand">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
-                                <Viewbox Width="48" Height="48" HorizontalAlignment="Center">
-                                    <Path Data="{StaticResource Lightning}"
-                                          Fill="{DynamicResource DeployQrIconFill}"
-                                          Width="24" Height="24" Stretch="Uniform" />
-                                </Viewbox>
-                                <TextBlock Text="QR Code" FontSize="13"
-                                           Foreground="{DynamicResource DeployQrIconFill}"
-                                           HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                    </Border>
-
-                    <!-- Address/Invoice display -->
-                    <Border Margin="0,0,0,12" CornerRadius="8" Padding="12"
-                            Background="{DynamicResource DeployModalInputBg}">
-                        <StackPanel Spacing="6">
-                            <TextBlock Text="Lightning Invoice"
-                                       FontSize="12"
-                                       Foreground="{DynamicResource DeployTabUnselectedText}" />
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Grid.Column="0" Text="{Binding InvoiceString}"
-                                           FontSize="11" FontFamily="Consolas,Menlo,monospace"
-                                           Foreground="{DynamicResource TextStrong}"
-                                           TextTrimming="CharacterEllipsis"
-                                           VerticalAlignment="Center" />
-                                <Button Grid.Column="1" Name="CopyInvoiceButton"
-                                        Background="Transparent" Padding="6"
-                                        BorderThickness="0" Cursor="Hand" Margin="8,0,0,0"
-                                        CornerRadius="4">
-                                    <Viewbox Width="16" Height="16">
-                                        <Path Data="{StaticResource Copy}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
-                                </Button>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Amount status bar: orange themed -->
-                    <Border CornerRadius="8" Padding="12"
-                            BorderThickness="1"
-                            BorderBrush="{DynamicResource DeployFeeBarBorder}"
-                            Background="{DynamicResource DeployFeeBarBg}">
-                        <Panel>
-                            <StackPanel Spacing="2" VerticalAlignment="Center"
-                                        HorizontalAlignment="Left">
-                                <TextBlock Text="Amount Required"
-                                           FontSize="12"
-                                           Foreground="{DynamicResource DeployFeeLabel}" />
-                                <TextBlock Text="{Binding TotalAmount}"
-                                           FontSize="20" FontWeight="Bold"
-                                           Foreground="{DynamicResource DeployFeeValue}" />
-                            </StackPanel>
-                            <!-- Status pill -->
-                            <Border HorizontalAlignment="Right" VerticalAlignment="Center"
-                                    CornerRadius="12" Padding="12,6"
-                                    BorderThickness="1"
-                                    BorderBrush="{DynamicResource DeployFeePillBorder}"
-                                    Background="{DynamicResource DeployFeePillBg}">
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <Viewbox Width="12" Height="12" VerticalAlignment="Center">
-                                        <Path Data="{StaticResource RefreshArrows}"
-                                              Stroke="{DynamicResource DeployFeePillText}" StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
-                                    <TextBlock Text="{Binding PaymentStatusText}"
-                                               FontSize="12" FontWeight="Medium"
-                                               Foreground="{DynamicResource DeployFeePillText}"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Border>
-                        </Panel>
-                    </Border>
-                </StackPanel>
-            </Border>
-        </Panel>
-
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <!-- MODAL: Success                                               -->
-        <!-- Vue: max-w-md, green check, title, description, button        -->
-        <!-- ════════════════════════════════════════════════════════════ -->
-        <Panel IsVisible="{Binding IsSuccess}">
-            <Border Name="SuccessBackdrop"
-                    Background="{DynamicResource ModalBackdrop}">
-                <Border.Transitions>
-                    <Transitions>
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                    </Transitions>
-                </Border.Transitions>
-            </Border>
-
-            <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-                    MinWidth="448" MaxWidth="480"
-                    CornerRadius="16"
-                    Background="{DynamicResource DeploySuccessBg}"
-                    BoxShadow="0 8 32 0 #40000000"
-                    Padding="32"
-                    RenderTransformOrigin="50%,50%"
-                    RenderTransform="scale(1)">
-                <Border.Transitions>
-                    <Transitions>
-                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" />
-                        <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                    </Transitions>
-                </Border.Transitions>
-                <StackPanel Spacing="0">
-                    <!-- Success icon: 80x80 circle, green checkmark -->
-                    <Border Width="80" Height="80" CornerRadius="40"
-                            HorizontalAlignment="Center" Margin="0,0,0,24"
-                            Background="{DynamicResource DeploySuccessIconBg}">
-                        <Viewbox Width="48" Height="48"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center">
-                            <Path Data="M5 13l4 4L19 7"
-                                  Stroke="{DynamicResource DeploySuccessCheck}" StrokeThickness="2.5"
-                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
-                    </Border>
-
-                    <!-- Title -->
-                    <TextBlock Text="{Binding SuccessTitle}"
-                               FontSize="28" FontWeight="Bold"
-                               Foreground="{DynamicResource TextStrong}"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               Margin="0,0,0,12" />
-
-                    <!-- Description -->
-                    <TextBlock Text="{Binding SuccessDescription}"
-                               FontSize="14" Foreground="{DynamicResource TextMuted}"
-                               TextAlignment="Center" TextWrapping="Wrap"
-                               HorizontalAlignment="Center"
-                               MaxWidth="380"
-                               Margin="0,0,0,32" />
-
-                    <!-- Action button: green gradient -->
-                    <Button Name="ViewInvestmentsButton" HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            CornerRadius="8" Padding="24,12"
-                            Cursor="Hand" BorderThickness="0">
-                        <Button.Background>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                <GradientStop Color="#4B7C5A" Offset="0" />
-                                <GradientStop Color="#3d6a4d" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                        <TextBlock Text="{Binding SuccessButtonText}"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Foreground="White" />
-                    </Button>
-                </StackPanel>
-            </Border>
-        </Panel>
+        <!-- Modals (Wallet Selector, Invoice, Success) are now rendered at shell level -->
+        <!-- via InvestModalsView pushed to ShellViewModel.ShowModal() -->
     </Panel>
 </UserControl>
