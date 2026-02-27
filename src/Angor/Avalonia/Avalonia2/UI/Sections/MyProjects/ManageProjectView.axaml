@@ -45,72 +45,7 @@
                    Margin="24,24,24,0"
                    IsHitTestVisible="True">
 
-            <!-- LEFT: Back + Project Name -->
-            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="12">
-                <!-- Back button — standardized: ChevronLeftThick + Fill (matches all other nav bars) -->
-                <Border Classes="FloatingBtn"
-                        Background="{DynamicResource FloatingBtnBg}"
-                        BorderBrush="{DynamicResource FloatingBtnBorder}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        BoxShadow="0 4 12 0 #26000000"
-                        Padding="16,0,16,0"
-                        Height="44"
-                        VerticalAlignment="Center"
-                        Cursor="Hand"
-                        RenderTransform="translate(0px, 0px)">
-                    <Border.Transitions>
-                        <Transitions>
-                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
-                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
-                        </Transitions>
-                    </Border.Transitions>
-                    <Button Name="BackButton"
-                            Classes="NavBtn"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            Cursor="Hand">
-                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                            <Viewbox Width="10" Height="16">
-                                <Path Data="{StaticResource ChevronLeftThick}"
-                                      Fill="{DynamicResource TextStrong}"
-                                      Width="320" Height="512" Stretch="Uniform" />
-                            </Viewbox>
-                            <TextBlock Text="Back"
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{DynamicResource TextStrong}"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </Border>
-
-                <!-- Project Name pill -->
-                <Border Classes="FloatingBtn"
-                        Background="{DynamicResource FloatingBtnBg}"
-                        BorderBrush="{DynamicResource FloatingBtnBorder}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        BoxShadow="0 4 12 0 #26000000"
-                        Height="44"
-                        Padding="16,0,16,0"
-                        VerticalAlignment="Center"
-                        RenderTransform="translate(0px, 0px)">
-                    <Border.Transitions>
-                        <Transitions>
-                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
-                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
-                        </Transitions>
-                    </Border.Transitions>
-                    <TextBlock Text="{Binding Project.Name}"
-                               FontSize="14" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextStrong}"
-                               VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               MaxWidth="400" />
-                </Border>
-            </StackPanel>
-
-            <!-- RIGHT: Private Keys, Refresh, Share -->
+            <!-- RIGHT: Private Keys, Refresh, Share (docked first so it hugs the right edge) -->
             <!-- Vue: .nav-right-buttons — gap 12 -->
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="12">
                 <!-- View Private Keys button -->
@@ -207,6 +142,71 @@
                     </Button>
                 </Border>
             </StackPanel>
+
+            <!-- LEFT: Back + Project Name (after Right so DockPanel pushes Right to edge) -->
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="12">
+                <!-- Back button — standardized: ChevronLeftThick + Fill (matches all other nav bars) -->
+                <Border Classes="FloatingBtn"
+                        Background="{DynamicResource FloatingBtnBg}"
+                        BorderBrush="{DynamicResource FloatingBtnBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        BoxShadow="0 4 12 0 #26000000"
+                        Padding="16,0,16,0"
+                        Height="44"
+                        VerticalAlignment="Center"
+                        Cursor="Hand"
+                        RenderTransform="translate(0px, 0px)">
+                    <Border.Transitions>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                        </Transitions>
+                    </Border.Transitions>
+                    <Button Name="BackButton"
+                            Classes="NavBtn"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Cursor="Hand">
+                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Viewbox Width="10" Height="16">
+                                <Path Data="{StaticResource ChevronLeftThick}"
+                                      Fill="{DynamicResource TextStrong}"
+                                      Width="320" Height="512" Stretch="Uniform" />
+                            </Viewbox>
+                            <TextBlock Text="Back"
+                                       FontSize="14" FontWeight="Medium"
+                                       Foreground="{DynamicResource TextStrong}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Border>
+
+                <!-- Project Name pill -->
+                <Border Classes="FloatingBtn"
+                        Background="{DynamicResource FloatingBtnBg}"
+                        BorderBrush="{DynamicResource FloatingBtnBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        BoxShadow="0 4 12 0 #26000000"
+                        Height="44"
+                        Padding="16,0,16,0"
+                        VerticalAlignment="Center"
+                        RenderTransform="translate(0px, 0px)">
+                    <Border.Transitions>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                        </Transitions>
+                    </Border.Transitions>
+                    <TextBlock Text="{Binding Project.Name}"
+                               FontSize="14" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextStrong}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               MaxWidth="400" />
+                </Border>
+            </StackPanel>
         </DockPanel>
 
         <!-- ═══ SCROLLABLE CONTENT ═══ -->
@@ -217,9 +217,7 @@
         -->
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Panel>
-                <StackPanel MaxWidth="1400"
-                            HorizontalAlignment="Center"
-                            Spacing="24"
+                <StackPanel Spacing="24"
                             Margin="24,0,24,24">
                     <!-- Spacer for floating nav: 24 (nav top margin) + 44 (nav h) + 24 (gap below) = 92 -->
                     <Panel Height="92" />

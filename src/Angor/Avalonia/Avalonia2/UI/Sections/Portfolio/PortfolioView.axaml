@@ -29,6 +29,7 @@
         <!-- ═══════════════════════════════════════════════════════ -->
         <controls:EmptyState Title="FUNDED"
                              Description="You haven't funded any projects yet. Browse the latest to find one."
+                             DescriptionFontSize="20"
                              HasButton="True"
                              ButtonText="Find Projects"
                              HasButtonIcon="True"
@@ -48,7 +49,9 @@
         <!-- ═══════════════════════════════════════════════════════ -->
         <!-- Portfolio list visible when: has investments AND no detail selected -->
         <!-- Grid with fixed left column + scrollable right column -->
-        <Grid ColumnDefinitions="380,*" RowDefinitions="*" Margin="24" Name="PortfolioListPanel">
+        <!-- Visibility managed by code-behind: visible when HasInvestments && SelectedInvestment == null -->
+        <Grid ColumnDefinitions="380,*" RowDefinitions="*" Margin="24" Name="PortfolioListPanel"
+              IsVisible="False">
 
                 <!-- ═══════════════════════════════════════ -->
                 <!-- LEFT PANEL: Portfolio Summary Card      -->

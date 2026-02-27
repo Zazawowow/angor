@@ -37,8 +37,9 @@
                             Spacing="0">
 
                     <!-- ═══ ICON AREA ═══ -->
+                    <!-- Vue: mb-8 = 32px below the icon area -->
                     <Panel HorizontalAlignment="Center"
-                           Margin="0,0,0,24">
+                           Margin="0,0,0,32">
 
                         <!-- DEFAULT: Angor logo — 112x112 (Vue: w-28 h-28), opacity 0.9 -->
                         <Path Name="AngorLogoIcon"
@@ -48,11 +49,11 @@
                               Width="112" Height="112"
                               Stretch="Uniform" />
 
-                        <!-- CUSTOM: Icon inside a circle (Funders only) -->
-                        <!-- Vue: w-16 h-16 rounded-full bg-[#2a2a2a] / bg-gray-100 -->
+                        <!-- CUSTOM: Icon inside a rounded rectangle (Funders only) -->
+                        <!-- Vue: w-16 h-16 rounded-lg bg-black / bg-gray-100 -->
                         <Border Name="CustomIconCircle"
                                 Width="64" Height="64"
-                                CornerRadius="32"
+                                CornerRadius="8"
                                 Background="{DynamicResource SurfaceElevated}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -89,8 +90,9 @@
                                Margin="0,0,0,12" />
 
                     <!-- Description — Vue: text-sm leading-relaxed max-w-md text-center mb-8 -->
+                    <!-- FontSize defaults to 14 (text-sm); My Projects and Funded override to 20 -->
                     <TextBlock Text="{TemplateBinding Description}"
-                               FontSize="14"
+                               FontSize="{TemplateBinding DescriptionFontSize}"
                                LineHeight="23"
                                FontWeight="Normal"
                                Foreground="{DynamicResource TextMuted}"

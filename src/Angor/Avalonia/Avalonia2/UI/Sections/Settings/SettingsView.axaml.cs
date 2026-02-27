@@ -99,19 +99,6 @@ public partial class SettingsView : UserControl
     private void OnWipeModalBackdropPressed(object? sender, PointerPressedEventArgs e) =>
         Vm?.CloseWipeDataModal();
 
-    // ── Reset Mocked Data Modal ──
-    private void OnResetDataClick(object? sender, RoutedEventArgs e) =>
-        Vm?.OpenResetDataModal();
-
-    private void OnCloseResetDataModal(object? sender, RoutedEventArgs e) =>
-        Vm?.CloseResetDataModal();
-
-    private void OnConfirmResetData(object? sender, RoutedEventArgs e) =>
-        Vm?.ConfirmResetData();
-
-    private void OnResetModalBackdropPressed(object? sender, PointerPressedEventArgs e) =>
-        Vm?.CloseResetDataModal();
-
     // ── Modal Backdrop ──
     private void OnModalBackdropPressed(object? sender, PointerPressedEventArgs e) =>
         Vm?.CloseNetworkModal();

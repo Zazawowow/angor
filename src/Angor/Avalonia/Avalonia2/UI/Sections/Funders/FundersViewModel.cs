@@ -130,23 +130,33 @@ public partial class FundersViewModel : ReactiveObject
 
     public FundersViewModel()
     {
-        // Initialize filtered list
-        UpdateFilteredSignatures();
-
-        // React to filter changes
+        // React to filter changes — WhenAnyValue emits the initial value immediately,
+        // so this also handles the first call to UpdateFilteredSignatures().
         this.WhenAnyValue(x => x.CurrentFilter)
             .Subscribe(_ => UpdateFilteredSignatures());
 
         // Re-filter when the shared store changes (new investments)
         SharedViewModels.Signatures.AllSignatures.CollectionChanged += (_, _) => UpdateFilteredSignatures();
+
+        // React to prototype toggle (show populated vs empty).
+        // Skip(1) to avoid double-processing — the initial filter subscription above
+        // already called UpdateFilteredSignatures with the current toggle state.
+        SharedViewModels.Prototype.WhenAnyValue(x => x.ShowPopulatedApp)
+            .Skip(1)
+            .Subscribe(_ => UpdateFilteredSignatures());
     }
 
     /// <summary>
     /// Get all signature view models: sample data + shared store entries.
+    /// When ShowPopulatedApp is false, only include shared store entries (user-created).
     /// </summary>
     private List<SignatureRequestViewModel> GetAllViewModels()
     {
-        var all = new List<SignatureRequestViewModel>(_sampleSignatures);
+        var all = new List<SignatureRequestViewModel>();
+        if (SharedViewModels.Prototype.ShowPopulatedApp)
+        {
+            all.AddRange(_sampleSignatures);
+        }
         foreach (var shared in SharedViewModels.Signatures.AllSignatures)
         {
             all.Add(SignatureRequestViewModel.FromShared(shared));

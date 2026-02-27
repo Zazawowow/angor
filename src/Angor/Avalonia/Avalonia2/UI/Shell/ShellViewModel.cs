@@ -126,12 +126,32 @@ public class SignatureStore
 
 /// <summary>
 /// Provides access to shared ViewModels that persist across sidebar navigations.
-/// Holds PortfolioViewModel and SignatureStore so data survives navigation.
+/// Holds PortfolioViewModel, SignatureStore, and prototype-level settings so data survives navigation.
 /// </summary>
 public static class SharedViewModels
 {
-    public static PortfolioViewModel Portfolio { get; } = new();
+    // IMPORTANT: Declaration order matters — static field initializers run top-to-bottom.
+    // Prototype must come before Portfolio because PortfolioViewModel's constructor
+    // reads SharedViewModels.Prototype.ShowPopulatedApp.
+    // Signatures must come before Portfolio because PortfolioViewModel's constructor
+    // subscribes to SharedViewModels.Signatures.SignatureStatusChanged.
     public static SignatureStore Signatures { get; } = new();
+    public static PrototypeSettings Prototype { get; } = new();
+    public static PortfolioViewModel Portfolio { get; } = new();
+}
+
+/// <summary>
+/// Global prototype-level settings (e.g. show populated vs empty states).
+/// Sections observe ShowPopulatedApp to decide whether to load sample data.
+/// </summary>
+public partial class PrototypeSettings : ReactiveObject
+{
+    /// <summary>
+    /// When true, sections show hardcoded sample data (populated state).
+    /// When false, sections show empty states.
+    /// Default = true so the app starts populated for demos.
+    /// </summary>
+    [Reactive] private bool showPopulatedApp = true;
 }
 
 /// <summary>

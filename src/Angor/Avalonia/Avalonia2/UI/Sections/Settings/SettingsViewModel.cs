@@ -48,8 +48,16 @@ public partial class SettingsViewModel : ReactiveObject
     // Wipe data modal
     [Reactive] private bool isWipeDataModalOpen;
 
-    // Reset mocked data modal
-    [Reactive] private bool isResetDataModalOpen;
+    // Prototype settings toggle — delegates to SharedViewModels.Prototype
+    public bool ShowPopulatedApp
+    {
+        get => SharedViewModels.Prototype.ShowPopulatedApp;
+        set
+        {
+            SharedViewModels.Prototype.ShowPopulatedApp = value;
+            this.RaisePropertyChanged();
+        }
+    }
 
     public bool IsDarkThemeEnabled
     {
@@ -141,20 +149,6 @@ public partial class SettingsViewModel : ReactiveObject
         IsWipeDataModalOpen = false;
     }
 
-    // Reset mocked data
-    public void OpenResetDataModal() => IsResetDataModalOpen = true;
-    public void CloseResetDataModal() => IsResetDataModalOpen = false;
-    public void ConfirmResetData()
-    {
-        // Clear all shared dynamic data (signatures created during invest flows)
-        SharedViewModels.Signatures.Clear();
-
-        // Clear dynamically-added investments from the portfolio
-        // (the PortfolioViewModel reinitializes with sample data on next load)
-        SharedViewModels.Portfolio.ResetToSampleData();
-
-        IsResetDataModalOpen = false;
-    }
 }
 
 // ── Table item models ──

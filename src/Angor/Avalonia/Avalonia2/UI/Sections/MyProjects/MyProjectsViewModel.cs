@@ -135,6 +135,16 @@ public partial class MyProjectsViewModel : ReactiveObject
     }
 
     /// <summary>
+    /// Clear all projects (used when toggling to empty state in prototype settings).
+    /// </summary>
+    public void ClearProjects()
+    {
+        Projects.Clear();
+        this.RaisePropertyChanged(nameof(HasProjects));
+        this.RaisePropertyChanged(nameof(TotalRaised));
+    }
+
+    /// <summary>
     /// Open the Manage Project detail screen for a specific project.
     /// Vue ref: clicking "Manage Project" on a ProjectCard navigates to ManageFunds.vue.
     /// </summary>

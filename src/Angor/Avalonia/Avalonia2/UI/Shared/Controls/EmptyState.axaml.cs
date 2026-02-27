@@ -62,6 +62,13 @@ public class EmptyState : TemplatedControl
     public static readonly StyledProperty<bool> HasButtonIconProperty =
         AvaloniaProperty.Register<EmptyState, bool>(nameof(HasButtonIcon));
 
+    /// <summary>
+    /// Font size for the description text. Default 14 (Vue text-sm).
+    /// Set to 20 for My Projects and Funded sections (Vue: font-size: 20px !important).
+    /// </summary>
+    public static readonly StyledProperty<double> DescriptionFontSizeProperty =
+        AvaloniaProperty.Register<EmptyState, double>(nameof(DescriptionFontSize), 14);
+
     public bool UseCustomIcon
     {
         get => GetValue(UseCustomIconProperty);
@@ -120,5 +127,11 @@ public class EmptyState : TemplatedControl
     {
         get => GetValue(HasButtonIconProperty);
         set => SetValue(HasButtonIconProperty, value);
+    }
+
+    public double DescriptionFontSize
+    {
+        get => GetValue(DescriptionFontSizeProperty);
+        set => SetValue(DescriptionFontSizeProperty, value);
     }
 }

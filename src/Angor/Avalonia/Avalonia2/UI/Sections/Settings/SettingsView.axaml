@@ -657,7 +657,55 @@
                     </StackPanel>
                 </Border>
 
-                <!-- ═══ 8. Danger Zone ═══ -->
+                <!-- ═══ 8. Prototype Settings ═══ -->
+                <!-- Toggle between populated and empty states for development/testing -->
+                <Border Background="{DynamicResource CardSurface}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="1"
+                        CornerRadius="16"
+                        ClipToBounds="True"
+                        BoxShadow="{DynamicResource ItemShadow}">
+                    <StackPanel>
+                        <Border BorderBrush="{DynamicResource Stroke}"
+                                BorderThickness="0,0,0,1"
+                                Padding="24,20">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Path Data="{StaticResource Eye}"
+                                      Stroke="{DynamicResource TextMuted}"
+                                      StrokeThickness="1.5"
+                                      StrokeLineCap="Round"
+                                      Width="20" Height="20"
+                                      Stretch="Uniform" />
+                                <TextBlock Text="Prototype Settings"
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="24">
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right"
+                                              IsChecked="{Binding ShowPopulatedApp, Mode=TwoWay}"
+                                              VerticalAlignment="Center"
+                                              OnContent=""
+                                              OffContent="" />
+                                <StackPanel Spacing="4" VerticalAlignment="Center">
+                                    <TextBlock Text="Show Populated App"
+                                               FontSize="14"
+                                               FontWeight="Medium"
+                                               Foreground="{DynamicResource TextStrong}" />
+                                    <TextBlock Text="When enabled, sections display sample data. When disabled, sections show empty states."
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextMuted}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══ 9. Danger Zone ═══ -->
                 <!-- Vue: border 2px solid #fee2e2 (light) / #7f1d1d (dark), no normal CardSurface bg -->
                 <Border BorderBrush="{DynamicResource DangerZoneBorder}"
                         BorderThickness="2"
@@ -715,45 +763,7 @@
                                     </StackPanel>
                                 </Button>
 
-                                <!-- Separator -->
-                                <Border Height="1" Background="{DynamicResource Stroke}" />
 
-                                <!-- Reset Mocked Data — allows resetting to empty state for testing flows -->
-                                <DockPanel>
-                                    <Button DockPanel.Dock="Right"
-                                            VerticalAlignment="Center"
-                                            Padding="16,10"
-                                            Background="{DynamicResource DangerSecondaryBg}"
-                                            Foreground="{DynamicResource DangerSecondaryFg}"
-                                            BorderBrush="{DynamicResource DangerSecondaryBorder}"
-                                            BorderThickness="1"
-                                            CornerRadius="8"
-                                            FontWeight="SemiBold"
-                                            FontSize="14"
-                                            Click="OnResetDataClick">
-                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <Path Data="{StaticResource RefreshArrows}"
-                                                  Stroke="{DynamicResource DangerSecondaryFg}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeLineCap="Round"
-                                                  StrokeJoin="Round"
-                                                  Width="16" Height="16"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center" />
-                                            <TextBlock Text="Reset Data" VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </Button>
-                                    <StackPanel Spacing="4" VerticalAlignment="Center">
-                                        <TextBlock Text="Reset Mocked Data"
-                                                   FontSize="14"
-                                                   FontWeight="Medium"
-                                                   Foreground="{DynamicResource TextStrong}" />
-                                        <TextBlock Text="Clear all sample data and start from empty state."
-                                                   FontSize="13"
-                                                   Foreground="{DynamicResource TextMuted}"
-                                                   TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </DockPanel>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -1051,84 +1061,6 @@
             </Border>
         </Border>
 
-        <!-- ═══ Reset Mocked Data Confirmation Modal ═══ -->
-        <Border Background="{DynamicResource ModalBackdrop}"
-                IsVisible="{Binding IsResetDataModalOpen}"
-                IsHitTestVisible="{Binding IsResetDataModalOpen}"
-                PointerPressed="OnResetModalBackdropPressed">
-            <Border.Transitions>
-                <Transitions>
-                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
-                </Transitions>
-            </Border.Transitions>
 
-            <Border Background="{DynamicResource CardSurface}"
-                    BorderBrush="{DynamicResource Stroke}"
-                    BorderThickness="1"
-                    CornerRadius="16"
-                    MaxWidth="500"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    PointerPressed="OnModalContentPressed"
-                    BoxShadow="0 20 25 -5 #1A000000">
-                <StackPanel>
-                    <!-- Header -->
-                    <Border BorderBrush="{DynamicResource Stroke}"
-                            BorderThickness="0,0,0,1"
-                            Padding="24">
-                        <DockPanel>
-                            <Button DockPanel.Dock="Right"
-                                    Padding="4"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    CornerRadius="6"
-                                    Click="OnCloseResetDataModal">
-                                <Path Data="{StaticResource XMark}"
-                                      Stroke="{DynamicResource TextMuted}"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
-                            </Button>
-                            <TextBlock Text="Reset Mocked Data"
-                                       FontSize="20"
-                                       FontWeight="Bold"
-                                       Foreground="{DynamicResource TextStrong}"
-                                       VerticalAlignment="Center" />
-                        </DockPanel>
-                    </Border>
-                    <!-- Content -->
-                    <Border Padding="24">
-                        <StackPanel Spacing="24">
-                            <TextBlock Text="This will clear all sample/mocked data and return the app to an empty state. You can then populate data by creating projects, investing, and using normal app flows."
-                                       FontSize="14"
-                                       Foreground="{DynamicResource TextMuted}"
-                                       TextWrapping="Wrap"
-                                       LineHeight="22" />
-                            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
-                                <Button Padding="20,10"
-                                        Background="{DynamicResource ModalCancelBg}"
-                                        Foreground="{DynamicResource ModalCancelFg}"
-                                        BorderThickness="0"
-                                        CornerRadius="8"
-                                        FontWeight="SemiBold"
-                                        FontSize="14"
-                                        Click="OnCloseResetDataModal"
-                                        Content="Cancel" />
-                                <Button Padding="20,10"
-                                        Background="#EF4444"
-                                        Foreground="White"
-                                        BorderThickness="0"
-                                        CornerRadius="8"
-                                        FontWeight="SemiBold"
-                                        FontSize="14"
-                                        Click="OnConfirmResetData"
-                                        Content="Reset All Data" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Border>
-        </Border>
     </Panel>
 </UserControl>

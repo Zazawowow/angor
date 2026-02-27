@@ -20,6 +20,7 @@
         <Panel Name="EmptyStatePanel">
             <controls:EmptyState Title="WELCOME TO ANGOR FOUNDER HUB"
                                  Description="This section is where you can launch your projects for funding."
+                                 DescriptionFontSize="20"
                                  ButtonText="Launch a Project"
                                  HasButton="True" />
         </Panel>

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using Avalonia2.UI.Sections.FindProjects;
 using Avalonia2.UI.Shell;
@@ -295,6 +296,21 @@ public partial class PortfolioViewModel : ReactiveObject
         // Vue: when a founder approves/rejects, the investor's InvestmentDetail
         // reacts because it reads from the shared signatures array.
         SharedViewModels.Signatures.SignatureStatusChanged += OnSignatureStatusChanged;
+
+        // Load sample data if prototype toggle says populated
+        if (SharedViewModels.Prototype.ShowPopulatedApp)
+            LoadSampleInvestments();
+
+        // React to prototype toggle changes (populated ↔ empty)
+        SharedViewModels.Prototype.WhenAnyValue(x => x.ShowPopulatedApp)
+            .Skip(1) // skip initial value (already handled above)
+            .Subscribe(showPopulated =>
+            {
+                if (showPopulated)
+                    LoadSampleInvestments();
+                else
+                    ClearToEmpty();
+            });
     }
 
     /// <summary>
@@ -333,10 +349,18 @@ public partial class PortfolioViewModel : ReactiveObject
     public string TotalAvailable { get; } = "0.08544254";
 
     // ── Right panel investments ──
-    public ObservableCollection<InvestmentViewModel> Investments { get; } = new()
+    public ObservableCollection<InvestmentViewModel> Investments { get; } = new();
+
+    /// <summary>
+    /// Populate with sample investments for visual testing of the populated state.
+    /// Called when ShowPopulatedApp toggle is enabled.
+    /// </summary>
+    public void LoadSampleInvestments()
     {
+        Investments.Clear();
+
         // ── Card 1: Investment type, signed status, payment plan ──
-        new InvestmentViewModel
+        Investments.Add(new InvestmentViewModel
         {
             ProjectName = "Hope With \u20bfitcoin",
             ShortDescription = "A humanitarian initiative in Benin feeding vulnerable people, supporting orphanages.",
@@ -393,10 +417,10 @@ public partial class PortfolioViewModel : ReactiveObject
                     Status = "Pending"
                 },
             }
-        },
+        });
 
         // ── Card 2: Funding type, active status, payment plan with 2/3 paid ──
-        new InvestmentViewModel
+        Investments.Add(new InvestmentViewModel
         {
             ProjectName = "Bitcoin Education Africa",
             ShortDescription = "Bringing Bitcoin literacy to schools across sub-Saharan Africa through workshops.",
@@ -432,10 +456,10 @@ public partial class PortfolioViewModel : ReactiveObject
                 new() { StageNumber = 2, StagePrefix = "Payment", Percentage = "33%", ReleaseDate = "10 Jul 2026", Amount = "0.33333333", Status = "Released" },
                 new() { StageNumber = 3, StagePrefix = "Payment", Percentage = "34%", ReleaseDate = "10 Oct 2026", Amount = "0.33333334", Status = "Pending" },
             }
-        },
+        });
 
         // ── Card 3: Subscription type, waiting status, no payment plan (progress bar) ──
-        new InvestmentViewModel
+        Investments.Add(new InvestmentViewModel
         {
             ProjectName = "Nostr Relay Infrastructure",
             ShortDescription = "Decentralized relay infrastructure for censorship-resistant communication.",
@@ -470,10 +494,10 @@ public partial class PortfolioViewModel : ReactiveObject
                 new() { StageNumber = 1, StagePrefix = "Payment", Percentage = "50%", ReleaseDate = "01 May 2026", Amount = "0.30000000", Status = "Pending" },
                 new() { StageNumber = 2, StagePrefix = "Payment", Percentage = "50%", ReleaseDate = "01 Aug 2026", Amount = "0.30000000", Status = "Pending" },
             }
-        },
+        });
 
         // ── Card 4: Investment type, recovered status, no payment plan ──
-        new InvestmentViewModel
+        Investments.Add(new InvestmentViewModel
         {
             ProjectName = "Lightning Mesh Network",
             ShortDescription = "Building resilient Lightning Network routing across emerging markets.",
@@ -509,8 +533,21 @@ public partial class PortfolioViewModel : ReactiveObject
                 new() { StageNumber = 2, Percentage = "33%", ReleaseDate = "15 Mar 2026", Amount = "0.08333333", Status = "Released" },
                 new() { StageNumber = 3, Percentage = "34%", ReleaseDate = "15 May 2026", Amount = "0.08333334", Status = "Not Spent" },
             }
-        },
-    };
+        });
+
+        HasInvestments = true;
+    }
+
+    /// <summary>
+    /// Clear all investments to show the empty state.
+    /// Called when ShowPopulatedApp toggle is disabled.
+    /// </summary>
+    public void ClearToEmpty()
+    {
+        SelectedInvestment = null;
+        Investments.Clear();
+        HasInvestments = false;
+    }
 
     /// <summary>Navigate to investment detail view</summary>
     public void OpenInvestmentDetail(InvestmentViewModel investment)
@@ -526,17 +563,13 @@ public partial class PortfolioViewModel : ReactiveObject
 
     /// <summary>
     /// Remove all dynamically-added investments (those created via the invest flow,
-    /// identified by SignatureId != 0). Called by Settings → Reset Data.
+    /// identified by SignatureId != 0) and reload sample data. Called by Settings → Reset Data.
     /// </summary>
     public void ResetToSampleData()
     {
         SelectedInvestment = null;
-        // Remove in reverse to avoid index shifting issues
-        for (var i = Investments.Count - 1; i >= 0; i--)
-        {
-            if (Investments[i].SignatureId != 0)
-                Investments.RemoveAt(i);
-        }
+        Investments.Clear();
+        LoadSampleInvestments();
     }
 
     /// <summary>

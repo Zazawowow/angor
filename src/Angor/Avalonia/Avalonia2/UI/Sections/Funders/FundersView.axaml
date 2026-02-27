@@ -60,7 +60,8 @@
         <!-- Layout: header + filter tabs + scrollable card list     -->
         <!-- ═══════════════════════════════════════════════════════ -->
         <controls:ScrollableView ContentPadding="24"
-                                 Name="FundersListPanel">
+                                 Name="FundersListPanel"
+                                 IsVisible="{Binding HasFunders}">
             <!-- Vue: max-w-6xl mx-auto, px-4 md:px-8, pt-4 pb-20 -->
             <StackPanel MaxWidth="1152" HorizontalAlignment="Stretch" Spacing="0">
 

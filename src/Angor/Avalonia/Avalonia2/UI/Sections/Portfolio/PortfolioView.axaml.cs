@@ -29,7 +29,9 @@ public partial class PortfolioView : UserControl
     {
         if (DataContext is PortfolioViewModel vm)
         {
-            // Portfolio list is visible when: HasInvestments AND SelectedInvestment == null
+            // Portfolio list is visible when: HasInvestments AND no detail selected.
+            // HasInvestments is handled by XAML binding; here we also hide when
+            // SelectedInvestment is set (drill-down to detail view).
             vm.WhenAnyValue(
                 x => x.HasInvestments,
                 x => x.SelectedInvestment,
