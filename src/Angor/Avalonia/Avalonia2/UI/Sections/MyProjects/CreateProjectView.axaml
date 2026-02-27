@@ -42,8 +42,9 @@
         <Style Selector="Path.TypeCardIconStroke.IconInvest">
             <Setter Property="Stroke" Value="#4B7C5A" />
         </Style>
-        <Style Selector="Path.TypeCardIconStroke.IconSub">
-            <Setter Property="Stroke" Value="#9E9E9E" />
+        <!-- Subscription icon is a PNG Border with OpacityMask — use Background for tinting -->
+        <Style Selector="Border.TypeCardIconStroke.IconSub">
+            <Setter Property="Background" Value="#9E9E9E" />
         </Style>
         <Style Selector="Path.TypeCardIconFill.IconFund">
             <Setter Property="Fill" Value="#F7931A" />
@@ -120,8 +121,8 @@
         <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected Border.TypeCardIconBg">
             <Setter Property="Background" Value="#9E9E9E" />
         </Style>
-        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected Path.TypeCardIconStroke">
-            <Setter Property="Stroke" Value="White" />
+        <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected Border.TypeCardIconStroke">
+            <Setter Property="Background" Value="White" />
         </Style>
         <Style Selector="Border.TypeCard.TypeCardSub.TypeCardSelected TextBlock.TypeCardTitle">
             <Setter Property="Foreground" Value="#9E9E9E" />
@@ -574,11 +575,11 @@
                                                 Width="48" Height="48" CornerRadius="10"
                                                 VerticalAlignment="Top">
                                             <Viewbox Width="22" Height="22">
-                                                <Path Name="IconPathSubscription" Classes="TypeCardIconStroke IconSub"
-                                                      Data="{StaticResource RefreshArrows}"
-                                                      StrokeThickness="2"
-                                                      StrokeLineCap="Round" StrokeJoin="Round"
-                                                      Width="24" Height="24" Stretch="Uniform" />
+                                                <Border Width="22" Height="22" Name="IconBorderSubscription" Classes="TypeCardIconStroke IconSub">
+                                                    <Border.OpacityMask>
+                                                        <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                                                    </Border.OpacityMask>
+                                                </Border>
                                             </Viewbox>
                                         </Border>
                                         <!-- Title + description -->
@@ -623,7 +624,7 @@
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                         Background="{DynamicResource Surface}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                        <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                             <TextBlock Text="What's the project called?" FontSize="16" FontWeight="Bold"
                                                        Foreground="{DynamicResource TextStrong}" />
                                         </Border>
@@ -642,7 +643,7 @@
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                         Background="{DynamicResource Surface}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                        <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                             <TextBlock Text="Tell us about the project" FontSize="16" FontWeight="Bold"
                                                        Foreground="{DynamicResource TextStrong}" />
                                         </Border>
@@ -663,7 +664,7 @@
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                         Background="{DynamicResource Surface}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                        <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                             <TextBlock Text="What's the project website?" FontSize="16" FontWeight="Bold"
                                                        Foreground="{DynamicResource TextStrong}" />
                                         </Border>
@@ -792,7 +793,7 @@
                                                 Background="{DynamicResource BitcoinWash}" ClipToBounds="True">
                                             <StackPanel>
                                                 <!-- Header with Bitcoin icon -->
-                                                <Border Padding="24">
+                                                <Border Padding="24" CornerRadius="11,11,0,0">
                                                     <Border.Background>
                                                         <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                                     </Border.Background>
@@ -802,8 +803,10 @@
                                                                   Fill="{DynamicResource BitcoinAccent}"
                                                                   Width="24" Height="24" Stretch="Uniform" />
                                                         </Viewbox>
-                                                        <TextBlock Text="Set your target funding amount" FontSize="16" FontWeight="Bold"
-                                                                   Foreground="{DynamicResource TextStrong}" VerticalAlignment="Center" />
+                                                        <TextBlock Text="Set your target funding amount"
+                                                                   FontSize="16" FontWeight="Bold"
+                                                                   Foreground="{DynamicResource TextStrong}"
+                                                                   VerticalAlignment="Center" />
                                                     </StackPanel>
                                                 </Border>
                                                 <StackPanel Spacing="16" Margin="24">
@@ -861,7 +864,7 @@
                                         <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                                 Background="{DynamicResource Surface}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <StackPanel Orientation="Horizontal" Spacing="10">
                                                         <TextBlock Text="Fundraising Window" FontSize="16" FontWeight="Bold"
                                                                    Foreground="{DynamicResource TextStrong}" VerticalAlignment="Center" />
@@ -923,7 +926,7 @@
                                                 Background="{DynamicResource BitcoinWash}" ClipToBounds="True">
                                             <StackPanel>
                                                 <!-- Header with Bitcoin icon -->
-                                                <Border Padding="24">
+                                                <Border Padding="24" CornerRadius="11,11,0,0">
                                                     <Border.Background>
                                                         <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                                     </Border.Background>
@@ -992,7 +995,7 @@
                                         <Border CornerRadius="12" BorderBrush="#3B82F6" BorderThickness="1"
                                                 Background="{DynamicResource BlueWash}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Padding="24">
+                                                <Border Padding="24" CornerRadius="11,11,0,0">
                                                     <Border.Background>
                                                         <SolidColorBrush Color="#3B82F6" Opacity="0.08" />
                                                     </Border.Background>
@@ -1039,7 +1042,7 @@
                                         <Border CornerRadius="12" BorderBrush="{DynamicResource BitcoinAccent}" BorderThickness="1"
                                                 Background="{DynamicResource BitcoinWash}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Padding="24">
+                                                <Border Padding="24" CornerRadius="11,11,0,0">
                                                     <Border.Background>
                                                         <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                                     </Border.Background>
@@ -1128,7 +1131,7 @@
                                         <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                                 Background="{DynamicResource Surface}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <TextBlock Text="How long will the project take?" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
                                                 </Border>
@@ -1180,7 +1183,7 @@
                                         <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                                 Background="{DynamicResource Surface}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <TextBlock Text="How would you like the payments to be split up?" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
                                                 </Border>
@@ -1237,7 +1240,7 @@
                                         <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                                 Background="{DynamicResource Surface}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <TextBlock Text="How often would you like to receive payments" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
                                                 </Border>
@@ -1277,7 +1280,7 @@
                                         <Border Name="InstallmentsCard" CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
                                                 Background="{DynamicResource Surface}" ClipToBounds="True">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <TextBlock Text="Number of Installments" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
                                                 </Border>
@@ -1330,7 +1333,7 @@
                                                 Background="{DynamicResource Surface}" ClipToBounds="True"
                                                 IsVisible="{Binding IsPayoutMonthly}">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <TextBlock Text="What date do you want to receive funds each month?" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
                                                 </Border>
@@ -1383,7 +1386,7 @@
                                                 Background="{DynamicResource Surface}" ClipToBounds="True"
                                                 IsVisible="{Binding IsPayoutWeekly}">
                                             <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
+                                                <Border Background="{DynamicResource SurfaceMedium}" CornerRadius="11,11,0,0" Padding="24">
                                                     <TextBlock Text="What day do you want to receive funds each week?" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
                                                 </Border>
@@ -1423,7 +1426,7 @@
                                         IsVisible="{Binding HasStages}">
                                     <StackPanel>
                                         <!-- Card header: icon + title + count + Delete button -->
-                                        <Border Padding="20,16">
+                                        <Border Padding="20,16" CornerRadius="11,11,0,0">
                                             <Border.Background>
                                                 <SolidColorBrush Color="#4B7C5A" Opacity="0.08" />
                                             </Border.Background>
@@ -1504,7 +1507,7 @@
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource Accent}" BorderThickness="1"
                                         Background="{DynamicResource BrandWash}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Border Padding="24">
+                                        <Border Padding="24" CornerRadius="11,11,0,0">
                                             <Border.Background>
                                                 <SolidColorBrush Color="#4B7C5A" Opacity="0.08" />
                                             </Border.Background>
@@ -1556,7 +1559,7 @@
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource BitcoinAccent}" BorderThickness="1"
                                         Background="{DynamicResource BitcoinWash}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Border Padding="24">
+                                        <Border Padding="24" CornerRadius="11,11,0,0">
                                             <Border.Background>
                                                 <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                             </Border.Background>
@@ -1633,7 +1636,7 @@
                                 <Border CornerRadius="12" BorderBrush="{DynamicResource Accent}" BorderThickness="1"
                                         Background="{DynamicResource BrandWash}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Border Padding="24">
+                                        <Border Padding="24" CornerRadius="11,11,0,0">
                                             <Border.Background>
                                                 <SolidColorBrush Color="#4B7C5A" Opacity="0.08" />
                                             </Border.Background>

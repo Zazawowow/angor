@@ -216,12 +216,13 @@
                                         BorderBrush="#4B7C5A"
                                         BorderThickness="2"
                                         CornerRadius="8">
-                                    <Viewbox Width="18" Height="18">
-                                        <Path Data="{StaticResource Share}"
-                                              Stroke="#4B7C5A"
-                                              StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <!-- Share icon: PNG tinted via OpacityMask -->
+                                    <Border Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Background="#4B7C5A">
+                                        <Border.OpacityMask>
+                                            <ImageBrush Source="/Assets/share-forward.png" Stretch="Uniform" />
+                                        </Border.OpacityMask>
+                                    </Border>
                                 </Button>
                             </StackPanel>
                         </StackPanel>

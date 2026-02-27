@@ -502,14 +502,11 @@
                                                             CornerRadius="4"
                                                             VerticalAlignment="Top"
                                                             Margin="8,0,0,0">
-                                                        <Viewbox Width="16" Height="16">
-                                                            <Path Data="{StaticResource Copy}"
-                                                                  Stroke="{DynamicResource TextMuted}"
-                                                                  StrokeThickness="2"
-                                                                  StrokeLineCap="Round"
-                                                                  StrokeJoin="Round"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
+                                                            <Border.OpacityMask>
+                                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
+                                                            </Border.OpacityMask>
+                                                        </Border>
                                                     </Button>
                                                     <!-- Vue: flex-1 text-sm break-all font-mono -->
                                                     <TextBlock Text="{Binding Npub}"

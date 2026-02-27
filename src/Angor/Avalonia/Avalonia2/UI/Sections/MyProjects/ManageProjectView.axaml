@@ -103,13 +103,11 @@
                         </Transitions>
                     </Border.Transitions>
                     <Button Classes="NavBtn" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Cursor="Hand">
-                        <Viewbox Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Path Data="{StaticResource RefreshArrows}"
-                                  Stroke="{DynamicResource TextStrong}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
+                        <Border Width="16" Height="16" Background="{DynamicResource TextStrong}">
+                            <Border.OpacityMask>
+                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                            </Border.OpacityMask>
+                        </Border>
                     </Button>
                 </Border>
 
@@ -132,13 +130,13 @@
                         </Transitions>
                     </Border.Transitions>
                     <Button Classes="NavBtn" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Cursor="Hand">
-                        <Viewbox Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Path Data="{StaticResource Share}"
-                                  Stroke="{DynamicResource TextStrong}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
+                        <!-- Share icon: PNG tinted via OpacityMask -->
+                        <Border Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Background="{DynamicResource TextStrong}">
+                            <Border.OpacityMask>
+                                <ImageBrush Source="/Assets/share-forward.png" Stretch="Uniform" />
+                            </Border.OpacityMask>
+                        </Border>
                     </Button>
                 </Border>
             </StackPanel>
@@ -302,13 +300,11 @@
                                         BorderThickness="0"
                                         CornerRadius="6"
                                         Padding="8">
-                                    <Viewbox Width="18" Height="18">
-                                        <Path Data="{StaticResource Copy}"
-                                              Stroke="{DynamicResource ProjectIdLabel}"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <Border Width="18" Height="18" Background="{DynamicResource ProjectIdLabel}">
+                                        <Border.OpacityMask>
+                                            <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
+                                        </Border.OpacityMask>
+                                    </Border>
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -1048,11 +1044,11 @@
                                     <!-- Spinner (visible when claiming) -->
                                     <Viewbox Width="16" Height="16"
                                              IsVisible="{Binding IsClaiming}">
-                                        <Path Data="{StaticResource RefreshArrows}"
-                                              Stroke="White"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
+                                        <Border Width="16" Height="16" Background="White">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                     </Viewbox>
                                     <TextBlock Name="ConfirmClaimText"
                                                Text="Confirm"
@@ -1366,11 +1362,11 @@
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                                     <Viewbox Width="16" Height="16"
                                              IsVisible="{Binding IsReleasingFunds}">
-                                        <Path Data="{StaticResource RefreshArrows}"
-                                              Stroke="White"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
+                                        <Border Width="16" Height="16" Background="White">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                     </Viewbox>
                                     <TextBlock Name="ConfirmReleaseText"
                                                Text="Confirm"

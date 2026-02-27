@@ -182,3 +182,30 @@ border.Classes.Set("WalletSelected", isSelected);
 - `new SolidColorBrush(Color.Parse(...))` — permanently overrides `DynamicResource` bindings
 - `Application.Current?.ActualThemeVariant == ThemeVariant.Dark` — doesn't react to live theme changes
 - Mixing `LinearGradientBrush` and `SolidColorBrush` for the same property's default/selected states — `BrushTransition` cannot interpolate between different brush types
+
+### 10. Use PNG Icons, NOT SVG Paths — NEVER Generate Drawn Versions
+Avalonia's `StreamGeometry` / `PathIcon` / `Path` rendering of SVG path data produces poor visual results — blurry edges, bad anti-aliasing, and rendering artifacts especially at small sizes. **Always use PNG images for icons.**
+
+**CRITICAL: When the user provides a PNG icon, save it directly to `Avalonia2/Assets/` and use it as-is. NEVER recreate, redraw, trace, or generate a `DrawingImage`, `StreamGeometry`, Pillow-rendered, or any other programmatic version of an icon the user gives you. The user-provided PNG IS the icon — just resize it to 128×128 if needed and use it.**
+
+**The correct approach:**
+- Save user-provided PNGs as **128×128** files with transparent background in `Avalonia2/Assets/`
+- They're bundled via `<AvaloniaResource Include="Assets/**"/>`
+- Reference via the OpacityMask tinting pattern for theme-aware colors:
+  ```xml
+  <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
+      <Border.OpacityMask>
+          <ImageBrush Source="/Assets/icon-name.png" Stretch="Uniform" />
+      </Border.OpacityMask>
+  </Border>
+  ```
+- Or use `<Image Source="/Assets/icon-name.png" Width="18" Height="18" />` for pre-colored icons
+
+**Anti-patterns to avoid:**
+- `StreamGeometry` with complex SVG path data for display icons
+- `PathIcon` / `Path` with `Data="{StaticResource ...}"` for anything beyond simple UI chrome (chevrons, close X)
+- SVG files in Assets (Avalonia doesn't render SVGs natively)
+- **NEVER** use `DrawingImage`, `DrawingGroup`, or `GeometryDrawing` to recreate an icon the user provided as PNG
+- **NEVER** use Pillow/Python/qlmanage to render or regenerate an icon — just use the PNG the user gives you
+
+**Exception:** Simple geometric shapes used for UI chrome (chevrons, arrows, checkmarks, close X) may still use `StreamGeometry` since they render acceptably at small sizes with few path commands.

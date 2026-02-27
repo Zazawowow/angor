@@ -37,7 +37,7 @@
 
     <Panel>
         <controls:ScrollableView ContentPadding="24,24,24,24">
-            <StackPanel Spacing="24" MaxWidth="600">
+            <StackPanel Spacing="24">
 
                 <!-- ═══ 1. Network ═══ -->
                 <Border Background="{DynamicResource CardSurface}"
@@ -49,6 +49,7 @@
                     <StackPanel>
                         <!-- Header bar -->
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -110,6 +111,7 @@
                         BoxShadow="{DynamicResource ItemShadow}">
                     <StackPanel>
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -163,6 +165,7 @@
                         BoxShadow="{DynamicResource ItemShadow}">
                     <StackPanel>
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -281,6 +284,7 @@
                         BoxShadow="{DynamicResource ItemShadow}">
                     <StackPanel>
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -295,13 +299,12 @@
                                         FontWeight="SemiBold"
                                         FontSize="14">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Path Data="{StaticResource RefreshArrows}"
-                                              Stroke="White"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round"
-                                              Width="16" Height="16"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center" />
+                                        <Border Width="16" Height="16" Background="White"
+                                                VerticalAlignment="Center">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                         <TextBlock Text="Refresh" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
@@ -431,6 +434,7 @@
                         BoxShadow="{DynamicResource ItemShadow}">
                     <StackPanel>
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -547,6 +551,7 @@
                         BoxShadow="{DynamicResource ItemShadow}">
                     <StackPanel>
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -608,6 +613,7 @@
                         BoxShadow="{DynamicResource ItemShadow}">
                     <StackPanel>
                         <Border Background="{DynamicResource SurfaceHigh}"
+                                CornerRadius="15,15,0,0"
                                 BorderBrush="{DynamicResource Stroke}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
@@ -715,6 +721,7 @@
                     <StackPanel>
                         <!-- Danger header bar: Vue .danger-header-bar bg rgba(254,242,242,0.8) (light) / #1a0a0a (dark) -->
                         <Border Background="{DynamicResource DangerZoneHeaderBg}"
+                                CornerRadius="14,14,0,0"
                                 BorderBrush="{DynamicResource DangerZoneHeaderBorder}"
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">

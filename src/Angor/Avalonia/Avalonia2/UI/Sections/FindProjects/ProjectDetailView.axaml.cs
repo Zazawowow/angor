@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
@@ -11,6 +12,7 @@ public partial class ProjectDetailView : UserControl
 {
     private bool _detailsExpanded = true;
     private bool _nostrExpanded = true;
+    private bool _navCtaVisible;
 
     public ProjectDetailView()
     {
@@ -25,6 +27,16 @@ public partial class ProjectDetailView : UserControl
         var investBtn = this.FindControl<Border>("InvestButton");
         if (investBtn != null)
             investBtn.PointerPressed += OnInvestPressed;
+
+        // Nav CTA button — same action as InvestButton
+        var navCta = this.FindControl<Border>("NavCtaButton");
+        if (navCta != null)
+            navCta.PointerPressed += OnInvestPressed;
+
+        // Scroll detection for nav CTA fade
+        var scroller = this.FindControl<ScrollViewer>("ContentScroller");
+        if (scroller != null)
+            scroller.ScrollChanged += OnScrollChanged;
 
         // Collapsible sections
         var detailsHeader = this.FindControl<Border>("DetailsHeader");
@@ -61,6 +73,29 @@ public partial class ProjectDetailView : UserControl
                 if (parent.Bounds.Width > 0)
                     fill.Width = parent.Bounds.Width * (vm.Progress / 100.0);
             }
+        }
+    }
+
+    private void OnScrollChanged(object? sender, ScrollChangedEventArgs e)
+    {
+        var investBtn = this.FindControl<Border>("InvestButton");
+        var navCta = this.FindControl<Border>("NavCtaButton");
+        var scroller = this.FindControl<ScrollViewer>("ContentScroller");
+
+        if (investBtn == null || navCta == null || scroller == null) return;
+
+        // Check if the InvestButton is scrolled out of the visible area.
+        // TranslatePoint gives the position of InvestButton's top-left relative to the scroller viewport.
+        var point = investBtn.TranslatePoint(new Point(0, investBtn.Bounds.Height), scroller);
+
+        // If the bottom of the InvestButton is above the top of the viewport, show the nav CTA
+        bool shouldShow = point.HasValue && point.Value.Y < 0;
+
+        if (shouldShow != _navCtaVisible)
+        {
+            _navCtaVisible = shouldShow;
+            navCta.Opacity = shouldShow ? 1 : 0;
+            navCta.IsHitTestVisible = shouldShow;
         }
     }
 

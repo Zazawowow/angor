@@ -258,10 +258,11 @@
                         </Viewbox>
                         <Viewbox Width="20" Height="20" VerticalAlignment="Center"
                                  IsVisible="{Binding IsSubscription}">
-                            <Path Data="{StaticResource RefreshArrows}"
-                                  Stroke="White" StrokeThickness="2"
-                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
+                            <Border Width="20" Height="20" Background="White">
+                                <Border.OpacityMask>
+                                    <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                                </Border.OpacityMask>
+                            </Border>
                         </Viewbox>
                         <TextBlock Text="{Binding Project.ActionButtonText}"
                                    FontSize="16" FontWeight="SemiBold"
@@ -402,10 +403,11 @@
                                         Background="#F97316">
                                     <Viewbox Width="20" Height="20"
                                              HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Path Data="{StaticResource RefreshArrows}"
-                                              Stroke="White" StrokeThickness="2"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
+                                        <Border Width="20" Height="20" Background="White">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                     </Viewbox>
                                 </Border>
                                 <!-- Vue: .subscription-card-title { color: #7c2d12 } / dark { color: #fb923c } -->
@@ -573,12 +575,11 @@
                                         <Border Grid.Column="1" Name="CopyProjectIdButton"
                                                 Cursor="Hand" Padding="4" Margin="8,0,0,0"
                                                 Background="Transparent">
-                                            <Viewbox Width="16" Height="16">
-                                                <Path Data="{StaticResource Copy}"
-                                                      Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
-                                                      StrokeLineCap="Round" StrokeJoin="Round"
-                                                      Width="24" Height="24" Stretch="Uniform" />
-                                            </Viewbox>
+                                            <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
+                                                <Border.OpacityMask>
+                                                    <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
+                                                </Border.OpacityMask>
+                                            </Border>
                                         </Border>
                                     </Grid>
                                 </Border>

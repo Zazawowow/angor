@@ -202,6 +202,7 @@
                                             Lock icon + title + balance (space-between)
                                         -->
                                         <Border Background="{DynamicResource SurfaceMedium}"
+                                                CornerRadius="15,15,0,0"
                                                 BorderBrush="{DynamicResource Stroke}"
                                                 BorderThickness="0,0,0,1"
                                                 Padding="24,20">

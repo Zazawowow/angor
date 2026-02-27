@@ -31,6 +31,11 @@
             <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
             <Setter Property="BoxShadow" Value="0 6 16 0 #33000000" />
         </Style>
+        <!-- Nav CTA hover: lift + enhanced shadow -->
+        <Style Selector="Border#NavCtaButton:pointerover">
+            <Setter Property="RenderTransform" Value="translate(0px, -1px)" />
+            <Setter Property="BoxShadow" Value="0 6 16 0 #33000000" />
+        </Style>
         <!-- Kill FluentTheme button chrome on the back button -->
         <Style Selector="Button.BackBtn">
             <Setter Property="Background" Value="Transparent" />
@@ -116,18 +121,58 @@
                     </Transitions>
                 </Border.Transitions>
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-                        <Path Data="{StaticResource Share}"
-                              Stroke="{DynamicResource TextStrong}"
-                              StrokeThickness="1.5"
-                              StrokeLineCap="Round"
-                              StrokeJoin="Round"
-                              Width="24" Height="24" Stretch="Uniform" />
-                    </Viewbox>
+                    <!-- Share icon: PNG tinted via OpacityMask -->
+                    <Border Width="16" Height="16" VerticalAlignment="Center"
+                            Background="{DynamicResource TextStrong}">
+                        <Border.OpacityMask>
+                            <ImageBrush Source="/Assets/share-forward.png" Stretch="Uniform" />
+                        </Border.OpacityMask>
+                    </Border>
                     <TextBlock Text="Share"
                                FontSize="14"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource TextStrong}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <!-- RIGHT: Floating CTA button — fades in when InvestButton scrolls out of view -->
+            <Border Name="NavCtaButton"
+                    DockPanel.Dock="Right"
+                    CornerRadius="8"
+                    Padding="16,0,16,0"
+                    Height="44"
+                    Margin="0,0,12,0"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    Opacity="0"
+                    IsHitTestVisible="False"
+                    IsVisible="{Binding IsOpen}"
+                    BoxShadow="0 4 12 0 #26000000"
+                    RenderTransform="translate(0px, 0px)">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.25" Easing="CubicEaseInOut" />
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                    </Transitions>
+                </Border.Transitions>
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                        <GradientStop Color="#2d5a3d" Offset="0" />
+                        <GradientStop Color="#4a8f5f" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Viewbox Width="16" Height="16" VerticalAlignment="Center">
+                        <Path Data="{StaticResource BitcoinSymbol}"
+                              Fill="White"
+                              Width="64" Height="64" Stretch="Uniform" />
+                    </Viewbox>
+                    <TextBlock Text="{Binding ActionButtonText}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="White"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Border>
@@ -156,7 +201,8 @@
         <!-- ═══════════════════════════════════════ -->
         <!-- SCROLLABLE CONTENT                      -->
         <!-- ═══════════════════════════════════════ -->
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+        <ScrollViewer Name="ContentScroller"
+                      HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="24" MaxWidth="1400" Margin="24,0,24,24">
 
@@ -181,8 +227,8 @@
                         Margin="0,0,24,0">
                     <StackPanel>
                         <!-- Banner — Vue: height 180px -->
-                        <Panel Height="180">
-                            <Border Background="{DynamicResource SurfaceLow}" />
+                        <Panel Height="180" ClipToBounds="True">
+                            <Border Background="{DynamicResource SurfaceLow}" CornerRadius="15,15,0,0" />
                             <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
                                                             Source="{Binding BannerUrl}" />
                             <!-- Logo — Vue: 64x64, circle, absolute bottom -32px left 24px -->
@@ -900,13 +946,11 @@
                                     <Border Name="CopyProjectIdBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource Copy}"
-                                                  Stroke="{DynamicResource TextMuted}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                     </Border>
                                     <TextBlock Text="{Binding ProjectId}"
                                                FontSize="13"
@@ -937,13 +981,11 @@
                                     <Border Name="CopyFounderKeyBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource Copy}"
-                                                  Stroke="{DynamicResource TextMuted}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                     </Border>
                                     <TextBlock Text="{Binding FounderKey}"
                                                FontSize="13"
@@ -1024,13 +1066,11 @@
                                     <Border Name="CopyNpubBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource Copy}"
-                                                  Stroke="{DynamicResource TextMuted}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
+                                            <Border.OpacityMask>
+                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
+                                            </Border.OpacityMask>
+                                        </Border>
                                     </Border>
                                     <TextBlock Text="{Binding NostrNpub}"
                                                FontSize="13"

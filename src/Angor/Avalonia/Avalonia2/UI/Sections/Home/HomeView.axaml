@@ -30,12 +30,11 @@
                 <Border CornerRadius="12" Background="{DynamicResource TiledLogoBrush}" IsHitTestVisible="False" />
                 <!-- Content -->
                 <StackPanel Spacing="0" VerticalAlignment="Center" Margin="48">
-                    <!-- Bitcoin icon (fill-based, 80x80) — Vue: w-24 h-24 mb-8 -->
-                    <PathIcon Height="80" Width="80"
-                              Margin="0,0,0,32"
-                              HorizontalAlignment="Center"
-                              Foreground="{DynamicResource Brand}"
-                              Data="{StaticResource BitcoinSymbol}" />
+                    <!-- Bitcoin coin logo (PNG, green-tinted, 80x80) — Vue: w-24 h-24 mb-8 -->
+                    <Image Height="80" Width="80"
+                           Margin="0,0,0,32"
+                           HorizontalAlignment="Center"
+                           Source="/Assets/bitcoin-coin-green.png" />
                     <!-- Title — Vue: text-3xl font-bold mb-4 tracking-tight -->
                     <TextBlock Classes="Title Strong"
                                Margin="0,0,0,16"
