@@ -384,6 +384,7 @@
                                     </LinearGradientBrush>
                                 </Button.Background>
                                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-bolt" FontSize="14" Foreground="White" />
                                     <TextBlock Text="Deploy Now" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
@@ -1462,7 +1463,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="12">
                                                     <Border Width="36" Height="36" CornerRadius="8"
                                                             Background="{DynamicResource Accent}">
-                                                        <i:Icon Value="fa-solid fa-circle-check" FontSize="18"
+                                                        <i:Icon Value="fa-regular fa-calendar" FontSize="18"
                                                                 Foreground="White"
                                                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                     </Border>
@@ -1647,7 +1648,7 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="12" DockPanel.Dock="Left">
                                                     <Border Width="36" Height="36" CornerRadius="8"
                                                             Background="{DynamicResource Accent}">
-                                                        <i:Icon Value="fa-solid fa-circle-check" FontSize="18"
+                                                        <i:Icon Value="fa-regular fa-calendar" FontSize="18"
                                                                 Foreground="White"
                                                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                     </Border>
