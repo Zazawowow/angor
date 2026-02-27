@@ -68,17 +68,26 @@ public partial class ManageProjectView : UserControl
         claimList?.AddHandler(PointerPressedEvent, OnClaimUtxoItemPressed, RoutingStrategies.Tunnel);
     }
 
+    // Track the back button handler to prevent accumulation across SetBackAction calls
+    private Button? _backBtn;
+    private EventHandler<RoutedEventArgs>? _backClickHandler;
+
     /// <summary>
     /// Wire the Back button to navigate back to the project list.
     /// Called from MyProjectsView code-behind after the view is created.
+    /// Removes any previous handler before adding the new one.
     /// </summary>
     public void SetBackAction(Action backAction)
     {
-        var backBtn = this.FindControl<Button>("BackButton");
-        if (backBtn != null)
-        {
-            backBtn.Click += (_, _) => backAction();
-        }
+        _backBtn ??= this.FindControl<Button>("BackButton");
+        if (_backBtn == null) return;
+
+        // Remove previous handler to prevent accumulation
+        if (_backClickHandler != null)
+            _backBtn.Click -= _backClickHandler;
+
+        _backClickHandler = (_, _) => backAction();
+        _backBtn.Click += _backClickHandler;
     }
 
     // ─────────────────────────────────────────────────────────────────

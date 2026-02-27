@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia2.UI.Shared.Helpers;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
@@ -117,7 +118,7 @@ public partial class FundersView : UserControl
                 break;
 
             case "CopyNpubButton" when btn.Tag is string npub:
-                CopyToClipboard(npub);
+                ClipboardHelper.CopyToClipboard(this, npub);
                 e.Handled = true;
                 break;
         }
@@ -147,15 +148,6 @@ public partial class FundersView : UserControl
                     ? new RotateTransform(180)
                     : new RotateTransform(0);
             }
-        }
-    }
-
-    private async void CopyToClipboard(string text)
-    {
-        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
-        if (clipboard != null)
-        {
-            await clipboard.SetTextAsync(text);
         }
     }
 }

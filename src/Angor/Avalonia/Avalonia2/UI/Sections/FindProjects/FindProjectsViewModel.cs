@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Avalonia2.UI.Sections.Portfolio;
+using Avalonia2.UI.Shared;
 
 namespace Avalonia2.UI.Sections.FindProjects;
 
@@ -48,48 +49,20 @@ public class ProjectItemViewModel
     /// <summary>Stages for investment projects (reuse from Portfolio)</summary>
     public ObservableCollection<InvestmentStageViewModel> Stages { get; set; } = new();
 
-    // ── Type-specific terminology helpers (mirror Portfolio pattern) ──
-    public string OpportunityTitle => ProjectType switch
-    {
-        "Fund" => "Funding Opportunity",
-        "Subscription" => "Subscription Opportunity",
-        _ => "Investment Opportunity"
-    };
+    // ── Type-specific terminology helpers (via shared ProjectTypeTerminology) ──
+    private Shared.ProjectType TypeEnum => ProjectTypeExtensions.FromDisplayString(ProjectType);
 
-    public string ActionButtonText => ProjectType switch
-    {
-        "Fund" => "Fund This Project",
-        "Subscription" => "Subscribe Now",
-        _ => "Invest Now"
-    };
+    public string OpportunityTitle => ProjectTypeTerminology.OpportunityTitle(TypeEnum);
 
-    public string InfoSectionTitle => ProjectType switch
-    {
-        "Fund" => "Funding Information",
-        "Subscription" => "Subscription Information",
-        _ => "Investment Information"
-    };
+    public string ActionButtonText => ProjectTypeTerminology.ActionButtonText(TypeEnum);
 
-    public string InvestorNoun => ProjectType switch
-    {
-        "Fund" => "Total Funders",
-        "Subscription" => "Total Subscribers",
-        _ => "Total Investors"
-    };
+    public string InfoSectionTitle => ProjectTypeTerminology.InfoSectionTitle(TypeEnum);
 
-    public string TargetNoun => ProjectType switch
-    {
-        "Fund" => "Goal Amount",
-        "Subscription" => "Goal Amount",
-        _ => "Target Amount"
-    };
+    public string InvestorNoun => ProjectTypeTerminology.InvestorNounTotal(TypeEnum);
 
-    public string RaisedNoun => ProjectType switch
-    {
-        "Fund" => "Total Funded",
-        "Subscription" => "Total Subscribed",
-        _ => "Total Raised"
-    };
+    public string TargetNoun => ProjectTypeTerminology.TargetNoun(TypeEnum);
+
+    public string RaisedNoun => ProjectTypeTerminology.RaisedNoun(TypeEnum);
 
     /// <summary>Whether the project is an investment type (shows stages table)</summary>
     public bool IsInvestmentType => ProjectType == "Invest";

@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using Avalonia2.UI.Sections.MyProjects.Deploy;
+using Avalonia2.UI.Shared.Helpers;
 using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.FindProjects;
@@ -73,7 +74,7 @@ public partial class InvestModalsView : UserControl, IBackdropCloseable
                 break;
 
             case "CopyInvoiceButton":
-                CopyToClipboard(Vm?.InvoiceString);
+                ClipboardHelper.CopyToClipboard(this, Vm?.InvoiceString);
                 break;
 
             case "ViewInvestmentsButton":
@@ -118,7 +119,7 @@ public partial class InvestModalsView : UserControl, IBackdropCloseable
                 if (found.DataContext is WalletItem wallet)
                 {
                     Vm?.SelectWallet(wallet);
-                    UpdateWalletSelection();
+                    WalletSelectionHelper.UpdateWalletSelection(this);
                     e.Handled = true;
                 }
                 break;
@@ -129,34 +130,5 @@ public partial class InvestModalsView : UserControl, IBackdropCloseable
                 break;
         }
     }
-
-    /// <summary>
-    /// Update wallet card visual states via CSS class toggling.
-    /// The "WalletCard" base style sets DynamicResource bg/border for unselected state.
-    /// The "WalletSelected" modifier class overrides with selected-state DynamicResource values.
-    /// BrushTransition on the base style provides smooth 150ms animation.
-    /// No FindResource() or ClearValue() — eliminates flash and wrong-theme bugs.
-    /// </summary>
-    private void UpdateWalletSelection()
-    {
-        var walletBorders = this.GetVisualDescendants()
-            .OfType<Border>()
-            .Where(b => b.Name == "WalletBorder");
-
-        foreach (var border in walletBorders)
-        {
-            var isSelected = border.DataContext is WalletItem w && w.IsSelected;
-            border.Classes.Set("WalletSelected", isSelected);
-        }
-    }
-
-    private async void CopyToClipboard(string? text)
-    {
-        if (string.IsNullOrEmpty(text)) return;
-        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
-        if (clipboard != null)
-        {
-            await clipboard.SetTextAsync(text);
-        }
-    }
 }
+

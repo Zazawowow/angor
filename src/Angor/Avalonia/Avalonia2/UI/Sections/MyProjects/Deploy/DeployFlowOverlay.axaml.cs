@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
+using Avalonia2.UI.Shared.Helpers;
 using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.MyProjects.Deploy;
@@ -83,7 +84,7 @@ public partial class DeployFlowOverlay : UserControl, IBackdropCloseable
                 Vm?.BackToWalletSelector();
                 break;
             case "CopyInvoiceButton":
-                CopyInvoiceToClipboard();
+                ClipboardHelper.CopyToClipboard(this, Vm?.InvoiceString);
                 break;
 
             // Success — Vue ref: no X button on success modal
@@ -125,39 +126,8 @@ public partial class DeployFlowOverlay : UserControl, IBackdropCloseable
         if (walletBorder?.DataContext is WalletItem wallet)
         {
             Vm?.SelectWallet(wallet);
-            UpdateWalletSelection();
+            WalletSelectionHelper.UpdateWalletSelection(this);
             e.Handled = true;
-        }
-    }
-
-    /// <summary>
-    /// Update wallet item borders to show selection state.
-    /// Uses CSS class toggling — the "WalletCard" base style sets DynamicResource
-    /// bg/border for unselected state, and "WalletSelected" modifier class overrides
-    /// with selected-state DynamicResource values. BrushTransition provides smooth
-    /// 150ms animation. No FindResource() or ClearValue() — eliminates flash and
-    /// wrong-theme bugs in modals.
-    /// </summary>
-    private void UpdateWalletSelection()
-    {
-        var walletBorders = this.GetVisualDescendants()
-            .OfType<Border>()
-            .Where(b => b.Name == "WalletBorder");
-
-        foreach (var border in walletBorders)
-        {
-            var isSelected = border.DataContext is WalletItem w && w.IsSelected;
-            border.Classes.Set("WalletSelected", isSelected);
-        }
-    }
-
-    private async void CopyInvoiceToClipboard()
-    {
-        if (Vm == null) return;
-        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
-        if (clipboard != null)
-        {
-            await clipboard.SetTextAsync(Vm.InvoiceString);
         }
     }
 }

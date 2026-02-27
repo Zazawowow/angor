@@ -1,14 +1,16 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using Avalonia2.UI.Shared.Controls;
 using Avalonia2.UI.Shell;
-using System.Reactive.Linq;
 
 namespace Avalonia2.UI.Sections.MyProjects;
 
 public partial class MyProjectsView : UserControl
 {
+    private CompositeDisposable? _subscriptions;
+
     public MyProjectsView()
     {
         InitializeComponent();
@@ -19,7 +21,9 @@ public partial class MyProjectsView : UserControl
         if (SharedViewModels.Prototype.ShowPopulatedApp)
             vm.LoadSampleProjects();
 
-        // React to prototype toggle changes (populated ↔ empty)
+        _subscriptions = new CompositeDisposable();
+
+        // React to prototype toggle changes (populated <-> empty)
         SharedViewModels.Prototype.WhenAnyValue(x => x.ShowPopulatedApp)
             .Skip(1) // skip initial value (already handled above)
             .Subscribe(showPopulated =>
@@ -29,7 +33,8 @@ public partial class MyProjectsView : UserControl
                 else
                     vm.ClearProjects();
                 UpdateListVisibility(vm);
-            });
+            })
+            .DisposeWith(_subscriptions);
 
         AddHandler(Button.ClickEvent, OnButtonClick, RoutingStrategies.Bubble);
 
@@ -63,11 +68,13 @@ public partial class MyProjectsView : UserControl
                 var shell = this.FindAncestorOfType<ShellView>();
                 if (shell?.DataContext is ShellViewModel shellVm)
                     shellVm.SectionTitleOverride = showWizard ? "Create New Project" : null;
-            });
+            })
+            .DisposeWith(_subscriptions!);
 
         // HasProjects drives empty state vs project list
         vm.WhenAnyValue(x => x.HasProjects)
-            .Subscribe(_ => UpdateListVisibility(vm));
+            .Subscribe(_ => UpdateListVisibility(vm))
+            .DisposeWith(_subscriptions!);
 
         // SelectedManageProject drives the manage project detail panel
         vm.WhenAnyValue(x => x.SelectedManageProject)
@@ -93,7 +100,15 @@ public partial class MyProjectsView : UserControl
                     else if (!vm.ShowCreateWizard)
                         shellVm.SectionTitleOverride = null;
                 }
-            });
+            })
+            .DisposeWith(_subscriptions!);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        _subscriptions?.Dispose();
+        _subscriptions = null;
+        base.OnDetachedFromLogicalTree(e);
     }
 
     private void UpdateListVisibility(MyProjectsViewModel vm)
@@ -164,7 +179,7 @@ public partial class MyProjectsView : UserControl
             wizardVm.OnProjectDeployed = () =>
             {
                 vm.OnProjectDeployed(wizardVm);
-                vm.CloseCreateWizard(); // Close wizard → shows my-projects list with new project at top
+                vm.CloseCreateWizard(); // Close wizard -> shows my-projects list with new project at top
             };
         }
     }

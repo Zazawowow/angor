@@ -11,10 +11,18 @@ public partial class FindProjectsView : UserControl
 {
     private IDisposable? _visibilitySubscription;
 
+    // Cached FindControl results — avoid repeated tree walks on every visibility update
+    private Panel? _detailPanel;
+    private Panel? _investPanel;
+
     public FindProjectsView()
     {
         InitializeComponent();
         DataContext = new FindProjectsViewModel();
+
+        // Cache panels once
+        _detailPanel = this.FindControl<Panel>("ProjectDetailPanel");
+        _investPanel = this.FindControl<Panel>("InvestPagePanel");
 
         // Listen for taps on ProjectCard elements to open project detail
         AddHandler(InputElement.TappedEvent, OnCardTapped, RoutingStrategies.Bubble);
@@ -43,13 +51,11 @@ public partial class FindProjectsView : UserControl
                   if (ProjectListPanel != null)
                       ProjectListPanel.IsVisible = !hasProject && !hasInvest;
 
-                  var detailPanel = this.FindControl<Panel>("ProjectDetailPanel");
-                  if (detailPanel != null)
-                      detailPanel.IsVisible = hasProject && !hasInvest;
+                  if (_detailPanel != null)
+                      _detailPanel.IsVisible = hasProject && !hasInvest;
 
-                  var investPanel = this.FindControl<Panel>("InvestPagePanel");
-                  if (investPanel != null)
-                      investPanel.IsVisible = hasInvest;
+                  if (_investPanel != null)
+                      _investPanel.IsVisible = hasInvest;
               });
         }
     }

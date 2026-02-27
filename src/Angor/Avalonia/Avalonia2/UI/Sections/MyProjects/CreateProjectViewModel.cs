@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Avalonia2.UI.Sections.MyProjects.Deploy;
+using Avalonia2.UI.Shared;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.MyProjects;
@@ -163,12 +164,11 @@ public partial class CreateProjectViewModel : ReactiveObject
     public string DeployButtonText => IsDeploying ? "Deploying..." : "Deploy Project";
 
     // ── Step names — 6 steps shown in the vertical stepper ──
-    public string[] StepNames => ProjectType switch
-    {
-        "fund" => ["Project Type", "Project Profile", "Project Images", "Goal", "Payouts", "Review & Deploy"],
-        "subscription" => ["Project Type", "Project Profile", "Project Images", "Subscription Price", "Payouts", "Review & Deploy"],
-        _ => ["Project Type", "Project Profile", "Project Images", "Funding Configuration", "Stages", "Review & Deploy"]
-    };
+    public string[] StepNames =>
+    [
+        "Project Type", "Project Profile", "Project Images",
+        Step4Title, Step5Title, "Review & Deploy"
+    ];
 
     public int TotalSteps => 6;
 
@@ -198,81 +198,45 @@ public partial class CreateProjectViewModel : ReactiveObject
     // ── Cancel/Previous label for nav footer ──
     public string BackButtonText => CurrentStep == 1 ? "Cancel" : "Previous";
 
-    // ── Type-specific terminology (Vue JS bundle exact mappings) ──
-    public string ActionVerb => ProjectType switch
-    {
-        "fund" => "Fund",
-        "subscription" => "Subscribe",
-        _ => "Invest"
-    };
+    // ── Type-specific terminology (via shared ProjectTypeTerminology) ──
+    private Shared.ProjectType TypeEnum => ProjectTypeExtensions.FromLowerString(ProjectType);
 
-    public string AmountNoun => ProjectType switch
-    {
-        "fund" => "Funding",
-        "subscription" => "Subscription",
-        _ => "Investment"
-    };
+    public string ActionVerb => ProjectTypeTerminology.ActionVerb(TypeEnum);
 
-    public string StageLabel => ProjectType switch
-    {
-        "fund" or "subscription" => "Payment",
-        _ => "Stage"
-    };
+    public string AmountNoun => ProjectTypeTerminology.AmountNoun(TypeEnum);
 
-    public string ScheduleTitle => ProjectType switch
-    {
-        "fund" or "subscription" => "Payment Schedule",
-        _ => "Release Schedule"
-    };
+    public string StageLabel => ProjectTypeTerminology.StageLabel(TypeEnum);
 
-    public string InvestorNoun => ProjectType switch
-    {
-        "fund" => "Funders",
-        "subscription" => "Subscribers",
-        _ => "Investors"
-    };
+    public string ScheduleTitle => ProjectTypeTerminology.ScheduleTitle(TypeEnum);
 
-    public string TargetLabel => ProjectType switch
-    {
-        "fund" => "Goal Amount",
-        "subscription" => "Subscription Price",
-        _ => "Target Amount"
-    };
+    public string InvestorNoun => ProjectTypeTerminology.InvestorNounPlural(TypeEnum);
 
-    public string Step4Title => ProjectType switch
-    {
-        "fund" => "Goal",
-        "subscription" => "Subscription Price",
-        _ => "Funding Configuration"
-    };
+    public string TargetLabel => ProjectTypeTerminology.TargetLabelFull(TypeEnum);
 
-    public string Step5Title => ProjectType switch
-    {
-        "fund" or "subscription" => "Payouts",
-        _ => "Stages"
-    };
+    public string Step4Title => ProjectTypeTerminology.Step4Title(TypeEnum);
+
+    public string Step5Title => ProjectTypeTerminology.Step5Title(TypeEnum);
 
     /// <summary>Step 5 interstitial welcome screen title.</summary>
-    public string Step5WelcomeTitle => ProjectType switch
+    public string Step5WelcomeTitle => TypeEnum switch
     {
-        "fund" => "Payouts",
-        "subscription" => "Payouts",
+        Shared.ProjectType.Fund or Shared.ProjectType.Subscription => "Payouts",
         _ => "Set Funding Release Schedule"
     };
 
     /// <summary>Step 5 interstitial welcome screen subtitle (empty for investment type).</summary>
-    public string Step5WelcomeSubtitle => ProjectType switch
+    public string Step5WelcomeSubtitle => TypeEnum switch
     {
-        "fund" => "Select a payout schedule for your recurring funding model.",
-        "subscription" => "On the next screen you'll choose what subscriptions you want to offer.",
+        Shared.ProjectType.Fund => "Select a payout schedule for your recurring funding model.",
+        Shared.ProjectType.Subscription => "On the next screen you'll choose what subscriptions you want to offer.",
         _ => ""
     };
 
     /// <summary>Step 5 interstitial welcome screen info box text.</summary>
-    public string Step5WelcomeInfo => ProjectType switch
+    public string Step5WelcomeInfo => TypeEnum switch
     {
-        "fund" => "Payouts are scheduled based on your selection of weekly or monthly payouts and paid on the day you choose.",
-        "subscription" => "Subscribers pay their full plan upfront. You can offer 3, 6, and 12 month payment plans and choose your monthly payout day.",
+        Shared.ProjectType.Fund => "Payouts are scheduled based on your selection of weekly or monthly payouts and paid on the day you choose.",
+        Shared.ProjectType.Subscription => "Subscribers pay their full plan upfront. You can offer 3, 6, and 12 month payment plans and choose your monthly payout day.",
         _ => "We protect investors and founders by releasing funds in stages as project milestones are completed, rather than receiving everything upfront."
     };
 
@@ -560,16 +524,15 @@ public partial class CreateProjectViewModel : ReactiveObject
     public bool HasStages => Stages.Count > 0;
 
     // ── Generate button labels ──
-    public string GenerateButtonLabel => ProjectType switch
+    public string GenerateButtonLabel => TypeEnum switch
     {
-        "fund" => "Generate Payout Schedule",
-        "subscription" => "Generate Payout Schedule",
+        Shared.ProjectType.Fund or Shared.ProjectType.Subscription => "Generate Payout Schedule",
         _ => "Generate Fund Release Schedule"
     };
 
-    public string Step5Subtitle => ProjectType switch
+    public string Step5Subtitle => TypeEnum switch
     {
-        "fund" or "subscription" => "Select your payout pattern and schedule",
+        Shared.ProjectType.Fund or Shared.ProjectType.Subscription => "Select your payout pattern and schedule",
         _ => "Tell us how long the project will take and when you need payments"
     };
 

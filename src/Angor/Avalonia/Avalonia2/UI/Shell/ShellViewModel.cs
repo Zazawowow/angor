@@ -6,6 +6,7 @@ using Avalonia2.UI.Sections.Home;
 using Avalonia2.UI.Sections.MyProjects;
 using Avalonia2.UI.Sections.Portfolio;
 using Avalonia2.UI.Sections.Settings;
+using Avalonia2.UI.Shared;
 
 namespace Avalonia2.UI.Shell;
 
@@ -25,15 +26,15 @@ public class SharedSignature
     public string Date { get; set; } = "";
     public string Time { get; set; } = "";
     /// <summary>Status: waiting, approved, rejected</summary>
-    public string Status { get; set; } = "waiting";
+    public string Status { get; set; } = SignatureStatus.Waiting.ToLowerString();
     public string InvestorName { get; set; } = "";
     public string Npub { get; set; } = "";
     public bool HasMessages { get; set; }
 
     // Helpers
-    public bool IsWaiting => Status == "waiting";
-    public bool IsApproved => Status == "approved";
-    public bool IsRejected => Status == "rejected";
+    public bool IsWaiting => Status == SignatureStatus.Waiting.ToLowerString();
+    public bool IsApproved => Status == SignatureStatus.Approved.ToLowerString();
+    public bool IsRejected => Status == SignatureStatus.Rejected.ToLowerString();
 }
 
 /// <summary>
@@ -66,7 +67,7 @@ public class SignatureStore
             System.Globalization.CultureInfo.InvariantCulture, out var a) ? a : 0;
 
         // Vue threshold: investments < 0.01 BTC are auto-approved
-        var requiresApproval = amountValue >= 0.01;
+        var requiresApproval = amountValue >= Constants.AutoApprovalThreshold;
         var now = DateTime.Now;
 
         var sig = new SharedSignature
@@ -78,7 +79,7 @@ public class SignatureStore
             Currency = "BTC",
             Date = now.ToString("MMM dd, yyyy"),
             Time = now.ToString("HH:mm"),
-            Status = requiresApproval ? "waiting" : "approved",
+            Status = requiresApproval ? SignatureStatus.Waiting.ToLowerString() : SignatureStatus.Approved.ToLowerString(),
             InvestorName = $"Investor {AllSignatures.Count(s => s.ProjectId == projectId) + 1}",
             Npub = $"npub1{Guid.NewGuid():N}{Guid.NewGuid():N}"[..64],
             HasMessages = false
@@ -95,7 +96,7 @@ public class SignatureStore
     {
         var sig = AllSignatures.FirstOrDefault(s => s.Id == id);
         if (sig == null) return;
-        sig.Status = "approved";
+        sig.Status = SignatureStatus.Approved.ToLowerString();
         SignatureStatusChanged?.Invoke(sig);
     }
 
@@ -106,16 +107,16 @@ public class SignatureStore
     {
         var sig = AllSignatures.FirstOrDefault(s => s.Id == id);
         if (sig == null) return;
-        sig.Status = "rejected";
+        sig.Status = SignatureStatus.Rejected.ToLowerString();
         SignatureStatusChanged?.Invoke(sig);
     }
 
     /// <summary>Approve all waiting signatures.</summary>
     public void ApproveAll()
     {
-        foreach (var sig in AllSignatures.Where(s => s.Status == "waiting").ToList())
+        foreach (var sig in AllSignatures.Where(s => s.Status == SignatureStatus.Waiting.ToLowerString()).ToList())
         {
-            sig.Status = "approved";
+            sig.Status = SignatureStatus.Approved.ToLowerString();
             SignatureStatusChanged?.Invoke(sig);
         }
     }
@@ -127,17 +128,17 @@ public class SignatureStore
 /// <summary>
 /// Provides access to shared ViewModels that persist across sidebar navigations.
 /// Holds PortfolioViewModel, SignatureStore, and prototype-level settings so data survives navigation.
+/// Uses Lazy&lt;T&gt; to eliminate fragile static field initialization ordering.
 /// </summary>
 public static class SharedViewModels
 {
-    // IMPORTANT: Declaration order matters — static field initializers run top-to-bottom.
-    // Prototype must come before Portfolio because PortfolioViewModel's constructor
-    // reads SharedViewModels.Prototype.ShowPopulatedApp.
-    // Signatures must come before Portfolio because PortfolioViewModel's constructor
-    // subscribes to SharedViewModels.Signatures.SignatureStatusChanged.
-    public static SignatureStore Signatures { get; } = new();
-    public static PrototypeSettings Prototype { get; } = new();
-    public static PortfolioViewModel Portfolio { get; } = new();
+    private static readonly Lazy<SignatureStore> _signatures = new(() => new SignatureStore());
+    private static readonly Lazy<PrototypeSettings> _prototype = new(() => new PrototypeSettings());
+    private static readonly Lazy<PortfolioViewModel> _portfolio = new(() => new PortfolioViewModel());
+
+    public static SignatureStore Signatures => _signatures.Value;
+    public static PrototypeSettings Prototype => _prototype.Value;
+    public static PortfolioViewModel Portfolio => _portfolio.Value;
 }
 
 /// <summary>

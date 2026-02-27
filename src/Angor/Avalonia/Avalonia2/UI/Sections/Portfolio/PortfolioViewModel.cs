@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using Avalonia2.UI.Sections.FindProjects;
+using Avalonia2.UI.Shared;
 using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.Portfolio;
@@ -195,38 +196,20 @@ public class InvestmentViewModel : INotifyPropertyChanged
     public bool IsStepAtLeast2 => Step >= 2;
     public bool IsStepAtLeast3 => Step >= 3;
 
-    // ── Type-specific terminology (Vue: invest/fund/subscription maps) ──
+    // ── Type-specific terminology (via shared ProjectTypeTerminology) ──
+    private Shared.ProjectType TypeEnum => ProjectTypeExtensions.FromLowerString(ProjectType);
+
     /// <summary>Action verb: "Invest" / "Fund" / "Subscribe"</summary>
-    public string ActionVerb => ProjectType switch
-    {
-        "fund" => "Fund",
-        "subscription" => "Subscribe",
-        _ => "Invest"
-    };
+    public string ActionVerb => ProjectTypeTerminology.ActionVerb(TypeEnum);
 
     /// <summary>Amount noun: "Investment" / "Funding" / "Subscription"</summary>
-    public string AmountNoun => ProjectType switch
-    {
-        "fund" => "Funding",
-        "subscription" => "Subscription",
-        _ => "Investment"
-    };
+    public string AmountNoun => ProjectTypeTerminology.AmountNoun(TypeEnum);
 
     /// <summary>Stage label: "Stage" / "Payment"</summary>
-    public string StageLabel => ProjectType switch
-    {
-        "fund" => "Payment",
-        "subscription" => "Payment",
-        _ => "Stage"
-    };
+    public string StageLabel => ProjectTypeTerminology.StageLabel(TypeEnum);
 
     /// <summary>Schedule title: "Release Schedule" / "Payment Schedule"</summary>
-    public string ScheduleTitle => ProjectType switch
-    {
-        "fund" => "Payment Schedule",
-        "subscription" => "Payment Schedule",
-        _ => "Release Schedule"
-    };
+    public string ScheduleTitle => ProjectTypeTerminology.ScheduleTitle(TypeEnum);
 
     /// <summary>Progress label: "Funding Progress" / "Subscription Progress"</summary>
     public string ProgressLabel => ProjectType switch
@@ -236,28 +219,13 @@ public class InvestmentViewModel : INotifyPropertyChanged
     };
 
     /// <summary>Investor noun: "Investors" / "Funders" / "Subscribers"</summary>
-    public string InvestorNoun => ProjectType switch
-    {
-        "fund" => "Funders",
-        "subscription" => "Subscribers",
-        _ => "Investors"
-    };
+    public string InvestorNoun => ProjectTypeTerminology.InvestorNounPlural(TypeEnum);
 
     /// <summary>Target label: "Target Amount" / "Goal Amount"</summary>
-    public string TargetLabel => ProjectType switch
-    {
-        "fund" => "Goal Amount",
-        "subscription" => "Goal Amount",
-        _ => "Target Amount"
-    };
+    public string TargetLabel => ProjectTypeTerminology.TargetNoun(TypeEnum);
 
     /// <summary>Total raised label: "Total Raised" / "Total Funded" / "Total Subscribed"</summary>
-    public string TotalRaisedLabel => ProjectType switch
-    {
-        "fund" => "Total Funded",
-        "subscription" => "Total Subscribed",
-        _ => "Total Raised"
-    };
+    public string TotalRaisedLabel => ProjectTypeTerminology.RaisedNoun(TypeEnum);
 
     /// <summary>Your amount label: "Your Investment" / "Your Funding" / "Your Subscription"</summary>
     public string YourAmountLabel => ProjectType switch
@@ -582,16 +550,12 @@ public partial class PortfolioViewModel : ReactiveObject
         // Map ProjectType casing: ProjectItemViewModel uses "Invest"/"Fund"/"Subscription",
         // InvestmentViewModel uses lowercase "invest"/"fund"/"subscription"
         var projectType = project.ProjectType.ToLowerInvariant();
-        var typeLabel = project.ProjectType switch
-        {
-            "Fund" => "Funding",
-            "Subscription" => "Subscription",
-            _ => "Investment"
-        };
+        var typeEnum = ProjectTypeExtensions.FromLowerString(projectType);
+        var typeLabel = ProjectTypeTerminology.AmountNoun(typeEnum);
 
         // Build stages from the project's stage data
         var stages = new ObservableCollection<InvestmentStageViewModel>();
-        var stagePrefix = projectType is "fund" or "subscription" ? "Payment" : "Stage";
+        var stagePrefix = ProjectTypeTerminology.StageLabel(typeEnum);
         if (project.Stages.Count > 0)
         {
             foreach (var s in project.Stages)
@@ -627,7 +591,7 @@ public partial class PortfolioViewModel : ReactiveObject
         // Vue threshold: investments < 0.01 BTC are auto-approved (App.vue line 8756)
         var amountValue = double.TryParse(investmentAmount, System.Globalization.NumberStyles.Float,
             System.Globalization.CultureInfo.InvariantCulture, out var parsedAmt) ? parsedAmt : 0;
-        var isAutoApproved = amountValue < 0.01;
+        var isAutoApproved = amountValue < Constants.AutoApprovalThreshold;
 
         var investment = new InvestmentViewModel
         {

@@ -82,6 +82,5 @@
     <!-- ArrowRight → fa-solid fa-arrow-right (if needed) -->
     <!-- Copy → /Assets/copy.png (OpacityMask pattern) -->
     <!-- RefreshArrows → /Assets/refresh.png (OpacityMask pattern) -->
-    <!-- BitcoinCoinLogo → /Assets/bitcoin-coin.png or bitcoin-coin-green.png -->
     <!-- BitcoinSymbol → fa-brands fa-bitcoin -->
 </ResourceDictionary>

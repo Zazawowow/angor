@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
+using Avalonia2.UI.Shared.Helpers;
 using Avalonia2.UI.Shell;
 using ReactiveUI;
 
@@ -161,7 +162,7 @@ public partial class InvestPageView : UserControl
                 break;
 
             case "CopyProjectIdButton":
-                CopyToClipboard(Vm?.ProjectId);
+                ClipboardHelper.CopyToClipboard(this, Vm?.ProjectId);
                 e.Handled = true;
                 break;
         }
@@ -224,16 +225,6 @@ public partial class InvestPageView : UserControl
             var isSelected = border.DataContext is SubscriptionPlanOption plan
                              && plan.PatternId == Vm?.SelectedSubscriptionPattern;
             border.Classes.Set("SubPlanSelected", isSelected);
-        }
-    }
-
-    private async void CopyToClipboard(string? text)
-    {
-        if (string.IsNullOrEmpty(text)) return;
-        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
-        if (clipboard != null)
-        {
-            await clipboard.SetTextAsync(text);
         }
     }
 }

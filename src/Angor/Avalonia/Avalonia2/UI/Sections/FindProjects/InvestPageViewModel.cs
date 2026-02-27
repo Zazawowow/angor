@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using Avalonia2.UI.Sections.MyProjects.Deploy;
 using Avalonia2.UI.Sections.Portfolio;
+using Avalonia2.UI.Shared;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.FindProjects;
@@ -109,14 +111,14 @@ public partial class InvestPageViewModel : ReactiveObject
     public ObservableCollection<InvestStageRow> Stages { get; } = new();
 
     // ── Transaction Details (stubbed) ──
-    public string MinerFee { get; } = "0.00000391 BTC";
-    public string AngorFee { get; } = "1%";
+    public string MinerFee { get; } = Constants.MinerFeeDisplay;
+    public string AngorFee { get; } = Constants.AngorFeeDisplay;
     public string ProjectId => Project.ProjectId;
 
     // ── Computed totals ──
     public string TotalAmount => ComputeTotal();
     public string FormattedAmount => string.IsNullOrWhiteSpace(InvestmentAmount) ? "0.00000000" : $"{ParseAmount():F8}";
-    public string AngorFeeAmount => $"{ParseAmount() * 0.01:F8} BTC";
+    public string AngorFeeAmount => $"{ParseAmount() * Constants.AngorFeeRate:F8} BTC";
 
     // Vue ref: subscription shows sats in transaction details
     public string TransactionAmountLabel => IsSubscription ? "Amount to Subscribe" : "Investment Amount";
@@ -126,19 +128,21 @@ public partial class InvestPageViewModel : ReactiveObject
 
     public bool CanSubmit => IsSubscription
         ? SelectedSubscriptionPattern != null && ParseAmount() > 0
-        : ParseAmount() >= 0.001;
+        : ParseAmount() >= Constants.MinInvestmentAmount;
 
     // Vue ref: footer-summary stages/payments count
-    public string StagesSummary => Project.ProjectType switch
+    private ProjectType TypeEnum => ProjectTypeExtensions.FromDisplayString(Project.ProjectType);
+
+    public string StagesSummary => TypeEnum switch
     {
-        "Subscription" => $"{Stages.Count} payment{(Stages.Count != 1 ? "s" : "")} of {Project.SubscriptionPrice:N0} Sats",
-        "Fund" => $"{Stages.Count} payment{(Stages.Count != 1 ? "s" : "")}",
+        ProjectType.Subscription => $"{Stages.Count} payment{(Stages.Count != 1 ? "s" : "")} of {Project.SubscriptionPrice:N0} Sats",
+        ProjectType.Fund => $"{Stages.Count} payment{(Stages.Count != 1 ? "s" : "")}",
         _ => $"{Stages.Count} release{(Stages.Count != 1 ? "s" : "")}"
     };
 
-    public string StagesLabel => Project.ProjectType switch
+    public string StagesLabel => TypeEnum switch
     {
-        "Subscription" or "Fund" => "Plan:",
+        ProjectType.Fund or ProjectType.Subscription => "Plan:",
         _ => "Stages:"
     };
 
@@ -152,19 +156,9 @@ public partial class InvestPageViewModel : ReactiveObject
     public string StageRowPrefix => IsSubscription ? "Payment" : "Stage";
 
     // ── Success message ──
-    public string SuccessTitle => Project.ProjectType switch
-    {
-        "Fund" => "Funding Pending Approval",
-        "Subscription" => "Subscription Pending Approval",
-        _ => "Investment Pending Approval"
-    };
+    public string SuccessTitle => ProjectTypeTerminology.SuccessTitle(TypeEnum);
     public string SuccessDescription => $"Your {Project.ProjectType.ToLower()} of {FormattedAmount} BTC to {Project.ProjectName} has been submitted successfully.";
-    public string SuccessButtonText => Project.ProjectType switch
-    {
-        "Fund" => "View My Fundings",
-        "Subscription" => "View My Subscriptions",
-        _ => "View My Investments"
-    };
+    public string SuccessButtonText => ProjectTypeTerminology.SuccessButtonText(TypeEnum);
 
     // ── Stub wallets (reuse from DeployFlowOverlay) ──
     public ObservableCollection<WalletItem> Wallets { get; } = new()
@@ -174,11 +168,15 @@ public partial class InvestPageViewModel : ReactiveObject
         new() { Name = "Test Wallet", Network = "Testnet", Balance = "0.50000000 BTC" }
     };
 
-    public string InvoiceString { get; } = "lnbc100n1pjk4x0spp5qe7m2wlr8kg3xm2h4f6n7y9t3v5w8k2j6p4r1s0d9f8g7h6j5qdzz2dpkx2ctvd5shjmnpd36x2mmpwvhsyg3pp8qctvd4ek2unnv5shjg3pd3skjmn0d36x7eqw3hjqar0ypxhxgrfducqzzsxqyz5vqsp5";
+    public string InvoiceString { get; } = Constants.InvoiceString;
 
     public InvestPageViewModel(ProjectItemViewModel project)
     {
         Project = project;
+
+        // Initialize ReactiveCommands for async payment operations
+        PayWithWalletCommand = ReactiveCommand.CreateFromTask(PayWithWalletAsync);
+        PayViaInvoiceCommand = ReactiveCommand.CreateFromTask(PayViaInvoiceAsync);
 
         // Raise derived property notifications when screen changes
         this.WhenAnyValue(x => x.CurrentScreen)
@@ -291,8 +289,8 @@ public partial class InvestPageViewModel : ReactiveObject
     private string ComputeTotal()
     {
         var amount = ParseAmount();
-        var minerFee = 0.00000391;
-        var angorFee = amount * 0.01;
+        var minerFee = Constants.MinerFee;
+        var angorFee = amount * Constants.AngorFeeRate;
         var total = amount + minerFee + angorFee;
         return $"{total:F8} BTC";
     }
@@ -438,7 +436,11 @@ public partial class InvestPageViewModel : ReactiveObject
 
     /// <summary>Pay with selected wallet → simulate processing → success.
     /// Vue ref: payWithWallet() → 800ms spinner → "received" → 1500ms → success.</summary>
-    public async void PayWithWallet()
+    public ReactiveCommand<Unit, Unit> PayWithWalletCommand { get; }
+
+    public void PayWithWallet() => PayWithWalletCommand.Execute().Subscribe();
+
+    private async Task PayWithWalletAsync()
     {
         if (SelectedWallet == null) return;
         IsProcessing = true;
@@ -463,7 +465,11 @@ public partial class InvestPageViewModel : ReactiveObject
 
     /// <summary>Simulate paying via invoice → success.
     /// Vue ref: handlePayment() → paymentStatus "received" → success.</summary>
-    public async void PayViaInvoice()
+    public ReactiveCommand<Unit, Unit> PayViaInvoiceCommand { get; }
+
+    public void PayViaInvoice() => PayViaInvoiceCommand.Execute().Subscribe();
+
+    private async Task PayViaInvoiceAsync()
     {
         IsProcessing = true;
         PaymentStatusText = "Payment received!";

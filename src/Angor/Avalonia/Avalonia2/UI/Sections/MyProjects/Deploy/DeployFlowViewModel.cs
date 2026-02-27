@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
+using Avalonia2.UI.Shared;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.MyProjects.Deploy;
@@ -46,7 +48,7 @@ public partial class DeployFlowViewModel : ReactiveObject
 
     // ── Stub data ──
     public string DeployFee { get; } = "0.0001 BTC";
-    public string InvoiceString { get; } = "lnbc100n1pjk4x0spp5qe7m2wlr8kg3xm2h4f6n7y9t3v5w8k2j6p4r1s0d9f8g7h6j5qdzz2dpkx2ctvd5shjmnpd36x2mmpwvhsyg3pp8qctvd4ek2unnv5shjg3pd3skjmn0d36x7eqw3hjqar0ypxhxgrfducqzzsxqyz5vqsp5";
+    public string InvoiceString { get; } = Constants.InvoiceString;
 
     public string ProjectName { get; set; } = "My Project";
 
@@ -62,6 +64,10 @@ public partial class DeployFlowViewModel : ReactiveObject
 
     public DeployFlowViewModel()
     {
+        // Initialize ReactiveCommands for async payment operations
+        PayWithWalletCommand = ReactiveCommand.CreateFromTask(PayWithWalletAsync);
+        PayViaInvoiceCommand = ReactiveCommand.CreateFromTask(PayViaInvoiceAsync);
+
         // Raise derived property notifications when screen changes
         this.WhenAnyValue(x => x.CurrentScreen)
             .Subscribe(_ =>
@@ -111,7 +117,11 @@ public partial class DeployFlowViewModel : ReactiveObject
 
     /// <summary>Pay with selected wallet — simulate deploy.
     /// Vue ref: payWithDeployWallet() → 800ms spinner → QR "received" → 1500ms "Deploying..." → success.</summary>
-    public async void PayWithWallet()
+    public ReactiveCommand<Unit, Unit> PayWithWalletCommand { get; }
+
+    public void PayWithWallet() => PayWithWalletCommand.Execute().Subscribe();
+
+    private async Task PayWithWalletAsync()
     {
         if (SelectedWallet == null) return;
         IsDeploying = true;
@@ -136,7 +146,11 @@ public partial class DeployFlowViewModel : ReactiveObject
 
     /// <summary>Simulate paying via invoice.
     /// Vue ref: handlePayment() → paymentStatus "received" → 1500ms → success.</summary>
-    public async void PayViaInvoice()
+    public ReactiveCommand<Unit, Unit> PayViaInvoiceCommand { get; }
+
+    public void PayViaInvoice() => PayViaInvoiceCommand.Execute().Subscribe();
+
+    private async Task PayViaInvoiceAsync()
     {
         IsDeploying = true;
         DeployStatusText = "Deploying...";

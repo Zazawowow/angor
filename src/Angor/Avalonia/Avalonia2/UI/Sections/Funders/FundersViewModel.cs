@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Avalonia2.UI.Shell;
+using Avalonia2.UI.Shared;
 
 namespace Avalonia2.UI.Sections.Funders;
 
@@ -8,7 +10,7 @@ namespace Avalonia2.UI.Sections.Funders;
 /// Wraps SharedSignature data for XAML binding + UI-specific helpers.
 /// Vue reference: App.vue desktop Funders page (lines 3152-3335)
 /// </summary>
-public class SignatureRequestViewModel
+public partial class SignatureRequestViewModel : ReactiveObject
 {
     public int Id { get; set; }
     public string ProjectTitle { get; set; } = "";
@@ -17,16 +19,18 @@ public class SignatureRequestViewModel
     public string Date { get; set; } = "";
     public string Time { get; set; } = "";
     /// <summary>Status: waiting, approved, rejected</summary>
-    public string Status { get; set; } = "waiting";
+    [Reactive] private string status = SignatureStatus.Waiting.ToLowerString();
     /// <summary>Investor npub key (shown in expanded details)</summary>
     public string Npub { get; set; } = "npub1aunjpz36t2vwtqxyph2jc30c4feng4gv5yhhw6yckgzxa0rn52tq7tsnm7";
     /// <summary>Whether the chat has messages</summary>
     public bool HasMessages { get; set; }
 
-    // Status visibility helpers for XAML
-    public bool IsWaiting => Status == "waiting";
-    public bool IsApproved => Status == "approved";
-    public bool IsRejected => Status == "rejected";
+    // Status visibility helpers for XAML — reactive via [ObservableAsProperty] would be ideal
+    // but since Status changes infrequently and these are re-read on each filter update,
+    // we use computed getters that raise when Status changes (via [Reactive] above).
+    public bool IsWaiting => Status == SignatureStatus.Waiting.ToLowerString();
+    public bool IsApproved => Status == SignatureStatus.Approved.ToLowerString();
+    public bool IsRejected => Status == SignatureStatus.Rejected.ToLowerString();
 
     /// <summary>Create from a SharedSignature.</summary>
     public static SignatureRequestViewModel FromShared(SharedSignature sig) => new()
@@ -49,7 +53,7 @@ public class SignatureRequestViewModel
 /// during the invest flow appear here. Also includes hardcoded sample data.
 /// Vue reference: App.vue desktop Funders page (lines 3152-3335).
 /// </summary>
-public partial class FundersViewModel : ReactiveObject
+public partial class FundersViewModel : ReactiveObject, IDisposable
 {
     [Reactive] private bool hasFunders = true;
 
@@ -57,17 +61,20 @@ public partial class FundersViewModel : ReactiveObject
     /// Current filter tab: waiting, approved, rejected.
     /// Vue: funderFilter reactive variable.
     /// </summary>
-    [Reactive] private string currentFilter = "waiting";
+    [Reactive] private string currentFilter = SignatureStatus.Waiting.ToLowerString();
 
     /// <summary>
     /// Tracks which signature cards are expanded (showing npub).
     /// </summary>
     public ObservableCollection<int> ExpandedSignatureIds { get; } = new();
 
+    // Cached list of all VMs — invalidated on collection/toggle changes, avoids repeated allocation.
+    private List<SignatureRequestViewModel>? _cachedAllViewModels;
+
     // ── Signature counts (Vue: signatureCounts) ──
-    public int WaitingCount => GetAllViewModels().Count(s => s.Status == "waiting");
-    public int ApprovedCount => GetAllViewModels().Count(s => s.Status == "approved");
-    public int RejectedCount => GetAllViewModels().Count(s => s.Status == "rejected");
+    public int WaitingCount => GetAllViewModels().Count(s => s.Status == SignatureStatus.Waiting.ToLowerString());
+    public int ApprovedCount => GetAllViewModels().Count(s => s.Status == SignatureStatus.Approved.ToLowerString());
+    public int RejectedCount => GetAllViewModels().Count(s => s.Status == SignatureStatus.Rejected.ToLowerString());
     public bool HasRejected => RejectedCount > 0;
 
     // ── Sample signatures (always present as demo data) ──
@@ -81,7 +88,7 @@ public partial class FundersViewModel : ReactiveObject
             Currency = "BTC",
             Date = "Feb 25, 2026",
             Time = "14:30",
-            Status = "waiting",
+            Status = SignatureStatus.Waiting.ToLowerString(),
             Npub = "npub1q8s7k4x9z2m3n4p5r6t7u8v9w0x1y2z3a4b5c6d7e8f",
             HasMessages = true
         },
@@ -93,7 +100,7 @@ public partial class FundersViewModel : ReactiveObject
             Currency = "BTC",
             Date = "Feb 20, 2026",
             Time = "09:15",
-            Status = "waiting",
+            Status = SignatureStatus.Waiting.ToLowerString(),
             Npub = "npub1m2d9f3a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p0q1r",
             HasMessages = false
         },
@@ -105,7 +112,7 @@ public partial class FundersViewModel : ReactiveObject
             Currency = "BTC",
             Date = "Feb 18, 2026",
             Time = "11:45",
-            Status = "approved",
+            Status = SignatureStatus.Approved.ToLowerString(),
             Npub = "npub1x7r2c5b4d6e8f0a1b3c5d7e9f1g3h5i7j9k1l3m5",
             HasMessages = true
         },
@@ -117,7 +124,7 @@ public partial class FundersViewModel : ReactiveObject
             Currency = "BTC",
             Date = "Feb 15, 2026",
             Time = "16:20",
-            Status = "rejected",
+            Status = SignatureStatus.Rejected.ToLowerString(),
             Npub = "npub1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u",
             HasMessages = false
         }
@@ -128,30 +135,49 @@ public partial class FundersViewModel : ReactiveObject
     /// </summary>
     [Reactive] private ObservableCollection<SignatureRequestViewModel> filteredSignatures = new();
 
+    private readonly CompositeDisposable _disposables = new();
+
+    // Track the CollectionChanged handler so we can unsubscribe
+    private readonly NotifyCollectionChangedEventHandler _collectionChangedHandler;
+
     public FundersViewModel()
     {
         // React to filter changes — WhenAnyValue emits the initial value immediately,
         // so this also handles the first call to UpdateFilteredSignatures().
         this.WhenAnyValue(x => x.CurrentFilter)
-            .Subscribe(_ => UpdateFilteredSignatures());
+            .Subscribe(_ => UpdateFilteredSignatures())
+            .DisposeWith(_disposables);
 
         // Re-filter when the shared store changes (new investments)
-        SharedViewModels.Signatures.AllSignatures.CollectionChanged += (_, _) => UpdateFilteredSignatures();
+        _collectionChangedHandler = (_, _) =>
+        {
+            _cachedAllViewModels = null; // invalidate cache
+            UpdateFilteredSignatures();
+        };
+        SharedViewModels.Signatures.AllSignatures.CollectionChanged += _collectionChangedHandler;
 
         // React to prototype toggle (show populated vs empty).
         // Skip(1) to avoid double-processing — the initial filter subscription above
         // already called UpdateFilteredSignatures with the current toggle state.
         SharedViewModels.Prototype.WhenAnyValue(x => x.ShowPopulatedApp)
             .Skip(1)
-            .Subscribe(_ => UpdateFilteredSignatures());
+            .Subscribe(_ =>
+            {
+                _cachedAllViewModels = null; // invalidate cache
+                UpdateFilteredSignatures();
+            })
+            .DisposeWith(_disposables);
     }
 
     /// <summary>
     /// Get all signature view models: sample data + shared store entries.
     /// When ShowPopulatedApp is false, only include shared store entries (user-created).
+    /// Results are cached and invalidated when the collection or toggle changes.
     /// </summary>
     private List<SignatureRequestViewModel> GetAllViewModels()
     {
+        if (_cachedAllViewModels != null) return _cachedAllViewModels;
+
         var all = new List<SignatureRequestViewModel>();
         if (SharedViewModels.Prototype.ShowPopulatedApp)
         {
@@ -161,6 +187,7 @@ public partial class FundersViewModel : ReactiveObject
         {
             all.Add(SignatureRequestViewModel.FromShared(shared));
         }
+        _cachedAllViewModels = all;
         return all;
     }
 
@@ -168,7 +195,11 @@ public partial class FundersViewModel : ReactiveObject
     {
         var all = GetAllViewModels();
         var filtered = all.Where(s => s.Status == CurrentFilter).ToList();
-        FilteredSignatures = new ObservableCollection<SignatureRequestViewModel>(filtered);
+
+        // In-place update: clear and re-add instead of replacing the entire collection
+        FilteredSignatures.Clear();
+        foreach (var item in filtered)
+            FilteredSignatures.Add(item);
 
         HasFunders = all.Count > 0;
 
@@ -184,13 +215,15 @@ public partial class FundersViewModel : ReactiveObject
         var sampleSig = _sampleSignatures.FirstOrDefault(s => s.Id == id);
         if (sampleSig != null)
         {
-            sampleSig.Status = "approved";
+            sampleSig.Status = SignatureStatus.Approved.ToLowerString();
+            _cachedAllViewModels = null;
             UpdateFilteredSignatures();
             return;
         }
 
         // Otherwise delegate to shared store (which fires SignatureStatusChanged event)
         SharedViewModels.Signatures.Approve(id);
+        _cachedAllViewModels = null;
         UpdateFilteredSignatures();
     }
 
@@ -199,24 +232,27 @@ public partial class FundersViewModel : ReactiveObject
         var sampleSig = _sampleSignatures.FirstOrDefault(s => s.Id == id);
         if (sampleSig != null)
         {
-            sampleSig.Status = "rejected";
+            sampleSig.Status = SignatureStatus.Rejected.ToLowerString();
+            _cachedAllViewModels = null;
             UpdateFilteredSignatures();
             return;
         }
 
         SharedViewModels.Signatures.Reject(id);
+        _cachedAllViewModels = null;
         UpdateFilteredSignatures();
     }
 
     public void ApproveAll()
     {
         // Approve sample signatures
-        foreach (var sig in _sampleSignatures.Where(s => s.Status == "waiting").ToList())
+        foreach (var sig in _sampleSignatures.Where(s => s.Status == SignatureStatus.Waiting.ToLowerString()).ToList())
         {
-            sig.Status = "approved";
+            sig.Status = SignatureStatus.Approved.ToLowerString();
         }
         // Approve shared store signatures
         SharedViewModels.Signatures.ApproveAll();
+        _cachedAllViewModels = null;
         UpdateFilteredSignatures();
     }
 
@@ -233,5 +269,11 @@ public partial class FundersViewModel : ReactiveObject
     public void SetFilter(string filter)
     {
         CurrentFilter = filter;
+    }
+
+    public void Dispose()
+    {
+        _disposables.Dispose();
+        SharedViewModels.Signatures.AllSignatures.CollectionChanged -= _collectionChangedHandler;
     }
 }

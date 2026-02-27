@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia2.UI.Shared;
 using ReactiveUI;
 
 namespace Avalonia2.UI.Sections.MyProjects;
@@ -21,34 +22,16 @@ public class MyProjectItemViewModel
     public string? LogoUrl { get; set; }
     public string StartDate { get; set; } = "";
 
-    public string TypePillText => ProjectType switch
-    {
-        "fund" => "Fund",
-        "subscription" => "Subscription",
-        _ => "Investment"
-    };
+    private Shared.ProjectType TypeEnum => ProjectTypeExtensions.FromLowerString(ProjectType);
+
+    public string TypePillText => ProjectTypeTerminology.TypePillText(TypeEnum);
 
     // Vue uses "Invest" for the pill matching; ensure we return the expected value
-    public string TypePillValue => ProjectType switch
-    {
-        "fund" => "Fund",
-        "subscription" => "Subscription",
-        _ => "Invest"
-    };
+    public string TypePillValue => TypeEnum.ToDisplayString();
 
-    public string InvestorLabel => ProjectType switch
-    {
-        "fund" => "Funders",
-        "subscription" => "Subscribers",
-        _ => "Investors"
-    };
+    public string InvestorLabel => ProjectTypeTerminology.InvestorNounPlural(TypeEnum);
 
-    public string TargetLabel => ProjectType switch
-    {
-        "fund" => "Goal:",
-        "subscription" => "Subscribers:",
-        _ => "Target:"
-    };
+    public string TargetLabel => ProjectTypeTerminology.TargetLabel(TypeEnum);
 }
 
 /// <summary>

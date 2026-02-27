@@ -41,13 +41,10 @@
         <ResourceDictionary x:Key="Default">
             
             <!-- Background Colors (from Storybook) -->
-            <Color x:Key="PageBackground">#FFFFFF</Color>
-            <Color x:Key="CardBackground">#F9FAFB</Color>
             <Color x:Key="Border">#E5E7EB</Color>
 
             <!-- Text Colors (from Storybook) -->
             <Color x:Key="BodyText">#1A1A1A</Color>
-            <Color x:Key="Values">#1A1A1A</Color>
             <Color x:Key="Labels">#6B7280</Color>
 
             <!-- Legacy/Extended Colors -->
@@ -464,13 +461,10 @@
         <ResourceDictionary x:Key="Dark">
             
             <!-- Background Colors (from Storybook) -->
-            <Color x:Key="PageBackground">#1A1A1A</Color>      <!-- = PrimaryBlack -->
-            <Color x:Key="CardBackground">#0A0A0A</Color>      <!-- = PrimaryBlackHover -->
             <Color x:Key="Border">#404040</Color>
 
             <!-- Text Colors (from Storybook) -->
             <Color x:Key="BodyText">#FAFAFA</Color>
-            <Color x:Key="Values">#9CA3AF</Color>
             <Color x:Key="Labels">#888888</Color>
 
             <!-- Legacy/Extended Colors -->
