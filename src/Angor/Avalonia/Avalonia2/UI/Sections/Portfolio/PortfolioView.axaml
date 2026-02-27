@@ -70,9 +70,7 @@
 
                         <!-- Angor Logo — centered -->
                         <Panel HorizontalAlignment="Center" Width="80" Height="80" Margin="0,8,0,0">
-                            <Path Data="{StaticResource AngorLogo}"
-                                  Fill="#4B7C5A"
-                                  Stretch="Uniform" />
+                            <Svg Path="/Assets/logo.svg" />
                         </Panel>
 
                         <!-- Title -->

@@ -711,9 +711,9 @@
                                                         Padding="16,10"
                                                         BorderBrush="{DynamicResource Stroke}" BorderThickness="1">
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <i:Icon Value="fa-solid fa-cloud-arrow-up"
-                                                               FontSize="16"
-                                                               Foreground="{DynamicResource TextStrong}" />
+                                                        <i:Icon Value="fa-solid fa-image"
+                                                                FontSize="16"
+                                                                Foreground="{DynamicResource TextStrong}" />
                                                         <TextBlock Text="Upload Banner" FontSize="14" FontWeight="SemiBold"
                                                                    Foreground="{DynamicResource TextStrong}" />
                                                     </StackPanel>
@@ -726,28 +726,36 @@
                                             <!-- Circular avatar placeholder overlapping banner — clickable -->
                                             <Border Name="UploadAvatarButton" Background="Transparent"
                                                     Cursor="Hand"
-                                                    Width="120" Height="120"
+                                                    Width="128" Height="128"
                                                     HorizontalAlignment="Left"
                                                     ClipToBounds="False">
-                                                <Border Width="120" Height="120" CornerRadius="60"
+                                                <Border Width="128" Height="128" CornerRadius="64"
                                                         Background="{DynamicResource SurfaceMedium}"
-                                                        BorderBrush="{DynamicResource Surface}" BorderThickness="6"
+                                                        BorderBrush="White" BorderThickness="4"
                                                         BoxShadow="0 10 30 0 #22000000" ClipToBounds="True">
                                                     <Panel>
                                                         <!-- Avatar image preview — EllipseGeometry clip for
                                                              perfect circle (CornerRadius on parent Border can
                                                              distort when FluentTheme injects chrome) -->
                                                         <Image Name="AvatarPreviewImage" Stretch="UniformToFill"
-                                                               Width="108" Height="108"
+                                                               Width="120" Height="120"
                                                                IsVisible="False">
                                                             <Image.Clip>
-                                                                <EllipseGeometry Center="54,54" RadiusX="54" RadiusY="54" />
+                                                                <EllipseGeometry Center="60,60" RadiusX="60" RadiusY="60" />
                                                             </Image.Clip>
                                                         </Image>
-                                                        <!-- Upload icon (shown when no avatar) -->
-                                                        <i:Icon Name="AvatarUploadIcon" Value="fa-solid fa-cloud-arrow-up"
-                                                               FontSize="32"
-                                                               Foreground="{DynamicResource TextMuted}" />
+                                                        <!-- Camera overlay icon (white circle with camera) matching Vue prototype -->
+                                                        <Border Name="AvatarUploadIcon"
+                                                                Background="White" CornerRadius="16"
+                                                                Width="32" Height="32"
+                                                                BoxShadow="0 2 8 0 #40000000"
+                                                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <i:Icon Value="fa-solid fa-camera"
+                                                                    FontSize="16"
+                                                                    Foreground="#1a1a1a"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center" />
+                                                        </Border>
                                                     </Panel>
                                                 </Border>
                                             </Border>
@@ -755,7 +763,7 @@
                                             <!-- Project name + description preview -->
                                             <StackPanel Spacing="4">
                                                 <TextBlock Text="{Binding ProjectName, FallbackValue='Project Name'}"
-                                                           FontSize="18" FontWeight="Bold"
+                                                           FontSize="20" FontWeight="Bold"
                                                            Foreground="{DynamicResource TextStrong}" />
                                                 <TextBlock Text="{Binding ProjectAbout, FallbackValue='Project description'}"
                                                            FontSize="14" Foreground="{DynamicResource TextMuted}"
@@ -1108,7 +1116,29 @@
                                 <!-- ─── INVESTMENT TYPE: Step 5 ─── -->
                                 <!-- Duration + Frequency → Generate Stages -->
                                 <Panel IsVisible="{Binding IsInvestment}">
-                                    <StackPanel Spacing="24" IsVisible="{Binding !HasStages}">
+
+                                    <!-- Collapsed "Regenerate Stages" header — shown when stages exist and form is hidden -->
+                                    <!-- Vue: button w/ plus icon + "Regenerate Stages" text + chevron-down -->
+                                    <Border IsVisible="{Binding HasStages}" Margin="0,0,0,0">
+                                        <StackPanel Spacing="24">
+                                            <Button Name="RegenerateStagesButton"
+                                                    IsVisible="{Binding !ShowGenerateForm}"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    Background="{DynamicResource Surface}"
+                                                    BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
+                                                    CornerRadius="8" Padding="16,12">
+                                                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                    <i:Icon Value="fa-solid fa-plus" FontSize="16"
+                                                            Foreground="{DynamicResource Accent}" />
+                                                     <TextBlock Text="Regenerate Stages" FontSize="14" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TextStrong}" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <StackPanel Spacing="24" IsVisible="{Binding ShowGenerateForm}">
 
                                         <!-- Card 1: How long will the project take? -->
                                         <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
@@ -1123,41 +1153,43 @@
                                                     <TextBlock Text="Project Length" FontSize="14" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}" />
 
-                                                    <!-- Duration input + unit combo -->
-                                                    <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch">
+                                                    <!-- Duration input + unit dropdown — Vue: flex gap-2, input w-1/2 + select w-1/2 -->
+                                                    <Grid ColumnDefinitions="*,*" HorizontalAlignment="Stretch">
                                                         <TextBox Text="{Binding DurationValue, Mode=TwoWay}"
                                                                  Watermark="0"
                                                                  FontSize="16" Padding="12,12,16,12" CornerRadius="8" />
-                                                        <Border Grid.Column="1" Margin="10,0,0,0"
-                                                                Background="{DynamicResource SurfaceMedium}"
-                                                                CornerRadius="10" Padding="16,10"
-                                                                BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
-                                                                VerticalAlignment="Center">
-                                                            <TextBlock Text="{Binding DurationUnit}" FontSize="14" FontWeight="Bold"
-                                                                       Foreground="{DynamicResource TextMuted}" />
-                                                        </Border>
+                                                        <ComboBox Name="DurationUnitCombo" Grid.Column="1" Margin="8,0,0,0"
+                                                                  ItemsSource="{Binding DurationUnitOptions}"
+                                                                  SelectedItem="{Binding DurationUnit, Mode=TwoWay}"
+                                                                  FontSize="16" Padding="12" CornerRadius="8"
+                                                                  HorizontalAlignment="Stretch" />
                                                     </Grid>
 
-                                                    <!-- Duration presets: 3, 6, 12, 18, 24 Months -->
-                                                    <ListBox Name="InvestDurationPresets" Classes="Transparent Horizontal"
-                                                             ItemContainerTheme="{StaticResource ButtonizedAccentListBoxItem}"
-                                                             SelectionMode="Single" Background="Transparent">
-                                                        <ListBoxItem Tag="3">
-                                                            <TextBlock Text="3 Months" FontWeight="Bold" FontSize="13" TextAlignment="Center" />
-                                                        </ListBoxItem>
-                                                        <ListBoxItem Tag="6">
-                                                            <TextBlock Text="6 Months" FontWeight="Bold" FontSize="13" TextAlignment="Center" />
-                                                        </ListBoxItem>
-                                                        <ListBoxItem Tag="12">
-                                                            <TextBlock Text="12 Months" FontWeight="Bold" FontSize="13" TextAlignment="Center" />
-                                                        </ListBoxItem>
-                                                        <ListBoxItem Tag="18">
-                                                            <TextBlock Text="18 Months" FontWeight="Bold" FontSize="13" TextAlignment="Center" />
-                                                        </ListBoxItem>
-                                                        <ListBoxItem Tag="24">
-                                                            <TextBlock Text="24 Months" FontWeight="Bold" FontSize="13" TextAlignment="Center" />
-                                                        </ListBoxItem>
-                                                    </ListBox>
+                                                    <!-- Duration presets — dynamic based on selected unit -->
+                                                    <!-- Vue: months→(3,6,12,18,24), weeks→(2,4,6,8,12), days→(3,7,14,21,28,30) -->
+                                                    <ItemsControl Name="InvestDurationPresets" ItemsSource="{Binding DurationPresetItems}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel Orientation="Horizontal" />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="mp:DurationPresetItem">
+                                                                <Button Margin="0,0,8,8"
+                                                                        Padding="16,10" CornerRadius="8"
+                                                                        BorderThickness="2"
+                                                                        BorderBrush="{DynamicResource Stroke}"
+                                                                        Background="Transparent"
+                                                                        HorizontalContentAlignment="Center"
+                                                                        FontSize="13" FontWeight="Bold"
+                                                                        Foreground="{DynamicResource TextStrong}"
+                                                                        Tag="{Binding}"
+                                                                        Click="OnDurationPresetClicked">
+                                                                    <TextBlock Text="{Binding Label}" />
+                                                                </Button>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
                                                 </StackPanel>
                                             </StackPanel>
                                         </Border>
@@ -1430,12 +1462,9 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="12">
                                                     <Border Width="36" Height="36" CornerRadius="8"
                                                             Background="{DynamicResource Accent}">
-                                                        <Viewbox Width="18" Height="18">
-                                                            <Path Data="{StaticResource CheckCircle}"
-                                                                  Stroke="White" StrokeThickness="2"
-                                                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-solid fa-circle-check" FontSize="18"
+                                                                Foreground="White"
+                                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                     </Border>
                                                     <TextBlock FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}"
@@ -1463,9 +1492,8 @@
                                                                     <Run Text="{Binding StageLabel, Mode=OneWay}" /><Run Text=" " /><Run Text="{Binding StageNumber, Mode=OneWay}" />
                                                                 </TextBlock>
                                                                 <TextBlock FontSize="14" Foreground="{DynamicResource Accent}"
-                                                                           FontWeight="Bold" HorizontalAlignment="Right">
-                                                                    <Run Text="{Binding Percentage, Mode=OneWay}" /><Run Text=" paid on " /><Run Text="{Binding ReleaseDate, Mode=OneWay}" />
-                                                                </TextBlock>
+                                                                           FontWeight="Bold" HorizontalAlignment="Right"
+                                                                           Text="{Binding DisplayText, Mode=OneWay}" />
                                                             </DockPanel>
                                                         </Border>
                                                     </DataTemplate>
@@ -1619,12 +1647,9 @@
                                                 <StackPanel Orientation="Horizontal" Spacing="12" DockPanel.Dock="Left">
                                                     <Border Width="36" Height="36" CornerRadius="8"
                                                             Background="{DynamicResource Accent}">
-                                                        <Viewbox Width="18" Height="18">
-                                                            <Path Data="{StaticResource CheckCircle}"
-                                                                  Stroke="White" StrokeThickness="2"
-                                                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-solid fa-circle-check" FontSize="18"
+                                                                Foreground="White"
+                                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                     </Border>
                                                     <TextBlock Text="{Binding ScheduleTitle}" FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}"

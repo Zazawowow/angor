@@ -1,7 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
 
     <Design.PreviewWith>
         <StackPanel Spacing="16" Width="380">
@@ -189,42 +190,62 @@
                                          Minimum="0" Maximum="100"
                                          Height="8" />
 
-                            <!-- 7. Action buttons — Vue: shown when showManageFunds=true (My Projects only) -->
-                            <!--    "Manage Project" button: border 2px solid #4B7C5A, transparent bg, 8px radius -->
-                            <!--    Share button: 45x45, same border, contains share icon -->
-                            <StackPanel x:Name="PART_ActionButtons"
-                                        Orientation="Horizontal" Spacing="12"
-                                        Margin="0,12,0,0"
-                                        IsVisible="False">
-                                <!-- Manage Project button -->
+                            <!-- 7. Action buttons — shown when showManageFunds=true (My Projects only) -->
+                            <!--    3 buttons: Manage (flex), Edit (flex), Share (square icon) -->
+                            <!--    All fill full width, standardised 40px height -->
+                            <Grid x:Name="PART_ActionButtons"
+                                  ColumnDefinitions="*,8,*,8,Auto"
+                                  Margin="0,12,0,0"
+                                  IsVisible="False">
+                                <!-- Manage button -->
                                 <Button x:Name="PART_ManageButton"
+                                        Grid.Column="0"
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Center"
-                                        Padding="16,10"
+                                        VerticalContentAlignment="Center"
+                                        Height="40"
+                                        Padding="8,0"
                                         Background="Transparent"
                                         BorderBrush="#4B7C5A"
                                         BorderThickness="2"
                                         CornerRadius="8"
                                         Foreground="#4B7C5A"
                                         FontSize="14" FontWeight="SemiBold"
-                                        Content="Manage Project" />
-                                <!-- Share button -->
+                                        Content="Manage" />
+                                <!-- Edit button — inner elements inherit Foreground from Button -->
+                                <Button x:Name="PART_EditButton"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Height="40"
+                                        Padding="8,0"
+                                        Background="Transparent"
+                                        BorderBrush="#4B7C5A"
+                                        BorderThickness="2"
+                                        CornerRadius="8"
+                                        Foreground="#4B7C5A"
+                                        FontSize="14" FontWeight="SemiBold">
+                                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                        <i:Icon Value="fa-solid fa-pen" FontSize="12" />
+                                        <TextBlock Text="Edit" FontSize="14" FontWeight="SemiBold"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <!-- Share button — square icon, same height -->
                                 <Button x:Name="PART_ShareButton"
-                                        Width="45" Height="45"
+                                        Grid.Column="4"
+                                        Width="40" Height="40"
                                         Padding="0"
                                         Background="Transparent"
                                         BorderBrush="#4B7C5A"
                                         BorderThickness="2"
-                                        CornerRadius="8">
-                                    <!-- Share icon: PNG tinted via OpacityMask -->
-                                    <Border Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                            Background="#4B7C5A">
-                                        <Border.OpacityMask>
-                                            <ImageBrush Source="/Assets/share-forward.png" Stretch="Uniform" />
-                                        </Border.OpacityMask>
-                                    </Border>
+                                        CornerRadius="8"
+                                        Foreground="#4B7C5A">
+                                    <i:Icon Value="fa-solid fa-share-nodes"
+                                            FontSize="16" />
                                 </Button>
-                            </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </StackPanel>
                     </Border>
@@ -273,7 +294,7 @@
     </Style>
 
     <!-- Show action buttons when ShowManageFunds=True (My Projects page) -->
-    <Style Selector="controls|ProjectCard[ShowManageFunds=True] /template/ StackPanel#PART_ActionButtons">
+    <Style Selector="controls|ProjectCard[ShowManageFunds=True] /template/ Grid#PART_ActionButtons">
         <Setter Property="IsVisible" Value="True" />
     </Style>
 
@@ -283,10 +304,17 @@
         <Setter Property="BorderBrush" Value="#3D6448" />
         <Setter Property="Foreground" Value="#3D6448" />
     </Style>
+    <!-- Edit button hover: same green tint -->
+    <Style Selector="controls|ProjectCard /template/ Button#PART_EditButton:pointerover">
+        <Setter Property="Background" Value="#1A4B7C5A" />
+        <Setter Property="BorderBrush" Value="#3D6448" />
+        <Setter Property="Foreground" Value="#3D6448" />
+    </Style>
     <!-- Share button hover: same green tint -->
     <Style Selector="controls|ProjectCard /template/ Button#PART_ShareButton:pointerover">
         <Setter Property="Background" Value="#1A4B7C5A" />
         <Setter Property="BorderBrush" Value="#3D6448" />
+        <Setter Property="Foreground" Value="#3D6448" />
     </Style>
 
 </Styles>

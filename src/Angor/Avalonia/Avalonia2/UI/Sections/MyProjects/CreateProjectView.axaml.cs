@@ -32,7 +32,6 @@ public partial class CreateProjectView : UserControl
     private ListBox? _durationPresets;
 
     // ListBox controls — Step 5 (Investment)
-    private ListBox? _investDurationPresets;
     private ListBox? _investFrequencyPresets;
 
     // ListBox controls — Step 5 (Fund/Subscription)
@@ -174,7 +173,6 @@ public partial class CreateProjectView : UserControl
         _durationPresets = this.FindControl<ListBox>("DurationPresets");
 
         // Resolve ListBox controls — Step 5 (Investment)
-        _investDurationPresets = this.FindControl<ListBox>("InvestDurationPresets");
         _investFrequencyPresets = this.FindControl<ListBox>("InvestFrequencyPresets");
 
         // Resolve ListBox controls — Step 5 (Fund/Subscription)
@@ -194,8 +192,6 @@ public partial class CreateProjectView : UserControl
             _durationPresets.SelectionChanged += (_, _) => OnDurationPresetSelected(_durationPresets);
 
         // Wire up Step 5 ListBox selection changed handlers (Investment)
-        if (_investDurationPresets != null)
-            _investDurationPresets.SelectionChanged += (_, _) => OnInvestDurationPresetSelected();
         if (_investFrequencyPresets != null)
             _investFrequencyPresets.SelectionChanged += (_, _) => OnInvestFrequencySelected();
 
@@ -242,6 +238,7 @@ public partial class CreateProjectView : UserControl
             case "GeneratePayoutsButton": Vm?.GeneratePayoutSchedule(); break;
             case "DeleteStagesButton": Vm?.ClearStages(); break;
             case "ToggleEditorButton": Vm?.ToggleAdvancedEditor(); break;
+            case "RegenerateStagesButton": Vm?.ShowRegenerateForm(); break;
             // Stepper step buttons
             case "StepBtn1": Vm?.GoToStep(1); break;
             case "StepBtn2": Vm?.GoToStep(2); break;
@@ -390,15 +387,14 @@ public partial class CreateProjectView : UserControl
     }
 
     /// <summary>
-    /// Handle Investment duration preset selection on Step 5.
-    /// Sets DurationPreset and syncs DurationValue/DurationUnit on the VM.
+    /// Handle dynamic duration preset button click (Step 5 Investment).
+    /// The button's Tag contains the preset value (int), DataContext is the bound int from DurationPresetItems.
     /// </summary>
-    private void OnInvestDurationPresetSelected()
+    private void OnDurationPresetClicked(object? sender, RoutedEventArgs e)
     {
-        if (_investDurationPresets?.SelectedItem is not ListBoxItem item) return;
-        if (item.Tag is string tag && int.TryParse(tag, out var months) && Vm != null)
+        if (sender is Button btn && btn.Tag is DurationPresetItem preset && Vm != null)
         {
-            Vm.DurationPreset = months;
+            Vm.DurationPreset = preset.Value;
         }
     }
 

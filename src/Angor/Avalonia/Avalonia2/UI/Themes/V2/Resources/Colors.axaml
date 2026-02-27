@@ -444,6 +444,39 @@
             <!-- Vue: modal header border: light border-gray-200 -->
             <SolidColorBrush x:Key="ModalHeaderBorder" Color="#E5E7EB" />
 
+            <!-- Vue: action button hover bg: light rgba(75,124,90,0.1) -->
+            <SolidColorBrush x:Key="BrandGreenTint" Color="#1A4B7C5A" />
+
+            <!-- ── Pill Colors (light) ── -->
+            <!-- Green pill: status "Open", "Active", generic success -->
+            <SolidColorBrush x:Key="PillGreenBorder" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="PillGreenBg" Color="#1A4B7C5A" />
+            <SolidColorBrush x:Key="PillGreenText" Color="#4B7C5A" />
+            <!-- BrightGreen pill: "Successfully Funded", status-open -->
+            <SolidColorBrush x:Key="PillBrightGreenBorder" Color="#22C55E" />
+            <SolidColorBrush x:Key="PillBrightGreenBg" Color="#1A22C55E" />
+            <SolidColorBrush x:Key="PillBrightGreenText" Color="#22C55E" />
+            <!-- Red pill: errors, "Funding Closed" -->
+            <SolidColorBrush x:Key="PillRedBorder" Color="#EF4444" />
+            <SolidColorBrush x:Key="PillRedBg" Color="#1AEF4444" />
+            <SolidColorBrush x:Key="PillRedText" Color="#EF4444" />
+            <!-- Orange pill: Bitcoin/generic accent -->
+            <SolidColorBrush x:Key="PillOrangeBorder" Color="#F7931A" />
+            <SolidColorBrush x:Key="PillOrangeBg" Color="#1AF7931A" />
+            <SolidColorBrush x:Key="PillOrangeText" Color="#F7931A" />
+            <!-- Blue pill: type "invest" -->
+            <SolidColorBrush x:Key="PillBlueBorder" Color="#3B82F6" />
+            <SolidColorBrush x:Key="PillBlueBg" Color="#1A3B82F6" />
+            <SolidColorBrush x:Key="PillBlueText" Color="#3B82F6" />
+            <!-- Amber pill: type "fund" -->
+            <SolidColorBrush x:Key="PillAmberBorder" Color="#F59E0B" />
+            <SolidColorBrush x:Key="PillAmberBg" Color="#1AF59E0B" />
+            <SolidColorBrush x:Key="PillAmberText" Color="#F59E0B" />
+            <!-- Pink pill: type "subscription" -->
+            <SolidColorBrush x:Key="PillPinkBorder" Color="#EC4899" />
+            <SolidColorBrush x:Key="PillPinkBg" Color="#1AEC4899" />
+            <SolidColorBrush x:Key="PillPinkText" Color="#EC4899" />
+
         </ResourceDictionary>
 
         <!-- ═══════════════════════════════════════════════════════════════════════
@@ -854,6 +887,39 @@
             <SolidColorBrush x:Key="ModalCloseBtn" Color="#9CA3AF" />
             <!-- Vue dark: modal header border:#404040 -->
             <SolidColorBrush x:Key="ModalHeaderBorder" Color="#404040" />
+
+            <!-- Vue: action button hover bg: dark rgba(75,124,90,0.2) -->
+            <SolidColorBrush x:Key="BrandGreenTint" Color="#334B7C5A" />
+
+            <!-- ── Pill Colors (dark — 20% opacity bg, lighter text for readability) ── -->
+            <!-- Green pill -->
+            <SolidColorBrush x:Key="PillGreenBorder" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="PillGreenBg" Color="#334B7C5A" />
+            <SolidColorBrush x:Key="PillGreenText" Color="#4B7C5A" />
+            <!-- BrightGreen pill -->
+            <SolidColorBrush x:Key="PillBrightGreenBorder" Color="#22C55E" />
+            <SolidColorBrush x:Key="PillBrightGreenBg" Color="#3322C55E" />
+            <SolidColorBrush x:Key="PillBrightGreenText" Color="#22C55E" />
+            <!-- Red pill -->
+            <SolidColorBrush x:Key="PillRedBorder" Color="#EF4444" />
+            <SolidColorBrush x:Key="PillRedBg" Color="#33EF4444" />
+            <SolidColorBrush x:Key="PillRedText" Color="#FCA5A5" />
+            <!-- Orange pill -->
+            <SolidColorBrush x:Key="PillOrangeBorder" Color="#F7931A" />
+            <SolidColorBrush x:Key="PillOrangeBg" Color="#33F7931A" />
+            <SolidColorBrush x:Key="PillOrangeText" Color="#F7931A" />
+            <!-- Blue pill -->
+            <SolidColorBrush x:Key="PillBlueBorder" Color="#60A5FA" />
+            <SolidColorBrush x:Key="PillBlueBg" Color="#333B82F6" />
+            <SolidColorBrush x:Key="PillBlueText" Color="#60A5FA" />
+            <!-- Amber pill -->
+            <SolidColorBrush x:Key="PillAmberBorder" Color="#FBBF24" />
+            <SolidColorBrush x:Key="PillAmberBg" Color="#33F59E0B" />
+            <SolidColorBrush x:Key="PillAmberText" Color="#FBBF24" />
+            <!-- Pink pill -->
+            <SolidColorBrush x:Key="PillPinkBorder" Color="#F472B6" />
+            <SolidColorBrush x:Key="PillPinkBg" Color="#33EC4899" />
+            <SolidColorBrush x:Key="PillPinkText" Color="#F472B6" />
 
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>

@@ -350,14 +350,9 @@
                             <Border Width="64" Height="64" CornerRadius="32"
                                     Background="#33FFFFFF"
                                     HorizontalAlignment="Center">
-                                <Viewbox Width="32" Height="32">
-                                    <Path Data="{StaticResource CheckCircle}"
-                                          Stroke="White"
-                                          StrokeThickness="2"
-                                          StrokeLineCap="Round"
-                                          StrokeJoin="Round"
-                                          Width="24" Height="24" Stretch="Uniform" />
-                                </Viewbox>
+                                <i:Icon Value="fa-solid fa-circle-check"
+                                       FontSize="32"
+                                       Foreground="White" />
                             </Border>
                             <TextBlock Text="Project Successfully Funded!"
                                        FontSize="22"

@@ -44,12 +44,9 @@
                            Margin="0,0,0,32">
 
                         <!-- DEFAULT: Angor logo — 112x112 (Vue: w-28 h-28), opacity 0.9 -->
-                        <Path Name="AngorLogoIcon"
-                              Data="{StaticResource AngorLogo}"
-                              Fill="{DynamicResource Brand}"
-                              Opacity="0.9"
-                              Width="112" Height="112"
-                              Stretch="Uniform" />
+                        <Svg Name="AngorLogoIcon"
+                             Path="/Assets/logo.svg"
+                             Width="112" Height="112" />
 
                         <!-- CUSTOM: Icon inside a rounded rectangle (Funders only) -->
                         <!-- Vue: w-16 h-16 rounded-lg bg-black / bg-gray-100 -->
@@ -149,7 +146,7 @@
     </Style>
 
     <!-- ═══ UseCustomIcon mode: hide Angor logo, show circle icon ═══ -->
-    <Style Selector="controls|EmptyState[UseCustomIcon=True] /template/ Path#AngorLogoIcon">
+    <Style Selector="controls|EmptyState[UseCustomIcon=True] /template/ Svg#AngorLogoIcon">
         <Setter Property="IsVisible" Value="False" />
     </Style>
     <Style Selector="controls|EmptyState[UseCustomIcon=True] /template/ Border#CustomIconCircle">

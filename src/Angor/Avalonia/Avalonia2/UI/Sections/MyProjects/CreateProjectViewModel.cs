@@ -5,6 +5,12 @@ using ReactiveUI;
 namespace Avalonia2.UI.Sections.MyProjects;
 
 /// <summary>
+/// A duration preset item with a numeric value and display label.
+/// E.g. DurationPresetItem(3, "3 Months")
+/// </summary>
+public record DurationPresetItem(int Value, string Label);
+
+/// <summary>
 /// A stage in the project's release/payout schedule.
 /// Generated from the payout pattern selection.
 /// </summary>
@@ -17,6 +23,13 @@ public class ProjectStageViewModel
 
     /// <summary>Label for this stage row — "Stage", "Monthly Payout", "Weekly Payout", "Payment", etc.</summary>
     public string StageLabel { get; set; } = "Stage";
+
+    /// <summary>
+    /// Pre-formatted display text for the right side of the stage row.
+    /// Investment: "8% (0.0800 BTC) released on 28th April 2026"
+    /// Fund/Sub: "33% paid on 28th April 2026"
+    /// </summary>
+    public string DisplayText { get; set; } = "";
 }
 
 /// <summary>
@@ -80,6 +93,7 @@ public partial class CreateProjectViewModel : ReactiveObject
 
     // Shared
     [Reactive] private bool isAdvancedEditor;
+    [Reactive] private bool showGenerateForm = true; // controls visibility of generate form vs collapsed header
 
     // Kept for backward compat (old pattern approach — can be removed later)
     [Reactive] private string selectedPayoutPattern = ""; // pattern1..4
@@ -118,13 +132,20 @@ public partial class CreateProjectViewModel : ReactiveObject
         this.WhenAnyValue(x => x.InvestEndDate)
             .Subscribe(d => EndDate = d?.ToString("yyyy-MM-dd") ?? "");
 
-        // When duration preset changes, sync to duration value
+        // When duration preset changes, sync to duration value (don't force unit — presets already match current unit)
         this.WhenAnyValue(x => x.DurationPreset)
             .Where(d => d.HasValue)
             .Subscribe(d =>
             {
                 DurationValue = d!.Value.ToString();
-                DurationUnit = "Months";
+            });
+
+        // When duration unit changes, notify presets list and clear preset selection
+        this.WhenAnyValue(x => x.DurationUnit)
+            .Subscribe(_ =>
+            {
+                DurationPreset = null;
+                this.RaisePropertyChanged(nameof(DurationPresetItems));
             });
 
         // Track whether monthly or weekly payout date section is visible
@@ -369,25 +390,21 @@ public partial class CreateProjectViewModel : ReactiveObject
             var pct = i < stageCount - 1
                 ? Math.Round(percentPerStage)
                 : 100 - Math.Round(percentPerStage) * (stageCount - 1);
+            var btcAmount = targetBtc * pct / 100;
 
-            var freqLabel = ReleaseFrequency switch
-            {
-                "Weekly" => "Weekly Release",
-                "Bi-Monthly" => "Bi-Monthly Release",
-                "Quarterly" => "Quarterly Release",
-                _ => "Monthly Release"
-            };
-
+            // Vue investment type: "Stage 1" / "8% (0.0800 BTC) released on 28th April 2026"
             Stages.Add(new ProjectStageViewModel
             {
                 StageNumber = i + 1,
                 Percentage = $"{pct}%",
-                ReleaseDate = releaseDate.ToString("dd MMM yyyy"),
-                AmountBtc = (targetBtc * pct / 100).ToString("F8"),
-                StageLabel = freqLabel
+                ReleaseDate = FormatReleaseDateOrdinal(releaseDate),
+                AmountBtc = btcAmount.ToString("F4"),
+                StageLabel = "Stage",
+                DisplayText = $"{pct}% ({btcAmount:F4} BTC) released on {FormatReleaseDateOrdinal(releaseDate)}"
             });
         }
 
+        ShowGenerateForm = false; // collapse the generate form, show results
         this.RaisePropertyChanged(nameof(HasStages));
         this.RaisePropertyChanged(nameof(CanGoNext));
         this.RaisePropertyChanged(nameof(ScheduleSummary));
@@ -435,25 +452,31 @@ public partial class CreateProjectViewModel : ReactiveObject
                 ? Math.Round(percentPerStage)
                 : 100 - Math.Round(percentPerStage) * (count - 1);
 
+            var label = PayoutFrequency == "Weekly" ? "Weekly Payout" : "Monthly Payout";
+
+            // Vue fund/subscription: "33% paid on 28th April 2026"
             Stages.Add(new ProjectStageViewModel
             {
                 StageNumber = i + 1,
                 Percentage = $"{pct}%",
-                ReleaseDate = releaseDate.ToString("dd MMM yyyy"),
-                AmountBtc = (targetBtc * pct / 100).ToString("F8"),
-                StageLabel = PayoutFrequency == "Weekly" ? "Weekly Payout" : "Monthly Payout"
+                ReleaseDate = FormatReleaseDateOrdinal(releaseDate),
+                AmountBtc = (targetBtc * pct / 100).ToString("F4"),
+                StageLabel = label,
+                DisplayText = $"{pct}% paid on {FormatReleaseDateOrdinal(releaseDate)}"
             });
         }
 
+        ShowGenerateForm = false; // collapse the generate form, show results
         this.RaisePropertyChanged(nameof(HasStages));
         this.RaisePropertyChanged(nameof(CanGoNext));
         this.RaisePropertyChanged(nameof(ScheduleSummary));
     }
 
-    /// <summary>Clear all generated stages/payouts.</summary>
+    /// <summary>Clear all generated stages/payouts and re-show the generate form.</summary>
     public void ClearStages()
     {
         Stages.Clear();
+        ShowGenerateForm = true;
         this.RaisePropertyChanged(nameof(HasStages));
         this.RaisePropertyChanged(nameof(CanGoNext));
     }
@@ -462,6 +485,12 @@ public partial class CreateProjectViewModel : ReactiveObject
     public void ToggleAdvancedEditor()
     {
         IsAdvancedEditor = !IsAdvancedEditor;
+    }
+
+    /// <summary>Re-show the generate form to regenerate stages (without clearing existing ones first).</summary>
+    public void ShowRegenerateForm()
+    {
+        ShowGenerateForm = true;
     }
 
     // ── Stages (generated from payout pattern) ──
@@ -482,6 +511,35 @@ public partial class CreateProjectViewModel : ReactiveObject
         "fund" or "subscription" => "Select your payout pattern and schedule",
         _ => "Tell us how long the project will take and when you need payments"
     };
+
+    /// <summary>Duration unit options for the ComboBox dropdown.</summary>
+    public string[] DurationUnitOptions => ["Days", "Weeks", "Months"];
+
+    /// <summary>
+    /// Dynamic preset items that change based on the selected DurationUnit.
+    /// Vue: months→(3,6,12,18,24), weeks→(2,4,6,8,12), days→(3,7,14,21,28,30)
+    /// Each item has a Value (int) and Label (e.g. "3 Months").
+    /// </summary>
+    public DurationPresetItem[] DurationPresetItems => DurationUnit switch
+    {
+        "Weeks" => [new(2, "2 Weeks"), new(4, "4 Weeks"), new(6, "6 Weeks"), new(8, "8 Weeks"), new(12, "12 Weeks")],
+        "Days" => [new(3, "3 Days"), new(7, "7 Days"), new(14, "14 Days"), new(21, "21 Days"), new(28, "28 Days"), new(30, "30 Days")],
+        _ => [new(3, "3 Months"), new(6, "6 Months"), new(12, "12 Months"), new(18, "18 Months"), new(24, "24 Months")]
+    };
+
+    /// <summary>
+    /// Format a DateTime with ordinal suffix and full month name.
+    /// e.g. "28th April 2026", "1st March 2026", "3rd January 2027"
+    /// Matches Vue formatReleaseDate() function.
+    /// </summary>
+    private static string FormatReleaseDateOrdinal(DateTime date)
+    {
+        var day = date.Day;
+        var suffix = (day % 10 == 1 && day != 11) ? "st" :
+                     (day % 10 == 2 && day != 12) ? "nd" :
+                     (day % 10 == 3 && day != 13) ? "rd" : "th";
+        return $"{day}{suffix} {date:MMMM yyyy}";
+    }
 
     /// <summary>
     /// Summary text shown in the Step 6 stages header (right side).
@@ -534,13 +592,16 @@ public partial class CreateProjectViewModel : ReactiveObject
                 ? Math.Round(percentPerStage)
                 : 100 - Math.Round(percentPerStage) * (count - 1);
 
+            var label = frequencyMonths > 0 ? "Monthly Payout" : "Weekly Payout";
+
             Stages.Add(new ProjectStageViewModel
             {
                 StageNumber = i + 1,
                 Percentage = $"{pct}%",
-                ReleaseDate = releaseDate.ToString("dd MMM yyyy"),
-                AmountBtc = (targetBtc * pct / 100).ToString("F8"),
-                StageLabel = frequencyMonths > 0 ? "Monthly Payout" : "Weekly Payout"
+                ReleaseDate = FormatReleaseDateOrdinal(releaseDate),
+                AmountBtc = (targetBtc * pct / 100).ToString("F4"),
+                StageLabel = label,
+                DisplayText = $"{pct}% paid on {FormatReleaseDateOrdinal(releaseDate)}"
             });
         }
 

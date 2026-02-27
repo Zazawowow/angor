@@ -16,9 +16,8 @@
         <!-- ═══════════════════════════════════════════════════════════ -->
         <Grid Name="ShellContent" Margin="0,24,24,24" ColumnDefinitions="208 *" RowDefinitions="42 *" ColumnSpacing="0" RowSpacing="20">
             <!-- Logo — centered within the 208px sidebar column (Vue: w-52 = 208px, logo centered) -->
-            <PathIcon Height="32" Width="32"
-                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                      Foreground="{DynamicResource Brand}" Data="{StaticResource AngorLogo}" />
+            <Svg Path="/Assets/logo.svg" Width="32" Height="32"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" />
 
             <!-- Top bar -->
             <DockPanel Grid.Row="0" Grid.Column="1">
