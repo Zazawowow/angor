@@ -509,7 +509,7 @@ public partial class CreateProjectView : UserControl
             else
             {
                 var avatarImage = this.FindControl<Image>("AvatarPreviewImage");
-                var avatarIcon = this.FindControl<Viewbox>("AvatarUploadIcon");
+                var avatarIcon = this.FindControl<Control>("AvatarUploadIcon");
                 if (avatarImage != null)
                 {
                     avatarImage.Source = bitmap;

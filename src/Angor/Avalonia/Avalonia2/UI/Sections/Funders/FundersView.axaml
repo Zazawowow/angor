@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:funders="clr-namespace:Avalonia2.UI.Sections.Funders"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="800"
              x:Class="Avalonia2.UI.Sections.Funders.FundersView"
              x:DataType="funders:FundersViewModel">
@@ -384,14 +385,10 @@
                                                     BorderBrush="#4B7C5A"
                                                     BorderThickness="2">
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <Viewbox Width="16" Height="16" VerticalAlignment="Center">
-                                                        <Path Data="{StaticResource ChatBubble}"
-                                                              Stroke="#4B7C5A"
-                                                              StrokeThickness="1.5"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Width="24" Height="24" Stretch="Uniform" />
-                                                    </Viewbox>
+                                                    <i:Icon Value="fa-solid fa-comment"
+                                                           FontSize="16"
+                                                           Foreground="#4B7C5A"
+                                                           VerticalAlignment="Center" />
                                                     <TextBlock Text="Has messages"
                                                                FontSize="14"
                                                                FontWeight="SemiBold"
@@ -448,14 +445,10 @@
 
                                             <!-- Vue: calendar icon + date/time text-sm -->
                                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <Viewbox Width="16" Height="16" VerticalAlignment="Center">
-                                                    <Path Data="{StaticResource Calendar}"
-                                                          Stroke="{DynamicResource TextMuted}"
-                                                          StrokeThickness="2"
-                                                          StrokeLineCap="Round"
-                                                          StrokeJoin="Round"
-                                                          Width="24" Height="24" Stretch="Uniform" />
-                                                </Viewbox>
+                                                <i:Icon Value="fa-solid fa-calendar"
+                                                       FontSize="16"
+                                                       Foreground="{DynamicResource TextMuted}"
+                                                       VerticalAlignment="Center" />
                                                 <TextBlock FontSize="14"
                                                            Foreground="{DynamicResource TextMuted}"
                                                            VerticalAlignment="Center">

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:home="clr-namespace:Avalonia2.UI.Sections.Home"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Avalonia2.UI.Sections.Home.HomeView"
              x:DataType="home:HomeViewModel">
@@ -64,19 +65,12 @@
                 <Border Classes="Panel" ClipToBounds="False" />
                 <!-- Content -->
                 <StackPanel Spacing="0" VerticalAlignment="Center" Margin="48">
-                    <!-- Lightning icon (stroke-based, 80x80) — Vue: w-24 h-24 mb-8 -->
-                    <PathIcon Foreground="Transparent" Height="80" Width="80"
-                              Margin="0,0,0,32"
-                              HorizontalAlignment="Center"
-                              Data="{StaticResource Lightning}">
-                        <PathIcon.Styles>
-                            <Style Selector="PathIcon Path">
-                                <Setter Property="Stroke" Value="{DynamicResource Brand}" />
-                                <Setter Property="StrokeThickness" Value="1.2" />
-                                <Setter Property="StrokeJoin" Value="Round" />
-                            </Style>
-                        </PathIcon.Styles>
-                    </PathIcon>
+                    <!-- Lightning icon (80x80) — Vue: w-24 h-24 mb-8 -->
+                    <i:Icon Value="fa-solid fa-bolt"
+                            FontSize="80"
+                            Foreground="{DynamicResource Brand}"
+                            Margin="0,0,0,32"
+                            HorizontalAlignment="Center" />
                     <!-- Title — Vue: text-3xl font-bold mb-4 tracking-tight -->
                     <TextBlock Classes="Title Strong"
                                Margin="0,0,0,16"

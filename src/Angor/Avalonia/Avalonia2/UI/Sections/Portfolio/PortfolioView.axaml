@@ -5,6 +5,7 @@
              xmlns:portfolio="clr-namespace:Avalonia2.UI.Sections.Portfolio"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="800"
              x:Class="Avalonia2.UI.Sections.Portfolio.PortfolioView"
              x:DataType="portfolio:PortfolioViewModel">
@@ -32,8 +33,7 @@
                              DescriptionFontSize="20"
                              HasButton="True"
                              ButtonText="Find Projects"
-                             HasButtonIcon="True"
-                             ButtonIconData="{StaticResource Search}"
+                             ButtonIconValue="fa-solid fa-magnifying-glass"
                              IsVisible="{Binding !HasInvestments}" />
 
         <!-- ═══════════════════════════════════════════════════════ -->
@@ -109,14 +109,10 @@
                             <Button Padding="20,8"
                                     Background="#F7931A" CornerRadius="8">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Viewbox Width="14" Height="14" VerticalAlignment="Center">
-                                        <Path Data="{StaticResource Padlock}"
-                                              Stroke="White"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round"
-                                              StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-lock"
+                                           FontSize="14"
+                                           Foreground="White"
+                                           VerticalAlignment="Center" />
                                     <TextBlock Text="Penalties" FontSize="13" FontWeight="SemiBold"
                                                Foreground="White" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -137,14 +133,9 @@
                                 <StackPanel Spacing="8">
                                     <Border Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource NavIconDocument}"
-                                                  Stroke="{DynamicResource TextMuted}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeLineCap="Round"
-                                                  StrokeJoin="Round"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <i:Icon Value="fa-solid fa-file-lines"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <TextBlock Text="{Binding FundedProjects}"
                                                FontSize="20" FontWeight="Bold"
@@ -166,11 +157,9 @@
                                 <StackPanel Spacing="8">
                                     <Border Width="28" Height="28" CornerRadius="14"
                                             Background="#F7931A" HorizontalAlignment="Left">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource BitcoinSymbol}"
-                                                  Fill="White"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <i:Icon Value="fa-brands fa-bitcoin"
+                                               FontSize="14"
+                                               Foreground="White" />
                                     </Border>
                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                         <TextBlock Text="{Binding TotalInvested}"
@@ -198,13 +187,9 @@
                                 <StackPanel Spacing="8">
                                     <Border Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
-                                        <Viewbox Width="16" Height="16">
-                                            <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                                <Border.OpacityMask>
-                                                    <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                                </Border.OpacityMask>
-                                            </Border>
-                                        </Viewbox>
+                                        <i:Icon Value="fa-solid fa-arrows-rotate"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                         <TextBlock Text="{Binding RecoveredToPenalty}"
@@ -233,11 +218,9 @@
                                 <StackPanel Spacing="8">
                                     <Border Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource Shield}"
-                                                  Fill="{DynamicResource TextMuted}"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <i:Icon Value="fa-solid fa-triangle-exclamation"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <TextBlock Text="{Binding ProjectsInRecovery}"
                                                FontSize="20" FontWeight="Bold"
@@ -516,14 +499,10 @@
                                                     BorderThickness="2"
                                                     CornerRadius="8">
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <Viewbox Width="16" Height="16" VerticalAlignment="Center">
-                                                        <Path Data="{StaticResource NavIconDocument}"
-                                                              Stroke="#4B7C5A"
-                                                              StrokeThickness="1.5"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Width="24" Height="24" Stretch="Uniform" />
-                                                    </Viewbox>
+                                                    <i:Icon Value="fa-solid fa-file-lines"
+                                                           FontSize="14"
+                                                           Foreground="#4B7C5A"
+                                                           VerticalAlignment="Center" />
                                                     <TextBlock Text="Manage"
                                                                FontSize="14"
                                                                FontWeight="SemiBold"

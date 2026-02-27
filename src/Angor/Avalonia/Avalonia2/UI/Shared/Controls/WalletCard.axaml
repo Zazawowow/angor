@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
 
     <Design.PreviewWith>
         <StackPanel Spacing="8" Width="500">
@@ -78,9 +79,9 @@
                                     CornerRadius="8"
                                     Background="#fef3c7"
                                     Padding="8">
-                                <Path Data="{StaticResource BitcoinSymbol}"
-                                      Fill="#f59e0b"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-brands fa-bitcoin"
+                                       FontSize="20"
+                                       Foreground="#f59e0b" />
                             </Border>
                             <!-- Name + type/balance column -->
                             <StackPanel Spacing="2" VerticalAlignment="Center">

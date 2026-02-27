@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mp="clr-namespace:Avalonia2.UI.Sections.MyProjects"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="900"
              x:Class="Avalonia2.UI.Sections.MyProjects.CreateProjectView"
              x:DataType="mp:CreateProjectViewModel">
@@ -46,8 +47,8 @@
         <Style Selector="Border.TypeCardIconStroke.IconSub">
             <Setter Property="Background" Value="#9E9E9E" />
         </Style>
-        <Style Selector="Path.TypeCardIconFill.IconFund">
-            <Setter Property="Fill" Value="#F7931A" />
+        <Style Selector="i|Icon.TypeCardIconFill.IconFund">
+            <Setter Property="Foreground" Value="#F7931A" />
         </Style>
 
         <!-- ═══ TYPE CARD: Radio circle ═══ -->
@@ -100,8 +101,8 @@
         <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected Border.TypeCardIconBg">
             <Setter Property="Background" Value="#F7931A" />
         </Style>
-        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected Path.TypeCardIconFill">
-            <Setter Property="Fill" Value="White" />
+        <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected i|Icon.TypeCardIconFill">
+            <Setter Property="Foreground" Value="White" />
         </Style>
         <Style Selector="Border.TypeCard.TypeCardFund.TypeCardSelected TextBlock.TypeCardTitle">
             <Setter Property="Foreground" Value="#F7931A" />
@@ -412,11 +413,9 @@
                                     <Border.Background>
                                         <SolidColorBrush Color="#4B7C5A" Opacity="0.12" />
                                     </Border.Background>
-                                    <Viewbox Width="28" Height="28">
-                                        <Path Data="{StaticResource Lightning}"
-                                              Fill="#4B7C5A"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-bolt"
+                                           FontSize="28"
+                                           Foreground="#4B7C5A" />
                                 </Border>
 
                                 <TextBlock Text="Welcome" FontSize="24" FontWeight="Bold"
@@ -531,11 +530,9 @@
                                         <Border Grid.Column="0" Name="IconBgFund" Classes="TypeCardIconBg"
                                                 Width="48" Height="48" CornerRadius="10"
                                                 VerticalAlignment="Top">
-                                            <Viewbox Width="22" Height="22">
-                                                <Path Name="IconPathFund" Classes="TypeCardIconFill IconFund"
-                                                      Data="{StaticResource BitcoinSymbol}"
-                                                      Width="24" Height="24" Stretch="Uniform" />
-                                            </Viewbox>
+                                            <i:Icon Name="IconPathFund" Classes="TypeCardIconFill IconFund"
+                                                   Value="fa-brands fa-bitcoin"
+                                                   FontSize="22" />
                                         </Border>
                                         <!-- Title + description -->
                                         <StackPanel Grid.Column="1" Spacing="6" Margin="20,0,20,0"
@@ -714,12 +711,9 @@
                                                         Padding="16,10"
                                                         BorderBrush="{DynamicResource Stroke}" BorderThickness="1">
                                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <Viewbox Width="16" Height="16">
-                                                            <Path Data="{StaticResource CloudUpload}"
-                                                                  Stroke="{DynamicResource TextStrong}"
-                                                                  StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-solid fa-cloud-arrow-up"
+                                                               FontSize="16"
+                                                               Foreground="{DynamicResource TextStrong}" />
                                                         <TextBlock Text="Upload Banner" FontSize="14" FontWeight="SemiBold"
                                                                    Foreground="{DynamicResource TextStrong}" />
                                                     </StackPanel>
@@ -751,12 +745,9 @@
                                                             </Image.Clip>
                                                         </Image>
                                                         <!-- Upload icon (shown when no avatar) -->
-                                                        <Viewbox Name="AvatarUploadIcon" Width="32" Height="32">
-                                                            <Path Data="{StaticResource CloudUpload}"
-                                                                  Stroke="{DynamicResource TextMuted}"
-                                                                  StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Name="AvatarUploadIcon" Value="fa-solid fa-cloud-arrow-up"
+                                                               FontSize="32"
+                                                               Foreground="{DynamicResource TextMuted}" />
                                                     </Panel>
                                                 </Border>
                                             </Border>
@@ -798,11 +789,9 @@
                                                         <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                                     </Border.Background>
                                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                                        <Viewbox Width="20" Height="20">
-                                                            <Path Data="{StaticResource BitcoinSymbol}"
-                                                                  Fill="{DynamicResource BitcoinAccent}"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-brands fa-bitcoin"
+                                                               FontSize="18"
+                                                               Foreground="{DynamicResource BitcoinAccent}" />
                                                         <TextBlock Text="Set your target funding amount"
                                                                    FontSize="16" FontWeight="Bold"
                                                                    Foreground="{DynamicResource TextStrong}"
@@ -931,11 +920,9 @@
                                                         <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                                     </Border.Background>
                                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                                        <Viewbox Width="20" Height="20">
-                                                            <Path Data="{StaticResource BitcoinSymbol}"
-                                                                  Fill="{DynamicResource BitcoinAccent}"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-brands fa-bitcoin"
+                                                               FontSize="18"
+                                                               Foreground="{DynamicResource BitcoinAccent}" />
                                                         <TextBlock Text="Goal" FontSize="16" FontWeight="Bold"
                                                                    Foreground="{DynamicResource TextStrong}" VerticalAlignment="Center" />
                                                     </StackPanel>
@@ -1000,11 +987,9 @@
                                                         <SolidColorBrush Color="#3B82F6" Opacity="0.08" />
                                                     </Border.Background>
                                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                                        <Viewbox Width="20" Height="20">
-                                                            <Path Data="{StaticResource Shield}"
-                                                                  Fill="#3B82F6"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-solid fa-shield"
+                                                               FontSize="20"
+                                                               Foreground="#3B82F6" />
                                                         <TextBlock Text="Threshold for Approval" FontSize="16" FontWeight="Bold"
                                                                    Foreground="{DynamicResource TextStrong}" VerticalAlignment="Center" />
                                                     </StackPanel>
@@ -1047,11 +1032,9 @@
                                                         <SolidColorBrush Color="#F7931A" Opacity="0.08" />
                                                     </Border.Background>
                                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                                        <Viewbox Width="20" Height="20">
-                                                            <Path Data="{StaticResource BitcoinSymbol}"
-                                                                  Fill="{DynamicResource BitcoinAccent}"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-brands fa-bitcoin"
+                                                               FontSize="18"
+                                                               Foreground="{DynamicResource BitcoinAccent}" />
                                                         <TextBlock Text="Subscription Price" FontSize="16" FontWeight="Bold"
                                                                    Foreground="{DynamicResource TextStrong}" VerticalAlignment="Center" />
                                                     </StackPanel>
@@ -1437,12 +1420,9 @@
                                                         CornerRadius="8" Padding="12,6"
                                                         VerticalAlignment="Center">
                                                     <StackPanel Orientation="Horizontal" Spacing="6">
-                                                        <Viewbox Width="14" Height="14">
-                                                            <Path Data="{StaticResource Trash}"
-                                                                  Stroke="{DynamicResource Accent}" StrokeThickness="2"
-                                                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                                                  Width="24" Height="24" Stretch="Uniform" />
-                                                        </Viewbox>
+                                                        <i:Icon Value="fa-solid fa-trash"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource Accent}" />
                                                         <TextBlock Text="Delete" FontSize="13" FontWeight="Bold"
                                                                    Foreground="{DynamicResource Accent}" />
                                                     </StackPanel>
@@ -1514,12 +1494,9 @@
                                             <StackPanel Orientation="Horizontal" Spacing="12">
                                                 <Border Width="36" Height="36" CornerRadius="8"
                                                         Background="{DynamicResource Accent}">
-                                                    <Viewbox Width="18" Height="18">
-                                                        <Path Data="{StaticResource UserCircle}"
-                                                              Stroke="White" StrokeThickness="2"
-                                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                                              Width="24" Height="24" Stretch="Uniform" />
-                                                    </Viewbox>
+                                                    <i:Icon Value="fa-solid fa-circle-user"
+                                                           FontSize="18"
+                                                           Foreground="White" />
                                                 </Border>
                                                 <TextBlock Text="Project Profile" FontSize="16" FontWeight="Bold"
                                                            Foreground="{DynamicResource TextStrong}"
@@ -1566,11 +1543,9 @@
                                             <StackPanel Orientation="Horizontal" Spacing="12">
                                                 <Border Width="36" Height="36" CornerRadius="8"
                                                         Background="{DynamicResource BitcoinAccent}">
-                                                    <Viewbox Width="18" Height="18">
-                                                        <Path Data="{StaticResource BitcoinSymbol}"
-                                                              Fill="White"
-                                                              Width="24" Height="24" Stretch="Uniform" />
-                                                    </Viewbox>
+                                                    <i:Icon Value="fa-brands fa-bitcoin"
+                                                           FontSize="18"
+                                                           Foreground="White" />
                                                 </Border>
                                                 <TextBlock Text="Funding Configuration" FontSize="16" FontWeight="Bold"
                                                            Foreground="{DynamicResource TextStrong}"

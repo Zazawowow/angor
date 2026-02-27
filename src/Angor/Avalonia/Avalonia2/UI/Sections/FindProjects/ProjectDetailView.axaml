@@ -6,6 +6,7 @@
              xmlns:portfolio="clr-namespace:Avalonia2.UI.Sections.Portfolio"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="1600"
              x:Class="Avalonia2.UI.Sections.FindProjects.ProjectDetailView"
              x:DataType="fp:ProjectItemViewModel">
@@ -47,6 +48,22 @@
         </Style>
         <Style Selector="Button.BackBtn:pressed /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- Collapsible chevron: Vue .chevron-icon → transition transform 0.3s ease -->
+        <!-- Default (collapsed) = chevron down (0°), .ChevronExpanded = chevron up (180°) -->
+        <!-- Applied to a wrapper Border since i:Icon style selectors can be unreliable -->
+        <Style Selector="Border.CollapsibleChevron">
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
+            <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="CubicEaseInOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.CollapsibleChevron.ChevronExpanded">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
         </Style>
     </UserControl.Styles>
 
@@ -164,11 +181,10 @@
                     </LinearGradientBrush>
                 </Border.Background>
                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Viewbox Width="16" Height="16" VerticalAlignment="Center">
-                        <Path Data="{StaticResource BitcoinSymbol}"
-                              Fill="White"
-                              Width="64" Height="64" Stretch="Uniform" />
-                    </Viewbox>
+                    <i:Icon Value="fa-brands fa-bitcoin"
+                           FontSize="16"
+                           Foreground="White"
+                           VerticalAlignment="Center" />
                     <TextBlock Text="{Binding ActionButtonText}"
                                FontSize="14"
                                FontWeight="SemiBold"
@@ -227,7 +243,7 @@
                         Margin="0,0,24,0">
                     <StackPanel>
                         <!-- Banner — Vue: height 180px -->
-                        <Panel Height="180" ClipToBounds="True">
+                        <Panel Height="180">
                             <Border Background="{DynamicResource SurfaceLow}" CornerRadius="15,15,0,0" />
                             <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
                                                             Source="{Binding BannerUrl}" />
@@ -280,11 +296,9 @@
                             <Border Width="64" Height="64" CornerRadius="32"
                                     Background="#33FFFFFF"
                                     HorizontalAlignment="Center">
-                                <Viewbox Width="32" Height="32">
-                                    <Path Data="{StaticResource BitcoinSymbol}"
-                                          Fill="White"
-                                          Width="24" Height="24" Stretch="Uniform" />
-                                </Viewbox>
+                                <i:Icon Value="fa-brands fa-bitcoin"
+                                       FontSize="28"
+                                       Foreground="White" />
                             </Border>
                             <TextBlock Text="{Binding OpportunityTitle}"
                                        FontSize="22"
@@ -306,11 +320,10 @@
                                     Cursor="Hand"
                                     HorizontalAlignment="Stretch">
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                                    <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                                        <Path Data="{StaticResource BitcoinSymbol}"
-                                              Fill="#2d5a3d"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-brands fa-bitcoin"
+                                           FontSize="18"
+                                           Foreground="#2d5a3d"
+                                           VerticalAlignment="Center" />
                                     <TextBlock Text="{Binding ActionButtonText}"
                                                FontSize="16"
                                                FontWeight="SemiBold"
@@ -375,14 +388,9 @@
                             <Border Width="64" Height="64" CornerRadius="32"
                                     Background="{DynamicResource SurfaceLow}"
                                     HorizontalAlignment="Center">
-                                <Viewbox Width="32" Height="32">
-                                    <Path Data="{StaticResource Clock}"
-                                          Stroke="{DynamicResource TextMuted}"
-                                          StrokeThickness="2"
-                                          StrokeLineCap="Round"
-                                          StrokeJoin="Round"
-                                          Width="24" Height="24" Stretch="Uniform" />
-                                </Viewbox>
+                                <i:Icon Value="fa-solid fa-clock"
+                                       FontSize="32"
+                                       Foreground="{DynamicResource TextMuted}" />
                             </Border>
                             <TextBlock Text="Investment Period Closed"
                                        FontSize="22"
@@ -425,11 +433,9 @@
                                     <GradientStop Color="#FFA500" Offset="1" />
                                 </LinearGradientBrush>
                             </Border.Background>
-                            <Viewbox Width="20" Height="20">
-                                <Path Data="{StaticResource BitcoinSymbol}"
-                                      Fill="White"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
+                            <i:Icon Value="fa-brands fa-bitcoin"
+                                   FontSize="20"
+                                   Foreground="White" />
                         </Border>
                         <TextBlock Text="Project Statistics"
                                    FontSize="20"
@@ -455,11 +461,10 @@
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource StatsDetailLabel}"
                                                VerticalAlignment="Center" />
-                                    <Viewbox Width="20" Height="20" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource BitcoinSymbol}"
-                                              Fill="{DynamicResource StatsDetailLabel}"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-brands fa-bitcoin"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource StatsDetailLabel}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock FontSize="24" FontWeight="Bold"
                                            Foreground="{DynamicResource StatsDetailValue}">
@@ -482,14 +487,10 @@
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource StatsDetailLabel}"
                                                VerticalAlignment="Center" />
-                                    <Viewbox Width="20" Height="20" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource NavIconTrendUp}"
-                                              Stroke="{DynamicResource StatsDetailLabel}"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round"
-                                              StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-arrow-trend-up"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource StatsDetailLabel}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock FontSize="24" FontWeight="Bold"
                                            Foreground="{DynamicResource StatsDetailValue}">
@@ -512,14 +513,10 @@
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource StatsDetailLabel}"
                                                VerticalAlignment="Center" />
-                                    <Viewbox Width="20" Height="20" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource NavIconUsers}"
-                                              Stroke="{DynamicResource StatsDetailLabel}"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round"
-                                              StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-users"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource StatsDetailLabel}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock Text="{Binding InvestorCount}"
                                            FontSize="24"
@@ -575,11 +572,9 @@
                 <StackPanel Spacing="20">
                     <!-- Header -->
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Viewbox Width="24" Height="24">
-                            <Path Data="{StaticResource BitcoinSymbol}"
-                                  Fill="#F7931A"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
+                        <i:Icon Value="fa-brands fa-bitcoin"
+                               FontSize="22"
+                               Foreground="#F7931A" />
                         <TextBlock Text="{Binding InfoSectionTitle}"
                                    FontSize="20"
                                    FontWeight="Bold"
@@ -600,12 +595,10 @@
                                 <DockPanel>
                                     <TextBlock Text="Investment Start Date" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}" />
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource Calendar}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-calendar"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock Text="{Binding StartDate}" FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}" />
@@ -621,12 +614,10 @@
                                 <DockPanel>
                                     <TextBlock Text="Investment End Date" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}" />
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource Calendar}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-calendar"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock Text="{Binding EndDate}" FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}" />
@@ -642,12 +633,10 @@
                                 <DockPanel>
                                     <TextBlock Text="Penalty Duration" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}" />
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource Clock}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-clock"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}">
@@ -665,12 +654,10 @@
                                 <DockPanel>
                                     <TextBlock Text="Project Expiry Date" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}" />
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource Calendar}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-calendar"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock Text="{Binding ExpiryDate}" FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}" />
@@ -690,12 +677,10 @@
                                 <DockPanel>
                                     <TextBlock Text="Funding Frequency" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}" />
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource Clock}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-clock"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock Text="{Binding PayoutFrequency}" FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}" />
@@ -710,12 +695,10 @@
                                 <DockPanel>
                                     <TextBlock Text="Penalty Duration" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}" />
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                                        <Path Data="{StaticResource Clock}"
-                                              Stroke="{DynamicResource TextMuted}" StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-clock"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Right" HorizontalAlignment="Right" />
                                 </DockPanel>
                                 <TextBlock FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}">
@@ -782,14 +765,9 @@
                 <StackPanel Spacing="20">
                     <!-- Header -->
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Viewbox Width="24" Height="24">
-                            <Path Data="{StaticResource Box}"
-                                  Stroke="{DynamicResource TextStrong}"
-                                  StrokeThickness="1.5"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
+                        <i:Icon Value="fa-solid fa-box"
+                               FontSize="24"
+                               Foreground="{DynamicResource TextStrong}" />
                         <TextBlock Text="Stages"
                                    FontSize="20"
                                    FontWeight="Bold"
@@ -867,37 +845,25 @@
                     Padding="24"
                     BoxShadow="{DynamicResource ItemShadow}">
                 <StackPanel Spacing="0">
-                    <!-- Collapsible header -->
-                    <Border Name="DetailsHeader" Cursor="Hand" Margin="0,0,0,0">
+                    <!-- Collapsible header — Background="Transparent" ensures entire row is a hit target -->
+                    <Border Name="DetailsHeader" Cursor="Hand" Background="Transparent" Padding="0,4">
                         <DockPanel>
-                            <Viewbox Width="24" Height="24" DockPanel.Dock="Left" Margin="0,0,12,0">
-                                <Path Data="{StaticResource InfoCircle}"
-                                      Stroke="{DynamicResource TextStrong}"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
+                            <i:Icon Value="fa-solid fa-circle-info"
+                                   FontSize="24"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   DockPanel.Dock="Left" Margin="0,0,12,0" />
+                            <Border Name="DetailsChevron"
+                                    Classes="CollapsibleChevron ChevronExpanded"
+                                    DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                <i:Icon Value="fa-solid fa-chevron-down"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            </Border>
                             <TextBlock Text="Project Details"
                                        FontSize="20" FontWeight="Bold"
                                        Foreground="{DynamicResource TextStrong}"
                                        VerticalAlignment="Center" />
-                            <Viewbox Width="20" Height="20"
-                                     DockPanel.Dock="Right" HorizontalAlignment="Right"
-                                     VerticalAlignment="Center">
-                                <Path Name="DetailsChevron"
-                                      Data="{StaticResource ChevronDown}"
-                                      Stroke="{DynamicResource TextMuted}"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform"
-                                      RenderTransformOrigin="0.5,0.5">
-                                    <Path.RenderTransform>
-                                        <RotateTransform Angle="0" />
-                                    </Path.RenderTransform>
-                                </Path>
-                            </Viewbox>
                         </DockPanel>
                     </Border>
 
@@ -912,13 +878,9 @@
                                     BorderThickness="1"
                                     CornerRadius="8" Padding="12,10">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Viewbox Width="18" Height="18">
-                                        <Path Data="{StaticResource ExternalLink}"
-                                              Stroke="{DynamicResource TextMuted}"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-arrow-up-right-from-square"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}" />
                                     <TextBlock Text="View the transaction"
                                                FontSize="14"
                                                Foreground="{DynamicResource Brand}"
@@ -936,13 +898,10 @@
                                     BorderThickness="1"
                                     CornerRadius="8" Padding="12,10">
                                 <DockPanel>
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Left" Margin="0,0,8,0">
-                                        <Path Data="{StaticResource Cloud}"
-                                              Stroke="{DynamicResource TextMuted}"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-cloud"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Left" Margin="0,0,8,0" />
                                     <Border Name="CopyProjectIdBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
@@ -971,13 +930,10 @@
                                     BorderThickness="1"
                                     CornerRadius="8" Padding="12,10">
                                 <DockPanel>
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Left" Margin="0,0,8,0">
-                                        <Path Data="{StaticResource Key}"
-                                              Stroke="{DynamicResource TextMuted}"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-key"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Left" Margin="0,0,8,0" />
                                     <Border Name="CopyFounderKeyBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
@@ -1011,37 +967,25 @@
                     Padding="24"
                     BoxShadow="{DynamicResource ItemShadow}">
                 <StackPanel Spacing="0">
-                    <!-- Collapsible header -->
-                    <Border Name="NostrHeader" Cursor="Hand">
+                    <!-- Collapsible header — Background="Transparent" ensures entire row is a hit target -->
+                    <Border Name="NostrHeader" Cursor="Hand" Background="Transparent" Padding="0,4">
                         <DockPanel>
-                            <Viewbox Width="24" Height="24" DockPanel.Dock="Left" Margin="0,0,12,0">
-                                <Path Data="{StaticResource ChatBubble}"
-                                      Stroke="{DynamicResource TextStrong}"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
+                            <i:Icon Value="fa-solid fa-comment"
+                                   FontSize="24"
+                                   Foreground="{DynamicResource TextStrong}"
+                                   DockPanel.Dock="Left" Margin="0,0,12,0" />
+                            <Border Name="NostrChevron"
+                                    Classes="CollapsibleChevron ChevronExpanded"
+                                    DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                <i:Icon Value="fa-solid fa-chevron-down"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource TextMuted}" />
+                            </Border>
                             <TextBlock Text="Nostr"
                                        FontSize="20" FontWeight="Bold"
                                        Foreground="{DynamicResource TextStrong}"
                                        VerticalAlignment="Center" />
-                            <Viewbox Width="20" Height="20"
-                                     DockPanel.Dock="Right" HorizontalAlignment="Right"
-                                     VerticalAlignment="Center">
-                                <Path Name="NostrChevron"
-                                      Data="{StaticResource ChevronDown}"
-                                      Stroke="{DynamicResource TextMuted}"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform"
-                                      RenderTransformOrigin="0.5,0.5">
-                                    <Path.RenderTransform>
-                                        <RotateTransform Angle="0" />
-                                    </Path.RenderTransform>
-                                </Path>
-                            </Viewbox>
                         </DockPanel>
                     </Border>
 
@@ -1056,13 +1000,10 @@
                                     BorderThickness="1"
                                     CornerRadius="8" Padding="12,10">
                                 <DockPanel>
-                                    <Viewbox Width="18" Height="18" DockPanel.Dock="Left" Margin="0,0,8,0">
-                                        <Path Data="{StaticResource User}"
-                                              Stroke="{DynamicResource TextMuted}"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round" StrokeJoin="Round"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-user"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextMuted}"
+                                           DockPanel.Dock="Left" Margin="0,0,8,0" />
                                     <Border Name="CopyNpubBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
@@ -1090,13 +1031,9 @@
                                 Padding="16,12"
                                 Cursor="Hand">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                                <Viewbox Width="18" Height="18">
-                                    <Path Data="{StaticResource ExternalLink}"
-                                          Stroke="{DynamicResource TextStrong}"
-                                          StrokeThickness="1.5"
-                                          StrokeLineCap="Round" StrokeJoin="Round"
-                                          Width="24" Height="24" Stretch="Uniform" />
-                                </Viewbox>
+                                <i:Icon Value="fa-solid fa-arrow-up-right-from-square"
+                                       FontSize="18"
+                                       Foreground="{DynamicResource TextStrong}" />
                                 <TextBlock Text="Open in Angor Projects"
                                            FontSize="14" FontWeight="SemiBold"
                                            Foreground="{DynamicResource TextStrong}" />
@@ -1112,11 +1049,9 @@
                                     BorderThickness="1"
                                     CornerRadius="8" Padding="12,10">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Viewbox Width="16" Height="16">
-                                        <Path Data="{StaticResource Lightning}"
-                                              Fill="{DynamicResource Brand}"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-bolt"
+                                           FontSize="16"
+                                           Foreground="{DynamicResource Brand}" />
                                     <TextBlock Text="wss://relay.angor.io"
                                                FontSize="14"
                                                Foreground="{DynamicResource Brand}" />
@@ -1127,11 +1062,9 @@
                                     BorderThickness="1"
                                     CornerRadius="8" Padding="12,10">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Viewbox Width="16" Height="16">
-                                        <Path Data="{StaticResource Lightning}"
-                                              Fill="{DynamicResource Brand}"
-                                              Width="24" Height="24" Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-bolt"
+                                           FontSize="16"
+                                           Foreground="{DynamicResource Brand}" />
                                     <TextBlock Text="wss://relay2.angor.io"
                                                FontSize="14"
                                                Foreground="{DynamicResource Brand}" />

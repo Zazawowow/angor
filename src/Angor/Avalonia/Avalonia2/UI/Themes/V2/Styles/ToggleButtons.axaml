@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
     
     <Style Selector="ToggleButton.Widget">
         <Style.Resources>
@@ -26,10 +27,10 @@
                         <TextBlock FontWeight="Bold">Light Theme</TextBlock>
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <ToggleButton Classes="Widget" IsChecked="False">
-                                <PathIcon Data="{DynamicResource Sun}" />
+                                <i:Icon Value="fa-solid fa-sun" FontSize="16" />
                             </ToggleButton>
                             <ToggleButton Classes="Widget" IsChecked="True">
-                                <PathIcon Data="{DynamicResource Sun}" />
+                                <i:Icon Value="fa-solid fa-sun" FontSize="16" />
                             </ToggleButton>
                         </StackPanel>
                     </StackPanel>
@@ -41,10 +42,10 @@
                         <TextBlock FontWeight="Bold" Foreground="White">Dark Theme</TextBlock>
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <ToggleButton Classes="Widget" IsChecked="False">
-                                <PathIcon Foreground="{DynamicResource TextMuted}" Data="{DynamicResource Sun}" />
+                                <i:Icon Value="fa-solid fa-sun" FontSize="16" Foreground="{DynamicResource TextMuted}" />
                             </ToggleButton>
                             <ToggleButton Classes="Widget" IsChecked="True">
-                                <PathIcon Foreground="{DynamicResource TextMuted}" Data="{DynamicResource Sun}" />
+                                <i:Icon Value="fa-solid fa-sun" FontSize="16" Foreground="{DynamicResource TextMuted}" />
                             </ToggleButton>
                         </StackPanel>
                     </StackPanel>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:deploy="clr-namespace:Avalonia2.UI.Sections.MyProjects.Deploy"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="700"
              x:Class="Avalonia2.UI.Sections.MyProjects.Deploy.DeployFlowOverlay"
                x:DataType="deploy:DeployFlowViewModel">
@@ -159,13 +160,9 @@
                                                     CornerRadius="8"
                                                     Background="{DynamicResource DeployWalletIconBg}"
                                                     VerticalAlignment="Center">
-                                                <Viewbox Width="20" Height="20"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center">
-                                                    <Path Data="{StaticResource BitcoinSymbol}"
-                                                          Fill="#f59e0b"
-                                                          Width="24" Height="24" Stretch="Uniform" />
-                                                </Viewbox>
+                                                <i:Icon Value="fa-brands fa-bitcoin"
+                                                       FontSize="20"
+                                                       Foreground="#f59e0b" />
                                             </Border>
 
                                             <!-- Name + type label -->
@@ -293,11 +290,10 @@
                     <Border Width="192" Height="192" CornerRadius="8"
                             Background="{DynamicResource DeployModalQrBg}">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
-                            <Viewbox Width="48" Height="48" HorizontalAlignment="Center">
-                                <Path Data="{StaticResource Lightning}"
-                                      Fill="{DynamicResource DeployQrIconFill}"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
+                            <i:Icon Value="fa-solid fa-bolt"
+                                   FontSize="48"
+                                   Foreground="{DynamicResource DeployQrIconFill}"
+                                   HorizontalAlignment="Center" />
                             <TextBlock Text="QR Code" FontSize="13"
                                        Foreground="{DynamicResource DeployQrIconFill}"
                                        HorizontalAlignment="Center" />
@@ -478,12 +474,10 @@
                         <StackPanel Orientation="Horizontal" Spacing="8"
                                     HorizontalAlignment="Center">
                             <!-- Pencil/edit icon -->
-                            <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                                <Path Data="{StaticResource Pencil}"
-                                      Stroke="{DynamicResource TextStrong}" StrokeThickness="2"
-                                      StrokeLineCap="Round" StrokeJoin="Round"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
+                            <i:Icon Value="fa-solid fa-pen"
+                                    FontSize="20"
+                                    Foreground="{DynamicResource TextStrong}"
+                                    VerticalAlignment="Center" />
                             <TextBlock Text="Complete Profile"
                                        FontSize="14" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextStrong}"

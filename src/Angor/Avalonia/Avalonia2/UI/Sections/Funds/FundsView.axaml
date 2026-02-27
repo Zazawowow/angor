@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:funds="clr-namespace:Avalonia2.UI.Sections.Funds"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
              x:Class="Avalonia2.UI.Sections.Funds.FundsView"
              x:DataType="funds:FundsViewModel">
@@ -24,8 +25,7 @@
                                  Description="Wallet's get created when you fund or launch projects, but if you want to import or create one before please do"
                                  ButtonText="Add Wallet"
                                  HasButton="True"
-                                 HasButtonIcon="True"
-                                 ButtonIconData="{StaticResource Plus}" />
+                                 ButtonIconValue="fa-solid fa-plus" />
         </Panel>
 
         <!-- ═══ POPULATED STATE (has wallets) ═══ -->
@@ -62,13 +62,9 @@
                                             <GradientStop Color="#FFA500" Offset="1" />
                                         </LinearGradientBrush>
                                     </Border.Background>
-                                    <Viewbox Width="20" Height="20"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Center">
-                                        <Path Data="{StaticResource BitcoinSymbol}"
-                                              Fill="White"
-                                              Stretch="Uniform" />
-                                    </Viewbox>
+                                    <i:Icon Value="fa-brands fa-bitcoin"
+                                           FontSize="20"
+                                           Foreground="White" />
                                 </Border>
                                 <TextBlock Text="Balance Summary"
                                            FontSize="20" FontWeight="Bold"
@@ -123,12 +119,11 @@
                                         Margin="4,0,4,0">
                                     <StackPanel Spacing="8">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <Viewbox Width="14" Height="14" VerticalAlignment="Center">
-                                                <Path Data="{StaticResource BitcoinSymbol}"
-                                                      Fill="{DynamicResource BitcoinAccent}"
-                                                      Opacity="0.7"
-                                                      Stretch="Uniform" />
-                                            </Viewbox>
+                                            <i:Icon Value="fa-brands fa-bitcoin"
+                                                   FontSize="14"
+                                                   Foreground="{DynamicResource BitcoinAccent}"
+                                                   Opacity="0.7"
+                                                   VerticalAlignment="Center" />
                                             <TextBlock Text="Bitcoin"
                                                        FontSize="13" FontWeight="SemiBold"
                                                        Foreground="{DynamicResource StatsDetailLabel}" />
@@ -155,10 +150,10 @@
                                     <StackPanel Spacing="8">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <Viewbox Width="14" Height="14" VerticalAlignment="Center">
-                                                <Path Data="{StaticResource Lightning}"
-                                                      Fill="{DynamicResource BitcoinAccent}"
-                                                      Opacity="0.7"
-                                                      Stretch="Uniform" />
+                                                <i:Icon Value="fa-solid fa-bolt"
+                                                        FontSize="14"
+                                                        Foreground="{DynamicResource BitcoinAccent}"
+                                                        Opacity="0.7" />
                                             </Viewbox>
                                             <TextBlock Text="Liquid"
                                                        FontSize="13" FontWeight="SemiBold"
@@ -209,14 +204,9 @@
                                             <Grid ColumnDefinitions="Auto,*,Auto">
                                                 <StackPanel Grid.Column="0"
                                                             Orientation="Horizontal" Spacing="12">
-                                                    <Viewbox Width="20" Height="20" VerticalAlignment="Center">
-                                                        <Path Data="{StaticResource Padlock}"
-                                                              Stroke="#4B7C5A"
-                                                              StrokeThickness="1.5"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Stretch="Uniform" />
-                                                    </Viewbox>
+                                                    <i:Icon Value="fa-solid fa-lock"
+                                                           FontSize="20"
+                                                           Foreground="#4B7C5A" />
                                                     <TextBlock Text="{Binding GroupName}"
                                                                FontSize="18"
                                                                FontWeight="Bold"
@@ -272,14 +262,10 @@
                                                     </LinearGradientBrush>
                                                 </Button.Background>
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <Viewbox Width="16" Height="16" VerticalAlignment="Center">
-                                                        <Path Data="{StaticResource Plus}"
-                                                              Stroke="White"
-                                                              StrokeThickness="2"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Stretch="Uniform" />
-                                                    </Viewbox>
+                                                    <i:Icon Value="fa-solid fa-plus"
+                                                           FontSize="16"
+                                                           Foreground="White"
+                                                           VerticalAlignment="Center" />
                                                     <TextBlock Text="Add Wallet" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Button>

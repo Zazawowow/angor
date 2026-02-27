@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:fp="clr-namespace:Avalonia2.UI.Sections.FindProjects"
              xmlns:deploy="clr-namespace:Avalonia2.UI.Sections.MyProjects.Deploy"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="Avalonia2.UI.Sections.FindProjects.InvestModalsView"
              x:DataType="fp:InvestPageViewModel">
@@ -150,13 +151,9 @@
                                                     CornerRadius="8"
                                                     Background="{DynamicResource DeployWalletIconBg}"
                                                     VerticalAlignment="Center">
-                                                <Viewbox Width="20" Height="20"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center">
-                                                    <Path Data="{StaticResource BitcoinSymbol}"
-                                                          Fill="#f59e0b"
-                                                          Width="24" Height="24" Stretch="Uniform" />
-                                                </Viewbox>
+                                                <i:Icon Value="fa-brands fa-bitcoin"
+                                                       FontSize="20"
+                                                       Foreground="#f59e0b" />
                                             </Border>
                                             <!-- Name + type -->
                                             <StackPanel Grid.Column="1" Spacing="2"
@@ -276,11 +273,10 @@
                             Background="{DynamicResource DeployModalQrBg}"
                             Name="QrCodePlaceholder" Cursor="Hand">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
-                            <Viewbox Width="48" Height="48" HorizontalAlignment="Center">
-                                <Path Data="{StaticResource Lightning}"
-                                      Fill="{DynamicResource DeployQrIconFill}"
-                                      Width="24" Height="24" Stretch="Uniform" />
-                            </Viewbox>
+                            <i:Icon Value="fa-solid fa-bolt"
+                                   FontSize="48"
+                                   Foreground="{DynamicResource DeployQrIconFill}"
+                                   HorizontalAlignment="Center" />
                             <TextBlock Text="QR Code" FontSize="13"
                                        Foreground="{DynamicResource DeployQrIconFill}"
                                        HorizontalAlignment="Center" />

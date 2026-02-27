@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -126,9 +125,8 @@ public partial class ProjectDetailView : UserControl
         if (content != null)
             content.IsVisible = _detailsExpanded;
 
-        var chevron = this.FindControl<Path>("DetailsChevron");
-        if (chevron?.RenderTransform is RotateTransform rt)
-            rt.Angle = _detailsExpanded ? 0 : -90;
+        var chevron = this.FindControl<Control>("DetailsChevron");
+        chevron?.Classes.Set("ChevronExpanded", _detailsExpanded);
     }
 
     private void OnNostrHeaderPressed(object? sender, PointerPressedEventArgs e)
@@ -138,8 +136,7 @@ public partial class ProjectDetailView : UserControl
         if (content != null)
             content.IsVisible = _nostrExpanded;
 
-        var chevron = this.FindControl<Path>("NostrChevron");
-        if (chevron?.RenderTransform is RotateTransform rt)
-            rt.Angle = _nostrExpanded ? 0 : -90;
+        var chevron = this.FindControl<Control>("NostrChevron");
+        chevron?.Classes.Set("ChevronExpanded", _nostrExpanded);
     }
 }

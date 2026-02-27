@@ -12,6 +12,12 @@ namespace Avalonia2.UI.Shared.Controls;
 /// </summary>
 public class EmptyState : TemplatedControl
 {
+    static EmptyState()
+    {
+        ButtonIconValueProperty.Changed.AddClassHandler<EmptyState>((x, _) =>
+            x.HasButtonFaIcon = !string.IsNullOrEmpty(x.ButtonIconValue));
+    }
+
     /// <summary>
     /// When true, shows a custom icon (IconData) inside a circle instead of the Angor logo.
     /// Used only for the Funders section.
@@ -61,6 +67,20 @@ public class EmptyState : TemplatedControl
     /// </summary>
     public static readonly StyledProperty<bool> HasButtonIconProperty =
         AvaloniaProperty.Register<EmptyState, bool>(nameof(HasButtonIcon));
+
+    /// <summary>
+    /// FontAwesome icon value for the CTA button (e.g. "fa-solid fa-plus").
+    /// When set, an i:Icon is rendered instead of the Path-based ButtonIconData.
+    /// Setting this automatically sets HasButtonFaIcon to true.
+    /// </summary>
+    public static readonly StyledProperty<string?> ButtonIconValueProperty =
+        AvaloniaProperty.Register<EmptyState, string?>(nameof(ButtonIconValue));
+
+    /// <summary>
+    /// Auto-set to true when ButtonIconValue is provided. Controls visibility of the FA icon in the button.
+    /// </summary>
+    public static readonly StyledProperty<bool> HasButtonFaIconProperty =
+        AvaloniaProperty.Register<EmptyState, bool>(nameof(HasButtonFaIcon));
 
     /// <summary>
     /// Font size for the description text. Default 14 (Vue text-sm).
@@ -127,6 +147,18 @@ public class EmptyState : TemplatedControl
     {
         get => GetValue(HasButtonIconProperty);
         set => SetValue(HasButtonIconProperty, value);
+    }
+
+    public string? ButtonIconValue
+    {
+        get => GetValue(ButtonIconValueProperty);
+        set => SetValue(ButtonIconValueProperty, value);
+    }
+
+    public bool HasButtonFaIcon
+    {
+        get => GetValue(HasButtonFaIconProperty);
+        set => SetValue(HasButtonFaIconProperty, value);
     }
 
     public double DescriptionFontSize

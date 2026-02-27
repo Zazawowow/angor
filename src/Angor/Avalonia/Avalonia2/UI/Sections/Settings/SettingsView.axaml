@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:settings="clr-namespace:Avalonia2.UI.Sections.Settings"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1400"
              x:Class="Avalonia2.UI.Sections.Settings.SettingsView"
              x:DataType="settings:SettingsViewModel">
@@ -54,13 +55,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource Globe}"
-                                      Stroke="#4B7C5A"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-globe"
+                                       FontSize="20"
+                                       Foreground="#4B7C5A" />
                                 <TextBlock Text="Network"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -83,13 +80,10 @@
                                         FontSize="14"
                                         Click="OnChangeNetworkClick">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Path Data="{StaticResource Plus}"
-                                              Stroke="White"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round"
-                                              Width="16" Height="16"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center" />
+                                        <i:Icon Value="fa-solid fa-plus"
+                                                FontSize="14"
+                                                Foreground="White"
+                                                VerticalAlignment="Center" />
                                         <TextBlock Text="Change Network" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
@@ -116,13 +110,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource Palette}"
-                                      Stroke="#4B7C5A"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-palette"
+                                       FontSize="20"
+                                       Foreground="#4B7C5A" />
                                 <TextBlock Text="Theme"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -137,8 +127,9 @@
                                               IsChecked="{Binding IsDarkThemeEnabled, Mode=TwoWay}"
                                               VerticalAlignment="Center">
                                     <ToggleButton.Content>
-                                        <PathIcon Foreground="{DynamicResource TextMuted}"
-                                                  Data="{DynamicResource Sun}" />
+                                        <i:Icon Value="fa-solid fa-sun"
+                                                FontSize="16"
+                                                Foreground="{DynamicResource TextMuted}" />
                                     </ToggleButton.Content>
                                 </ToggleButton>
                                 <StackPanel Spacing="4" VerticalAlignment="Center">
@@ -170,13 +161,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource Link}"
-                                      Stroke="#4B7C5A"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-link"
+                                       FontSize="20"
+                                       Foreground="#4B7C5A" />
                                 <TextBlock Text="Explorer"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -199,13 +186,10 @@
                                             FontSize="14"
                                             Click="OnAddExplorer">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <Path Data="{StaticResource Plus}"
-                                                  Stroke="White"
-                                                  StrokeThickness="2"
-                                                  StrokeLineCap="Round"
-                                                  Width="16" Height="16"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center" />
+                                            <i:Icon Value="fa-solid fa-plus"
+                                                    FontSize="14"
+                                                    Foreground="White"
+                                                    VerticalAlignment="Center" />
                                             <TextBlock Text="Add" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Button>
@@ -229,13 +213,9 @@
                                                             BorderThickness="0"
                                                             CornerRadius="6"
                                                             Click="OnRemoveExplorer">
-                                                        <Path Data="{StaticResource Trash}"
-                                                              Stroke="#EF4444"
-                                                              StrokeThickness="1.5"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Width="16" Height="16"
-                                                              Stretch="Uniform" />
+                                                        <i:Icon Value="fa-solid fa-trash"
+                                                               FontSize="16"
+                                                               Foreground="#EF4444" />
                                                     </Button>
                                                     <!-- Default toggle -->
                                                     <Border DockPanel.Dock="Right"
@@ -309,14 +289,10 @@
                                     </StackPanel>
                                 </Button>
                                 <StackPanel Orientation="Horizontal" Spacing="12">
-                                    <Path Data="{StaticResource Server}"
-                                          Stroke="#4B7C5A"
-                                          StrokeThickness="1.5"
-                                          StrokeLineCap="Round"
-                                          StrokeJoin="Round"
-                                          Width="20" Height="20"
-                                          Stretch="Uniform" />
-                                    <TextBlock Text="Indexer"
+                                <i:Icon Value="fa-solid fa-server"
+                                       FontSize="20"
+                                       Foreground="#4B7C5A" />
+                                <TextBlock Text="Indexer"
                                                FontSize="18"
                                                FontWeight="Bold"
                                                Foreground="{DynamicResource TextStrong}"
@@ -339,13 +315,10 @@
                                             FontSize="14"
                                             Click="OnAddIndexer">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <Path Data="{StaticResource Plus}"
-                                                  Stroke="White"
-                                                  StrokeThickness="2"
-                                                  StrokeLineCap="Round"
-                                                  Width="16" Height="16"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center" />
+                                            <i:Icon Value="fa-solid fa-plus"
+                                                    FontSize="14"
+                                                    Foreground="White"
+                                                    VerticalAlignment="Center" />
                                             <TextBlock Text="Add" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Button>
@@ -369,13 +342,9 @@
                                                             BorderThickness="0"
                                                             CornerRadius="6"
                                                             Click="OnRemoveIndexer">
-                                                        <Path Data="{StaticResource Trash}"
-                                                              Stroke="#EF4444"
-                                                              StrokeThickness="1.5"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Width="16" Height="16"
-                                                              Stretch="Uniform" />
+                                                        <i:Icon Value="fa-solid fa-trash"
+                                                               FontSize="16"
+                                                               Foreground="#EF4444" />
                                                     </Button>
                                                     <!-- Default toggle -->
                                                     <Border DockPanel.Dock="Right"
@@ -439,13 +408,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource Signal}"
-                                      Stroke="#4B7C5A"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-signal"
+                                       FontSize="20"
+                                       Foreground="#4B7C5A" />
                                 <TextBlock Text="Nostr Relays"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -468,13 +433,10 @@
                                             FontSize="14"
                                             Click="OnAddRelay">
                                         <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <Path Data="{StaticResource Plus}"
-                                                  Stroke="White"
-                                                  StrokeThickness="2"
-                                                  StrokeLineCap="Round"
-                                                  Width="16" Height="16"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center" />
+                                            <i:Icon Value="fa-solid fa-plus"
+                                                    FontSize="14"
+                                                    Foreground="White"
+                                                    VerticalAlignment="Center" />
                                             <TextBlock Text="Add" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </Button>
@@ -498,13 +460,9 @@
                                                             BorderThickness="0"
                                                             CornerRadius="6"
                                                             Click="OnRemoveRelay">
-                                                        <Path Data="{StaticResource Trash}"
-                                                              Stroke="#EF4444"
-                                                              StrokeThickness="1.5"
-                                                              StrokeLineCap="Round"
-                                                              StrokeJoin="Round"
-                                                              Width="16" Height="16"
-                                                              Stretch="Uniform" />
+                                                        <i:Icon Value="fa-solid fa-trash"
+                                                               FontSize="16"
+                                                               Foreground="#EF4444" />
                                                     </Button>
                                                     <!-- Status badge -->
                                                     <Border DockPanel.Dock="Right"
@@ -564,13 +522,9 @@
                                     <Run Text="BTC" FontWeight="Bold" />
                                 </TextBlock>
                                 <StackPanel Orientation="Horizontal" Spacing="12">
-                                    <Path Data="{StaticResource CurrencyDollar}"
-                                          Stroke="#4B7C5A"
-                                          StrokeThickness="1.5"
-                                          StrokeLineCap="Round"
-                                          StrokeJoin="Round"
-                                          Width="20" Height="20"
-                                          Stretch="Uniform" />
+                                    <i:Icon Value="fa-solid fa-dollar-sign"
+                                           FontSize="20"
+                                           Foreground="#4B7C5A" />
                                     <TextBlock Text="Currency Display"
                                                FontSize="18"
                                                FontWeight="Bold"
@@ -618,13 +572,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource Key}"
-                                      Stroke="#4B7C5A"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-key"
+                                       FontSize="20"
+                                       Foreground="#4B7C5A" />
                                 <TextBlock Text="Backup Account"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -648,13 +598,9 @@
                                         FontWeight="SemiBold"
                                         FontSize="14">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Path Data="{StaticResource Key}"
-                                              Stroke="White"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round"
-                                              Width="16" Height="16"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center" />
+                                        <i:Icon Value="fa-solid fa-key"
+                                               FontSize="16"
+                                               Foreground="White" />
                                         <TextBlock Text="Download Backup" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
@@ -676,12 +622,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource Eye}"
-                                      Stroke="{DynamicResource TextMuted}"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-eye"
+                                       FontSize="20"
+                                       Foreground="{DynamicResource TextMuted}" />
                                 <TextBlock Text="Prototype Settings"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -726,13 +669,9 @@
                                 BorderThickness="0,0,0,1"
                                 Padding="24,20">
                             <StackPanel Orientation="Horizontal" Spacing="12">
-                                <Path Data="{StaticResource ExclamationTriangle}"
-                                      Stroke="#EF4444"
-                                      StrokeThickness="1.5"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="20" Height="20"
-                                      Stretch="Uniform" />
+                                <i:Icon Value="fa-solid fa-triangle-exclamation"
+                                       FontSize="20"
+                                       Foreground="#EF4444" />
                                 <TextBlock Text="Danger Zone"
                                            FontSize="18"
                                            FontWeight="Bold"
@@ -758,14 +697,9 @@
                                         FontSize="14"
                                         Click="OnWipeDataClick">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Path Data="{StaticResource Trash}"
-                                              Stroke="White"
-                                              StrokeThickness="1.5"
-                                              StrokeLineCap="Round"
-                                              StrokeJoin="Round"
-                                              Width="16" Height="16"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center" />
+                                        <i:Icon Value="fa-solid fa-trash"
+                                               FontSize="16"
+                                               Foreground="White" />
                                         <TextBlock Text="Wipe Data" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>

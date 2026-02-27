@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mp="clr-namespace:Avalonia2.UI.Sections.MyProjects"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
              x:Class="Avalonia2.UI.Sections.MyProjects.MyProjectsView"
              x:DataType="mp:MyProjectsViewModel">
@@ -92,14 +93,9 @@
                                 <StackPanel Spacing="8">
                                     <Border Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource NavIconDocument}"
-                                                  Stroke="{DynamicResource TextMuted}"
-                                                  StrokeThickness="1.5"
-                                                  StrokeLineCap="Round"
-                                                  StrokeJoin="Round"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <i:Icon Value="fa-solid fa-file-lines"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <TextBlock Text="{Binding Projects.Count}"
                                                FontSize="20" FontWeight="Bold"
@@ -121,11 +117,9 @@
                                 <StackPanel Spacing="8">
                                     <Border Width="28" Height="28" CornerRadius="14"
                                             Background="#F7931A" HorizontalAlignment="Left">
-                                        <Viewbox Width="16" Height="16">
-                                            <Path Data="{StaticResource BitcoinSymbol}"
-                                                  Fill="White"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <i:Icon Value="fa-brands fa-bitcoin"
+                                               FontSize="14"
+                                               Foreground="White" />
                                     </Border>
                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                         <TextBlock Text="{Binding TotalRaised}"
@@ -153,12 +147,10 @@
                                         HorizontalContentAlignment="Center"
                                         Padding="16,12">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Viewbox Width="14" Height="14" VerticalAlignment="Center">
-                                            <Path Data="{StaticResource Plus}"
-                                                  Stroke="{DynamicResource PrimaryButtonForeground}"
-                                                  StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round"
-                                                  Width="24" Height="24" Stretch="Uniform" />
-                                        </Viewbox>
+                                        <i:Icon Value="fa-solid fa-plus"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource PrimaryButtonForeground}"
+                                               VerticalAlignment="Center" />
                                         <TextBlock Text="Launch a Project" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
