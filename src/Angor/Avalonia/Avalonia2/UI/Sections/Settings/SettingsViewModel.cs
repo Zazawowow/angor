@@ -1,3 +1,6 @@
+using System.Collections.ObjectModel;
+using Avalonia2.UI.Shell;
+
 namespace Avalonia2.UI.Sections.Settings;
 
 /// <summary>
@@ -10,20 +13,43 @@ public partial class SettingsViewModel : ReactiveObject
 {
     [Reactive] private string networkType = "Mainnet";
     [Reactive] private bool isNetworkModalOpen;
+    [Reactive] private string? selectedNetworkToSwitch;
+    [Reactive] private bool networkChangeConfirmed;
 
-    // Explorer — production mainnet default
-    [Reactive] private string explorerUrl = "https://explorer.angor.io";
+    // Explorer — table-based list (Vue: explorerLinks)
+    public ObservableCollection<ExplorerItem> ExplorerLinks { get; } = new()
+    {
+        new ExplorerItem { Url = "https://test.explorer.angor.io", IsDefault = true },
+        new ExplorerItem { Url = "https://signet.angor.online", IsDefault = false },
+        new ExplorerItem { Url = "https://signet2.angor.online", IsDefault = false },
+    };
+    [Reactive] private string newExplorerUrl = "";
 
-    // Indexer — production mainnet default
-    [Reactive] private string indexerUrl = "https://indexer.angor.io";
+    // Indexer — table-based list with status (Vue: indexerLinks)
+    public ObservableCollection<IndexerItem> IndexerLinks { get; } = new()
+    {
+        new IndexerItem { Url = "https://test.indexer.angor.io", Status = "Offline", IsDefault = false },
+        new IndexerItem { Url = "https://signet.angor.online", Status = "Online", IsDefault = true },
+        new IndexerItem { Url = "https://signet2.angor.online", Status = "Offline", IsDefault = false },
+    };
+    [Reactive] private string newIndexerUrl = "";
 
-    // Nostr Relays — production mainnet defaults
-    [Reactive] private string relay1 = "wss://relay.angor.io";
-    [Reactive] private string relay2 = "wss://relay2.angor.io";
-    [Reactive] private string relay3 = "wss://relay.damus.io";
+    // Nostr Relays — table-based list with name+status (Vue: nostrRelays)
+    public ObservableCollection<RelayItem> NostrRelays { get; } = new()
+    {
+        new RelayItem { Url = "wss://relay.angor.io", Name = "strfry default", Status = "Online" },
+        new RelayItem { Url = "wss://relay2.angor.io", Name = "strfry2 default", Status = "Online" },
+    };
+    [Reactive] private string newRelayUrl = "";
 
     // Currency Display
     [Reactive] private string currencyDisplay = "BTC";
+
+    // Wipe data modal
+    [Reactive] private bool isWipeDataModalOpen;
+
+    // Reset mocked data modal
+    [Reactive] private bool isResetDataModalOpen;
 
     public bool IsDarkThemeEnabled
     {
@@ -40,12 +66,114 @@ public partial class SettingsViewModel : ReactiveObject
         }
     }
 
-    public void OpenNetworkModal() => IsNetworkModalOpen = true;
+    // Network modal
+    public void OpenNetworkModal()
+    {
+        SelectedNetworkToSwitch = NetworkType;
+        NetworkChangeConfirmed = false;
+        IsNetworkModalOpen = true;
+    }
+
     public void CloseNetworkModal() => IsNetworkModalOpen = false;
 
-    public void SelectNetwork(string network)
+    public void SelectNetworkOption(string network) => SelectedNetworkToSwitch = network;
+
+    public void ConfirmNetworkSwitch()
     {
-        NetworkType = network;
+        if (!NetworkChangeConfirmed || string.IsNullOrEmpty(SelectedNetworkToSwitch)) return;
+        if (SelectedNetworkToSwitch == NetworkType) return;
+        NetworkType = SelectedNetworkToSwitch;
         IsNetworkModalOpen = false;
     }
+
+    // Explorer list management
+    public void AddExplorerLink()
+    {
+        if (!string.IsNullOrWhiteSpace(NewExplorerUrl))
+        {
+            ExplorerLinks.Add(new ExplorerItem { Url = NewExplorerUrl.Trim(), IsDefault = false });
+            NewExplorerUrl = "";
+        }
+    }
+
+    public void SetDefaultExplorer(ExplorerItem item)
+    {
+        foreach (var link in ExplorerLinks) link.IsDefault = link == item;
+    }
+
+    public void RemoveExplorerLink(ExplorerItem item) => ExplorerLinks.Remove(item);
+
+    // Indexer list management
+    public void AddIndexerLink()
+    {
+        if (!string.IsNullOrWhiteSpace(NewIndexerUrl))
+        {
+            IndexerLinks.Add(new IndexerItem { Url = NewIndexerUrl.Trim(), Status = "Offline", IsDefault = false });
+            NewIndexerUrl = "";
+        }
+    }
+
+    public void SetDefaultIndexer(IndexerItem item)
+    {
+        foreach (var link in IndexerLinks) link.IsDefault = link == item;
+    }
+
+    public void RemoveIndexerLink(IndexerItem item) => IndexerLinks.Remove(item);
+
+    // Relay list management
+    public void AddRelayLink()
+    {
+        if (!string.IsNullOrWhiteSpace(NewRelayUrl))
+        {
+            NostrRelays.Add(new RelayItem { Url = NewRelayUrl.Trim(), Name = "Custom", Status = "Online" });
+            NewRelayUrl = "";
+        }
+    }
+
+    public void RemoveRelayLink(RelayItem item) => NostrRelays.Remove(item);
+
+    // Wipe data
+    public void OpenWipeDataModal() => IsWipeDataModalOpen = true;
+    public void CloseWipeDataModal() => IsWipeDataModalOpen = false;
+    public void ConfirmWipeData()
+    {
+        // Visual-only: just close the modal. Backend will wire real wipe logic.
+        IsWipeDataModalOpen = false;
+    }
+
+    // Reset mocked data
+    public void OpenResetDataModal() => IsResetDataModalOpen = true;
+    public void CloseResetDataModal() => IsResetDataModalOpen = false;
+    public void ConfirmResetData()
+    {
+        // Clear all shared dynamic data (signatures created during invest flows)
+        SharedViewModels.Signatures.Clear();
+
+        // Clear dynamically-added investments from the portfolio
+        // (the PortfolioViewModel reinitializes with sample data on next load)
+        SharedViewModels.Portfolio.ResetToSampleData();
+
+        IsResetDataModalOpen = false;
+    }
+}
+
+// ── Table item models ──
+public class ExplorerItem
+{
+    public string Url { get; set; } = "";
+    public bool IsDefault { get; set; }
+}
+
+public class IndexerItem
+{
+    public string Url { get; set; } = "";
+    public string Status { get; set; } = "Offline";
+    public bool IsDefault { get; set; }
+}
+
+public class RelayItem
+{
+    public string Url { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Status { get; set; } = "Online";
 }

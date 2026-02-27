@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
+using Avalonia2.UI.Shared.Controls;
 using Avalonia2.UI.Shell;
 using System.Reactive.Linq;
 
@@ -54,15 +55,43 @@ public partial class MyProjectsView : UserControl
         // HasProjects drives empty state vs project list
         vm.WhenAnyValue(x => x.HasProjects)
             .Subscribe(_ => UpdateListVisibility(vm));
+
+        // SelectedManageProject drives the manage project detail panel
+        vm.WhenAnyValue(x => x.SelectedManageProject)
+            .Subscribe(manageVm =>
+            {
+                if (ManageProjectPanel != null)
+                    ManageProjectPanel.IsVisible = manageVm != null;
+
+                if (ManageProjectViewControl != null && manageVm != null)
+                {
+                    ManageProjectViewControl.DataContext = manageVm;
+                    ManageProjectViewControl.SetBackAction(() => vm.CloseManageProject());
+                }
+
+                UpdateListVisibility(vm);
+
+                // Set shell title to project name when managing
+                var shell = this.FindAncestorOfType<ShellView>();
+                if (shell?.DataContext is ShellViewModel shellVm)
+                {
+                    if (manageVm != null)
+                        shellVm.SectionTitleOverride = manageVm.Project.Name;
+                    else if (!vm.ShowCreateWizard)
+                        shellVm.SectionTitleOverride = null;
+                }
+            });
     }
 
     private void UpdateListVisibility(MyProjectsViewModel vm)
     {
         var showWizard = vm.ShowCreateWizard;
+        var showManage = vm.SelectedManageProject != null;
+
         if (EmptyStatePanel != null)
-            EmptyStatePanel.IsVisible = !showWizard && !vm.HasProjects;
+            EmptyStatePanel.IsVisible = !showWizard && !showManage && !vm.HasProjects;
         if (ProjectListPanel != null)
-            ProjectListPanel.IsVisible = !showWizard && vm.HasProjects;
+            ProjectListPanel.IsVisible = !showWizard && !showManage && vm.HasProjects;
     }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
@@ -74,7 +103,21 @@ public partial class MyProjectsView : UserControl
         {
             case "LaunchFromListButton":
                 OpenCreateWizard(vm);
-                break;
+                return;
+
+            case "PART_ManageButton":
+                // Walk up from the button to find the ProjectCard, then get its DataContext
+                var element = btn as Control;
+                while (element != null && element is not ProjectCard)
+                    element = element.Parent as Control;
+
+                if (element is ProjectCard card
+                    && card.DataContext is MyProjectItemViewModel project)
+                {
+                    vm.OpenManageProject(project);
+                    e.Handled = true;
+                }
+                return;
         }
 
         // EmptyState button doesn't have a Name — check by content

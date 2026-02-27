@@ -432,7 +432,7 @@
                                                                Foreground="#4B7C5A"
                                                                FontWeight="Bold"
                                                                VerticalAlignment="Center">
-                                                        <Run Text="{Binding PaymentSegmentsCompleted}" /><Run Text="/" /><Run Text="{Binding PaymentSegmentsTotal}" />
+                                                        <Run Text="{Binding PaymentSegmentsCompleted, Mode=OneWay}" /><Run Text="/" /><Run Text="{Binding PaymentSegmentsTotal, Mode=OneWay}" />
                                                     </TextBlock>
                                                 </DockPanel>
 

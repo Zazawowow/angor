@@ -1,4 +1,3 @@
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ReactiveUI;
@@ -21,12 +20,6 @@ public class MyProjectItemViewModel
     public string? BannerUrl { get; set; }
     public string? LogoUrl { get; set; }
     public string StartDate { get; set; } = "";
-
-    /// <summary>Banner as Uri for ProjectCard binding.</summary>
-    public Uri? BannerUri => !string.IsNullOrEmpty(BannerUrl) ? new Uri(BannerUrl) : null;
-
-    /// <summary>Logo as Uri for ProjectCard binding.</summary>
-    public Uri? LogoUri => !string.IsNullOrEmpty(LogoUrl) ? new Uri(LogoUrl) : null;
 
     public string TypePillText => ProjectType switch
     {
@@ -65,6 +58,12 @@ public class MyProjectItemViewModel
 public partial class MyProjectsViewModel : ReactiveObject
 {
     [Reactive] private bool showCreateWizard;
+
+    /// <summary>
+    /// When set, the Manage Project detail screen is shown for this project.
+    /// Navigation: project list → manage project detail.
+    /// </summary>
+    [Reactive] private ManageProjectViewModel? selectedManageProject;
 
     public MyProjectsViewModel()
     {
@@ -133,6 +132,23 @@ public partial class MyProjectsViewModel : ReactiveObject
     public void CloseCreateWizard()
     {
         ShowCreateWizard = false;
+    }
+
+    /// <summary>
+    /// Open the Manage Project detail screen for a specific project.
+    /// Vue ref: clicking "Manage Project" on a ProjectCard navigates to ManageFunds.vue.
+    /// </summary>
+    public void OpenManageProject(MyProjectItemViewModel project)
+    {
+        SelectedManageProject = new ManageProjectViewModel(project);
+    }
+
+    /// <summary>
+    /// Close the Manage Project detail screen and return to the project list.
+    /// </summary>
+    public void CloseManageProject()
+    {
+        SelectedManageProject = null;
     }
 
     /// <summary>

@@ -1,4 +1,8 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Avalonia2.UI.Sections.FindProjects;
+using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.Portfolio;
 
@@ -26,9 +30,16 @@ public class InvestmentStageViewModel
 /// A funded project investment shown in the "Your Investments" panel.
 /// Data from Vue reference — Hope With Bitcoin investment.
 /// Vue: investment-card in App.vue (desktop Investments page) and HubInvestments.vue
+/// Implements INotifyPropertyChanged so Step/Status changes propagate to the UI
+/// (e.g. when a founder approves a signature in the Funders section).
 /// </summary>
-public class InvestmentViewModel
+public class InvestmentViewModel : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
     public string ProjectName { get; set; } = "";
     public string ShortDescription { get; set; } = "";
     public string TotalInvested { get; set; } = "0.00000000";
@@ -60,10 +71,40 @@ public class InvestmentViewModel
     // ── Type and Status pills (Vue: .investment-pills, .investment-type-pill, .stage-status) ──
     /// <summary>Type pill label: Investment, Funding, Subscription</summary>
     public string TypeLabel { get; set; } = "Investment";
+
+    // ── Mutable properties that raise change notifications ──
+    // These are updated by OnSignatureStatusChanged when a founder approves/rejects.
+
+    private string _statusText = "Transaction signed";
     /// <summary>Status pill text: Awaiting Approval, Transaction signed, Investment Active, Funds recovered</summary>
-    public string StatusText { get; set; } = "Transaction signed";
-    /// <summary>Status class: waiting, signed, active, recovered</summary>
-    public string StatusClass { get; set; } = "signed";
+    public string StatusText
+    {
+        get => _statusText;
+        set
+        {
+            if (_statusText == value) return;
+            _statusText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _statusClass = "signed";
+    /// <summary>Status class: waiting, signed, active, recovered, rejected</summary>
+    public string StatusClass
+    {
+        get => _statusClass;
+        set
+        {
+            if (_statusClass == value) return;
+            _statusClass = value;
+            OnPropertyChanged();
+            // Raise dependent computed properties
+            OnPropertyChanged(nameof(IsStatusWaiting));
+            OnPropertyChanged(nameof(IsStatusSigned));
+            OnPropertyChanged(nameof(IsStatusActive));
+            OnPropertyChanged(nameof(IsStatusRecovered));
+        }
+    }
 
     // Status visibility helpers for XAML binding
     public bool IsStatusWaiting => StatusClass == "waiting";
@@ -81,11 +122,41 @@ public class InvestmentViewModel
 
     // Legacy pill properties — kept for InvestmentDetailView compatibility
     public string StatusPill1 { get; set; } = "Funding";
-    public string StatusPill2 { get; set; } = "Transaction signed";
+
+    private string _statusPill2 = "Transaction signed";
+    public string StatusPill2
+    {
+        get => _statusPill2;
+        set
+        {
+            if (_statusPill2 == value) return;
+            _statusPill2 = value;
+            OnPropertyChanged();
+        }
+    }
+
     /// <summary>Project type: invest, fund, subscription</summary>
     public string ProjectType { get; set; } = "invest";
+
+    private int _step = 3;
     /// <summary>Investment step: 1=waiting, 2=preview, 3=active</summary>
-    public int Step { get; set; } = 3;
+    public int Step
+    {
+        get => _step;
+        set
+        {
+            if (_step == value) return;
+            _step = value;
+            OnPropertyChanged();
+            // Raise dependent computed properties used in InvestmentDetailView step pills
+            OnPropertyChanged(nameof(IsStep1));
+            OnPropertyChanged(nameof(IsStep2));
+            OnPropertyChanged(nameof(IsStep3));
+            OnPropertyChanged(nameof(IsStepAtLeast2));
+            OnPropertyChanged(nameof(IsStepAtLeast3));
+        }
+    }
+
     /// <summary>Target/Goal amount for the project</summary>
     public string TargetAmount { get; set; } = "0.0000";
     /// <summary>Total raised across all investors</summary>
@@ -98,8 +169,22 @@ public class InvestmentViewModel
     public string EndDate { get; set; } = "";
     /// <summary>Transaction date</summary>
     public string TransactionDate { get; set; } = "";
+
+    private string _approvalStatus = "Approved";
     /// <summary>Approval status text</summary>
-    public string ApprovalStatus { get; set; } = "Approved";
+    public string ApprovalStatus
+    {
+        get => _approvalStatus;
+        set
+        {
+            if (_approvalStatus == value) return;
+            _approvalStatus = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>Cross-reference to SharedSignature.Id for approval flow</summary>
+    public int SignatureId { get; set; }
     public ObservableCollection<InvestmentStageViewModel> Stages { get; set; } = new();
 
     // ── Step visibility helpers (for XAML binding without converters) ──
@@ -204,6 +289,40 @@ public partial class PortfolioViewModel : ReactiveObject
     /// </summary>
     [Reactive] private InvestmentViewModel? selectedInvestment;
 
+    public PortfolioViewModel()
+    {
+        // Listen for signature status changes to update investment steps.
+        // Vue: when a founder approves/rejects, the investor's InvestmentDetail
+        // reacts because it reads from the shared signatures array.
+        SharedViewModels.Signatures.SignatureStatusChanged += OnSignatureStatusChanged;
+    }
+
+    /// <summary>
+    /// When a signature is approved, advance the matching investment from Step 1 → Step 2.
+    /// Vue: currentStep computed in InvestmentDetail.vue (line 1026-1043).
+    /// </summary>
+    private void OnSignatureStatusChanged(SharedSignature sig)
+    {
+        var investment = Investments.FirstOrDefault(i => i.SignatureId == sig.Id);
+        if (investment == null) return;
+
+        if (sig.IsApproved && investment.Step == 1)
+        {
+            investment.Step = 2;
+            investment.StatusText = "Transaction signed";
+            investment.StatusClass = "signed";
+            investment.StatusPill2 = "Transaction signed";
+            investment.ApprovalStatus = "Approved";
+        }
+        else if (sig.IsRejected && investment.Step == 1)
+        {
+            investment.StatusText = "Rejected";
+            investment.StatusClass = "rejected";
+            investment.StatusPill2 = "Rejected";
+            investment.ApprovalStatus = "Rejected";
+        }
+    }
+
     // ── Left panel stats (reflect all sample investments) ──
     public int FundedProjects { get; } = 4;
     public string TotalInvested { get; } = "2.3500";
@@ -291,8 +410,8 @@ public partial class PortfolioViewModel : ReactiveObject
             HasPaymentPlan = true,
             PaymentSegmentsCompleted = 2,
             PaymentSegmentsTotal = 3,
-            BannerUrl = null,
-            AvatarUrl = null,
+            BannerUrl = "https://angor.tx1138.com/projects/generasi-merdeka-banner.jpg",
+            AvatarUrl = "https://angor.tx1138.com/projects/generasi-merdeka-logo.jpg",
             TotalInvested = "1.00000000",
             AvailableToClaim = "0.05000000",
             Spent = "0.66666667",
@@ -330,8 +449,8 @@ public partial class PortfolioViewModel : ReactiveObject
             HasPaymentPlan = false,
             PaymentSegmentsCompleted = 0,
             PaymentSegmentsTotal = 3,
-            BannerUrl = null,
-            AvatarUrl = null,
+            BannerUrl = "https://angor.tx1138.com/projects/nostria-banner.jpg",
+            AvatarUrl = "https://angor.tx1138.com/projects/nostria-logo.png",
             TotalInvested = "0.60000000",
             AvailableToClaim = "0.00000000",
             Spent = "0.00000000",
@@ -368,8 +487,8 @@ public partial class PortfolioViewModel : ReactiveObject
             HasPaymentPlan = false,
             PaymentSegmentsCompleted = 0,
             PaymentSegmentsTotal = 3,
-            BannerUrl = null,
-            AvatarUrl = null,
+            BannerUrl = "https://angor.tx1138.com/projects/network-effect-banner.png",
+            AvatarUrl = "https://angor.tx1138.com/projects/network-effect-logo.jpg",
             TotalInvested = "0.25000000",
             AvailableToClaim = "0.03544254",
             Spent = "0.21455746",
@@ -403,5 +522,125 @@ public partial class PortfolioViewModel : ReactiveObject
     public void CloseInvestmentDetail()
     {
         SelectedInvestment = null;
+    }
+
+    /// <summary>
+    /// Remove all dynamically-added investments (those created via the invest flow,
+    /// identified by SignatureId != 0). Called by Settings → Reset Data.
+    /// </summary>
+    public void ResetToSampleData()
+    {
+        SelectedInvestment = null;
+        // Remove in reverse to avoid index shifting issues
+        for (var i = Investments.Count - 1; i >= 0; i--)
+        {
+            if (Investments[i].SignatureId != 0)
+                Investments.RemoveAt(i);
+        }
+    }
+
+    /// <summary>
+    /// Create an InvestmentViewModel from a ProjectItemViewModel and an investment amount,
+    /// then add it to the Investments collection. Called after a successful invest flow.
+    /// This enables the funded project to appear in the "Funded" section.
+    /// </summary>
+    public void AddInvestmentFromProject(ProjectItemViewModel project, string investmentAmount)
+    {
+        // Map ProjectType casing: ProjectItemViewModel uses "Invest"/"Fund"/"Subscription",
+        // InvestmentViewModel uses lowercase "invest"/"fund"/"subscription"
+        var projectType = project.ProjectType.ToLowerInvariant();
+        var typeLabel = project.ProjectType switch
+        {
+            "Fund" => "Funding",
+            "Subscription" => "Subscription",
+            _ => "Investment"
+        };
+
+        // Build stages from the project's stage data
+        var stages = new ObservableCollection<InvestmentStageViewModel>();
+        var stagePrefix = projectType is "fund" or "subscription" ? "Payment" : "Stage";
+        if (project.Stages.Count > 0)
+        {
+            foreach (var s in project.Stages)
+            {
+                stages.Add(new InvestmentStageViewModel
+                {
+                    StageNumber = s.StageNumber,
+                    StagePrefix = stagePrefix,
+                    Percentage = s.Percentage,
+                    ReleaseDate = s.ReleaseDate,
+                    Amount = s.Amount,
+                    Status = "Pending"
+                });
+            }
+        }
+        else
+        {
+            // Default 3-stage schedule
+            for (var i = 1; i <= 3; i++)
+            {
+                stages.Add(new InvestmentStageViewModel
+                {
+                    StageNumber = i,
+                    StagePrefix = stagePrefix,
+                    Percentage = i < 3 ? "33%" : "34%",
+                    ReleaseDate = DateTime.Now.AddMonths(i * 3).ToString("dd MMM yyyy"),
+                    Amount = "0.00000000",
+                    Status = "Pending"
+                });
+            }
+        }
+
+        // Vue threshold: investments < 0.01 BTC are auto-approved (App.vue line 8756)
+        var amountValue = double.TryParse(investmentAmount, System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out var parsedAmt) ? parsedAmt : 0;
+        var isAutoApproved = amountValue < 0.01;
+
+        var investment = new InvestmentViewModel
+        {
+            ProjectName = project.ProjectName,
+            ShortDescription = project.ShortDescription,
+            FundingAmount = $"{investmentAmount} BTC",
+            FundingDate = DateTime.Now.ToString("M/dd/yyyy"),
+            TypeLabel = typeLabel,
+            StatusText = isAutoApproved ? $"{typeLabel} Active" : "Awaiting Approval",
+            StatusClass = isAutoApproved ? "active" : "waiting",
+            StatusPill1 = typeLabel,
+            StatusPill2 = isAutoApproved ? $"{typeLabel} Active" : "Awaiting Approval",
+            HasPaymentPlan = true,
+            PaymentSegmentsCompleted = 0,
+            PaymentSegmentsTotal = stages.Count > 0 ? stages.Count : 3,
+            BannerUrl = project.BannerUrl,
+            AvatarUrl = project.AvatarUrl,
+            TotalInvested = parsedAmt > 0 ? $"{parsedAmt:F8}" : investmentAmount,
+            AvailableToClaim = "0.00000000",
+            Spent = "0.00000000",
+            Progress = 0,
+            Status = isAutoApproved ? "Active" : "Pending",
+            ProjectType = projectType,
+            Step = isAutoApproved ? 3 : 1,
+            TargetAmount = project.Target,
+            TotalRaised = project.Raised,
+            TotalInvestors = project.InvestorCount,
+            StartDate = DateTime.Now.ToString("MMM dd, yyyy"),
+            EndDate = project.EndDate,
+            TransactionDate = DateTime.Now.ToString("MMM dd, yyyy"),
+            ApprovalStatus = isAutoApproved ? "Approved" : "Pending",
+            Stages = stages
+        };
+
+        // Create a signature in the shared store
+        // Vue: handleInvestment() creates both investment + signature (App.vue line 8806)
+        var sig = SharedViewModels.Signatures.AddSignature(
+            project.ProjectName, // Using project name as ID (no real IDs in stub layer)
+            project.ProjectName,
+            investmentAmount);
+
+        // Store the signature ID on the investment for cross-reference
+        investment.SignatureId = sig.Id;
+
+        // Insert at the top of the list so it's immediately visible
+        Investments.Insert(0, investment);
+        HasInvestments = true;
     }
 }

@@ -78,7 +78,7 @@
                             <!-- Fallback gradient when no banner (below image) -->
                             <Border Background="{DynamicResource SurfaceLow}" />
                             <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                            Source="{TemplateBinding Banner}" />
+                                                            Source="{Binding Banner, RelativeSource={RelativeSource TemplatedParent}}" />
                             <!-- Avatar — Vue: 64x64, bottom -32px, left 20px, shadow -->
                             <Panel VerticalAlignment="Bottom" HorizontalAlignment="Left"
                                    Margin="20,0,0,-32">
@@ -87,7 +87,7 @@
                                         BoxShadow="0 4 12 0 #26000000"
                                         ClipToBounds="True">
                                     <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                                    Source="{TemplateBinding Avatar}" />
+                                                                    Source="{Binding Avatar, RelativeSource={RelativeSource TemplatedParent}}" />
                                 </Border>
                             </Panel>
                         </Panel>

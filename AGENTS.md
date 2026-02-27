@@ -100,6 +100,7 @@ src/Angor/Avalonia/Avalonia2/
 - Card hover: `RenderTransform` ScaleTransform or TranslateTransform with Transitions
 - Modal fade: Opacity transition on overlay panels
 - Progress bars: Width animation with easing
+- **NEVER use `BrushTransition` on selection-toggled elements** — see Rule 9
 
 ### 6. Uniform 24px Section Spacing
 All section-level spacing MUST use **24px** uniformly. This includes:
@@ -141,3 +142,43 @@ Every interactive element (buttons, cards, list items, tabs, plan selectors, wal
 4. **Never use `new SolidColorBrush(Color.Parse(...))` for theme-dependent values** in code-behind — always use `FindResource("ResourceKey") as IBrush` and verify it returns non-null. If the resource is a `Color` (not a `SolidColorBrush`), the `as IBrush` cast returns `null`.
 
 5. **Test both themes** before considering any interactive element complete.
+
+### 9. NEVER Use BrushTransition on Selection-Toggled Elements
+`BrushTransition` (on `Background`, `BorderBrush`, `Foreground`, `Fill`, `Stroke`) causes a **stuck-tint bug** when combined with CSS class toggling and `DynamicResource`-backed brushes. The animation gets stuck at intermediate interpolated values when transitioning selected→unselected, leaving a visible residual tint on elements that should be fully neutral.
+
+**The rule:** Any element whose visual state changes via `Classes.Set(...)` in code-behind (selection toggles, active tab switches, stepper state changes) must have **instant** state changes — no `BrushTransition`.
+
+**Where BrushTransition IS safe:**
+- `:pointerover` hover effects (hover-only, no selection toggling)
+- `:focus` / `:pressed` pseudo-class transitions
+- `TransformOperationsTransition` (RenderTransform), `BoxShadowsTransition`, `DoubleTransition` (Opacity, Width) — these are always safe
+- Avalonia built-in `:selected` pseudo-class on `ListBoxItem` with opaque same-type brushes (use with caution)
+
+**Where BrushTransition is BANNED:**
+- Any `Border`, `TextBlock`, `Path`, or other element that uses `Classes.Set("ClassName", bool)` to toggle between selected/unselected states
+- Any style selector involving a custom CSS class modifier (e.g., `.WalletSelected`, `.SubPlanSelected`, `.TypeCardSelected`, `.FilterTabActive`, `.StepCurrent`, `.StepCompleted`)
+- Any element where both endpoints are `DynamicResource` brushes that resolve differently per theme
+
+**The correct pattern for selection-toggled elements:**
+```xml
+<!-- XAML: Define both states with DynamicResource, NO Transitions -->
+<Style Selector="Border.WalletCard">
+    <Setter Property="Background" Value="{DynamicResource WalletCardBg}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource WalletCardBorder}" />
+</Style>
+<Style Selector="Border.WalletCard.WalletSelected">
+    <Setter Property="Background" Value="{DynamicResource WalletSelectedBg}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource WalletSelectedBorder}" />
+</Style>
+```
+```csharp
+// Code-behind: ONLY toggle CSS classes — zero color logic
+border.Classes.Set("WalletSelected", isSelected);
+```
+
+**Anti-patterns to avoid:**
+- `ClearValue()` — causes a flash frame where the default value is briefly visible
+- `this.FindResource()` in code-behind — returns wrong theme values in modal contexts
+- `new SolidColorBrush(Color.Parse(...))` — permanently overrides `DynamicResource` bindings
+- `Application.Current?.ActualThemeVariant == ThemeVariant.Dark` — doesn't react to live theme changes
+- Mixing `LinearGradientBrush` and `SolidColorBrush` for the same property's default/selected states — `BrushTransition` cannot interpolate between different brush types

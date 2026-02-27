@@ -79,8 +79,11 @@ public partial class InvestPageView : UserControl
             DataContext = vm,
             OnNavigateBackToList = () =>
             {
-                // Navigate back to project list after success
-                NavigateBackToList();
+                // Add the invested project to the Portfolio section
+                AddInvestmentToPortfolio(vm);
+                // Navigate to the Funded section to show the new investment
+                var shell = GetShellVm();
+                shell?.NavigateToFunded();
             }
         };
 
@@ -170,15 +173,15 @@ public partial class InvestPageView : UserControl
         }
     }
 
-    /// <summary>Navigate back to project list (from success modal).</summary>
-    private void NavigateBackToList()
+    /// <summary>
+    /// Add the invested project to the shared Portfolio ViewModel
+    /// so it appears in the "Funded" section.
+    /// </summary>
+    private static void AddInvestmentToPortfolio(InvestPageViewModel investVm)
     {
-        var findProjectsView = this.FindLogicalAncestorOfType<FindProjectsView>();
-        if (findProjectsView?.DataContext is FindProjectsViewModel vm)
-        {
-            vm.CloseInvestPage();
-            vm.CloseProjectDetail();
-        }
+        SharedViewModels.Portfolio.AddInvestmentFromProject(
+            investVm.Project,
+            investVm.FormattedAmount);
     }
 
     /// <summary>Update quick amount borders via CSS class toggling.

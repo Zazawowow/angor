@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia2.UI.Shell;
 using System.Reactive.Linq;
 
 namespace Avalonia2.UI.Sections.Portfolio;
@@ -10,8 +11,14 @@ public partial class PortfolioView : UserControl
     public PortfolioView()
     {
         InitializeComponent();
-        DataContext = new PortfolioViewModel();
+        // Use the shared singleton PortfolioViewModel so investments added
+        // during the invest flow persist across sidebar navigations.
+        DataContext = SharedViewModels.Portfolio;
         AddHandler(Button.ClickEvent, OnButtonClick, RoutingStrategies.Bubble);
+
+        // When navigating back to Funded, clear any open detail view
+        // so the user sees the list (not a stale detail screen from last time).
+        SharedViewModels.Portfolio.CloseInvestmentDetail();
 
         // Manage visibility of the portfolio list panel based on ViewModel state
         DataContextChanged += (_, _) => SubscribeToVisibility();

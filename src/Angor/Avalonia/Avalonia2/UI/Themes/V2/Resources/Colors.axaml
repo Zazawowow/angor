@@ -190,6 +190,70 @@
             <SolidColorBrush x:Key="BadgeRecoveredForeground" Color="#1E40AF" />
             <SolidColorBrush x:Key="BadgeRecoveredBorder" Color="#BFDBFE" />
             
+            <!-- ── ManageProject: Next Stage green gradient card (light) ── -->
+            <!-- Vue: linear-gradient(to bottom right, rgba(75,124,90,0.1), rgba(61,100,72,0.1)) -->
+            <LinearGradientBrush x:Key="NextStageCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#1A4B7C5A" Offset="0" />
+                <GradientStop Color="#1A3D6448" Offset="1" />
+            </LinearGradientBrush>
+            <!-- Vue: border 1px solid rgba(75,124,90,0.3) -->
+            <SolidColorBrush x:Key="NextStageCardBorder" Color="#4D4B7C5A" />
+            <!-- Vue: next-stage-card inner: bg rgba(255,255,255,0.7), border 2px solid rgba(75,124,90,0.3) -->
+            <SolidColorBrush x:Key="NextStageInnerBackground" Color="#B3FFFFFF" />
+            <SolidColorBrush x:Key="NextStageInnerBorder" Color="#4D4B7C5A" />
+            <!-- Vue: next-stage-value/label color: #4B7C5A -->
+            <SolidColorBrush x:Key="NextStageValue" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="NextStageLabel" Color="#4B7C5A" />
+            <!-- Vue: next-stage title: #4B7C5A -->
+            <SolidColorBrush x:Key="NextStageTitle" Color="#4B7C5A" />
+
+            <!-- ── ManageProject: Transaction stat cards (light) ── -->
+            <!-- Vue: bg #f9fafb, border 1px solid #e5e7eb -->
+            <SolidColorBrush x:Key="TransactionStatCardBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="TransactionStatCardBorder" Color="#E5E7EB" />
+            <!-- Vue: value #1a1a1a, label #6b7280 -->
+            <SolidColorBrush x:Key="TransactionStatValue" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="TransactionStatLabel" Color="#6B7280" />
+
+            <!-- ── ManageProject: Stage cards (light) ── -->
+            <!-- Vue: bg #f9f9f9, border 1px solid #e8e8e8 -->
+            <SolidColorBrush x:Key="StageCardBg" Color="#F9F9F9" />
+            <SolidColorBrush x:Key="StageCardBorder" Color="#E8E8E8" />
+            <!-- Vue: stage-card-header border-bottom: #e0e0e0 -->
+            <SolidColorBrush x:Key="StageCardHeaderBorder" Color="#E0E0E0" />
+            <!-- Vue: stage-number #1a1a1a, stage-card-label #666, stage-card-value #333 -->
+            <SolidColorBrush x:Key="StageCardNumber" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="StageCardLabel" Color="#666666" />
+            <SolidColorBrush x:Key="StageCardValue" Color="#333333" />
+            <!-- Vue: stage-pill bg rgba(75,124,90,0.1), border rgba(75,124,90,0.3), color #4B7C5A -->
+            <SolidColorBrush x:Key="StagePillBg" Color="#1A4B7C5A" />
+            <SolidColorBrush x:Key="StagePillBorder" Color="#4D4B7C5A" />
+            <SolidColorBrush x:Key="StagePillText" Color="#4B7C5A" />
+
+            <!-- ── ManageProject: Floating nav buttons (light) ── -->
+            <!-- Vue: bg white, border #e0e0e0, shadow 0 4px 12px rgba(0,0,0,0.15) -->
+            <SolidColorBrush x:Key="FloatingBtnBg" Color="White" />
+            <SolidColorBrush x:Key="FloatingBtnBorder" Color="#E0E0E0" />
+            <SolidColorBrush x:Key="FloatingBtnText" Color="#333333" />
+            <BoxShadows x:Key="FloatingBtnShadow">0 4 12 0 #26000000</BoxShadows>
+            <!-- Vue: private keys button text color: #ea580c -->
+            <SolidColorBrush x:Key="PrivateKeysBtnText" Color="#EA580C" />
+            <!-- Vue: detail-card (light): bg white, border #e0e0e0 -->
+            <SolidColorBrush x:Key="DetailCardBg" Color="White" />
+            <SolidColorBrush x:Key="DetailCardBorder" Color="#E0E0E0" />
+            <!-- Vue: project-id-label #6b7280, project-id-value #1a1a1a -->
+            <SolidColorBrush x:Key="ProjectIdLabel" Color="#6B7280" />
+            <SolidColorBrush x:Key="ProjectIdValue" Color="#1A1A1A" />
+            <!-- Vue: edit/view project button: border #d1d5db, color #4B7C5A -->
+            <SolidColorBrush x:Key="ProjectActionBtnBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="ProjectActionBtnText" Color="#4B7C5A" />
+            <!-- Vue: stats-card-title #92400e -->
+            <SolidColorBrush x:Key="StatsCardTitle" Color="#92400E" />
+            <!-- Vue: claim button disabled: bg #e5e7eb, color #9ca3af -->
+            <SolidColorBrush x:Key="ClaimDisabledBg" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="ClaimDisabledText" Color="#9CA3AF" />
+            <SolidColorBrush x:Key="ClaimDisabledBorder" Color="#E5E7EB" />
+
             <!-- Stage amount green (Vue: #2d5a3d light, #5FAF78 dark) -->
             <SolidColorBrush x:Key="StageAmountGreen" Color="#2D5A3D" />
             <!-- Progress percentage (Vue: #2d5a3d light, #5FAF78 dark) -->
@@ -284,12 +348,52 @@
 
             <!-- ── Investment Card Status Pill Colors (light) ── -->
 
+            <!-- ── Settings: Danger Zone (light) ── -->
+            <!-- Vue: .danger-zone-card border 2px solid #fee2e2; .danger-header-bar bg rgba(254,242,242,0.8), border-bottom #fee2e2 -->
+            <SolidColorBrush x:Key="DangerZoneBorder" Color="#FEE2E2" />
+            <SolidColorBrush x:Key="DangerZoneHeaderBg" Color="#CCFEF2F2" />
+            <SolidColorBrush x:Key="DangerZoneHeaderBorder" Color="#FEE2E2" />
+            <!-- Vue: .settings-danger-button bg #ef4444, hover #dc2626 -->
+            <SolidColorBrush x:Key="DangerButtonBg" Color="#EF4444" />
+            <SolidColorBrush x:Key="DangerButtonFg" Color="White" />
+            <!-- Vue: Delete Wallet btn: bg #fee2e2, fg #dc2626, border #fecaca -->
+            <SolidColorBrush x:Key="DangerSecondaryBg" Color="#FEE2E2" />
+            <SolidColorBrush x:Key="DangerSecondaryFg" Color="#DC2626" />
+            <SolidColorBrush x:Key="DangerSecondaryBorder" Color="#FECACA" />
+            <!-- Vue: .settings-status-badge.online bg #d1fae5, color #065f46 -->
+            <SolidColorBrush x:Key="StatusOnlineBg" Color="#D1FAE5" />
+            <SolidColorBrush x:Key="StatusOnlineFg" Color="#065F46" />
+            <!-- Vue: .settings-status-badge.offline bg #fee2e2, color #991b1b -->
+            <SolidColorBrush x:Key="StatusOfflineBg" Color="#FEE2E2" />
+            <SolidColorBrush x:Key="StatusOfflineFg" Color="#991B1B" />
+            <!-- Vue: .settings-link color #2d5a3d -->
+            <SolidColorBrush x:Key="SettingsLinkFg" Color="#2D5A3D" />
+            <!-- Vue: .settings-table thead th bg #f9fafb, color #6b7280, border-bottom #e5e7eb -->
+            <SolidColorBrush x:Key="TableHeaderBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="TableHeaderFg" Color="#6B7280" />
+            <SolidColorBrush x:Key="TableHeaderBorder" Color="#E5E7EB" />
+            <!-- Vue: .settings-table tbody td border-bottom #e8e8e8, color #1a1a1a -->
+            <SolidColorBrush x:Key="TableRowBorder" Color="#E8E8E8" />
+            <SolidColorBrush x:Key="TableRowFg" Color="#1A1A1A" />
+            <!-- Vue: network-warning-container: bg #fee2e2, border #fecaca, text #991b1b -->
+            <SolidColorBrush x:Key="NetworkWarningBg" Color="#FEE2E2" />
+            <SolidColorBrush x:Key="NetworkWarningBorder" Color="#FECACA" />
+            <SolidColorBrush x:Key="NetworkWarningText" Color="#991B1B" />
+            <!-- Vue: network-option: bg white, border #e5e7eb, active bg #f1f7f3, border/color #4B7C5A -->
+            <SolidColorBrush x:Key="NetworkOptionBg" Color="White" />
+            <SolidColorBrush x:Key="NetworkOptionBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="NetworkOptionActiveBg" Color="#F1F7F3" />
+            <SolidColorBrush x:Key="NetworkOptionActiveText" Color="#4B7C5A" />
+            <!-- Vue: modal-cancel-button bg #f3f4f6, color #6b7280 -->
+            <SolidColorBrush x:Key="ModalCancelBg" Color="#F3F4F6" />
+            <SolidColorBrush x:Key="ModalCancelFg" Color="#6B7280" />
+            <!-- Vue: .settings-help-text color #6b7280 -->
+            <SolidColorBrush x:Key="SettingsHelpText" Color="#6B7280" />
+
             <!-- ── Type Card Resources (light) ── -->
-            <!-- Vue: unselected bg-gradient from-white to-#F9FAFB, border gray-200 (#e5e7eb) -->
-            <LinearGradientBrush x:Key="TypeCardDefaultBg" StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="White" Offset="0" />
-                <GradientStop Color="#F9FAFB" Offset="1" />
-            </LinearGradientBrush>
+            <!-- Vue: unselected bg-gradient from-white to-#F9FAFB, border gray-200 (#e5e7eb)
+                 Changed to SolidColorBrush so BrushTransition can animate (can't interpolate LinearGradient→Solid). -->
+            <SolidColorBrush x:Key="TypeCardDefaultBg" Color="#FCFCFD" />
             <!-- Vue: icon bg gray-100 (#F3F4F6) -->
             <SolidColorBrush x:Key="TypeCardIconDefaultBg" Color="#F3F4F6" />
             <!-- Vue: selected bg = brandColor at 5% opacity -->
@@ -306,8 +410,37 @@
             <SolidColorBrush x:Key="StatusSignedForeground" Color="#4B7C5A" />
             <!-- Vue: .status-recovered color:#3b82f6 bg:rgba(59,130,246,0.1) border:rgba(59,130,246,0.3) -->
             <SolidColorBrush x:Key="StatusRecoveredBackground" Color="#1A3B82F6" />
-            <SolidColorBrush x:Key="StatusRecoveredBorder" Color="#4D3B82F6" />
-            <SolidColorBrush x:Key="StatusRecoveredForeground" Color="#3B82F6" />
+
+            <!-- ── ManageProject: Claim/Release Modal Resources (light) ── -->
+            <!-- Vue: .available-transaction-item bg:#f0fdf4, border:#86efac -->
+            <SolidColorBrush x:Key="UtxoItemBg" Color="#F0FDF4" />
+            <SolidColorBrush x:Key="UtxoItemBorder" Color="#86EFAC" />
+            <!-- Vue: .spent-transaction-item bg:#f9fafb, border:#e0e7ff -->
+            <SolidColorBrush x:Key="SpentItemBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="SpentItemBorder" Color="#E0E7FF" />
+            <!-- Vue: .settings-toggle-button border:#e5e7eb, bg:white -->
+            <SolidColorBrush x:Key="ToggleCheckBg" Color="White" />
+            <SolidColorBrush x:Key="ToggleCheckBorder" Color="#E5E7EB" />
+            <!-- Vue: success modal icon circle: light rgba(75,124,90,0.1), bg white -->
+            <SolidColorBrush x:Key="SuccessIconCircleBg" Color="#1A4B7C5A" />
+            <SolidColorBrush x:Key="SuccessModalBg" Color="White" />
+            <!-- Vue: modal cancel btn: light border-gray-300, text-gray-700 -->
+            <SolidColorBrush x:Key="ModalCancelBtnBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="ModalCancelBtnText" Color="#374151" />
+            <!-- Vue: modal description: light text-gray-600 -->
+            <SolidColorBrush x:Key="ModalDescriptionText" Color="#4B5563" />
+            <!-- Vue: modal password input: light bg:white, border:#d1d5db -->
+            <SolidColorBrush x:Key="ModalInputBg" Color="White" />
+            <SolidColorBrush x:Key="ModalInputBorder" Color="#D1D5DB" />
+            <!-- Vue: UTXO txid text: light text-gray-500/#6B7280 -->
+            <SolidColorBrush x:Key="UtxoTxidText" Color="#6B7280" />
+            <!-- Vue: release UTXO item: green border, bg green-50, opacity 0.75 -->
+            <SolidColorBrush x:Key="ReleaseUtxoItemBg" Color="#F0FDF4" />
+            <SolidColorBrush x:Key="ReleaseUtxoItemBorder" Color="#4B7C5A" />
+            <!-- Vue: modal close X button: light text-gray-400 -->
+            <SolidColorBrush x:Key="ModalCloseBtn" Color="#9CA3AF" />
+            <!-- Vue: modal header border: light border-gray-200 -->
+            <SolidColorBrush x:Key="ModalHeaderBorder" Color="#E5E7EB" />
 
         </ResourceDictionary>
 
@@ -473,6 +606,67 @@
             
             <!-- Stage amount green (dark: #5FAF78) -->
             <SolidColorBrush x:Key="StageAmountGreen" Color="#5FAF78" />
+
+            <!-- ── ManageProject: Next Stage green gradient card (dark) ── -->
+            <!-- Vue dark: linear-gradient(to bottom right, rgba(75,124,90,0.15), rgba(61,100,72,0.15)) -->
+            <LinearGradientBrush x:Key="NextStageCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#264B7C5A" Offset="0" />
+                <GradientStop Color="#263D6448" Offset="1" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="NextStageCardBorder" Color="#4D4B7C5A" />
+            <!-- Vue dark: next-stage-card inner: bg rgba(42,42,42,0.7), border 2px solid rgba(75,124,90,0.3) -->
+            <SolidColorBrush x:Key="NextStageInnerBackground" Color="#B32A2A2A" />
+            <SolidColorBrush x:Key="NextStageInnerBorder" Color="#4D4B7C5A" />
+            <!-- Vue dark: next-stage-value/label: #5FAF78 -->
+            <SolidColorBrush x:Key="NextStageValue" Color="#5FAF78" />
+            <SolidColorBrush x:Key="NextStageLabel" Color="#5FAF78" />
+            <SolidColorBrush x:Key="NextStageTitle" Color="#5FAF78" />
+
+            <!-- ── ManageProject: Transaction stat cards (dark) ── -->
+            <!-- Vue dark: bg #0A0A0A, border 1px solid #404040 -->
+            <SolidColorBrush x:Key="TransactionStatCardBg" Color="#0A0A0A" />
+            <SolidColorBrush x:Key="TransactionStatCardBorder" Color="#404040" />
+            <!-- Vue dark: value #fafafa, label #9ca3af -->
+            <SolidColorBrush x:Key="TransactionStatValue" Color="#FAFAFA" />
+            <SolidColorBrush x:Key="TransactionStatLabel" Color="#9CA3AF" />
+
+            <!-- ── ManageProject: Stage cards (dark) ── -->
+            <!-- Vue dark: bg #0A0A0A, border 1px solid #404040 -->
+            <SolidColorBrush x:Key="StageCardBg" Color="#0A0A0A" />
+            <SolidColorBrush x:Key="StageCardBorder" Color="#404040" />
+            <SolidColorBrush x:Key="StageCardHeaderBorder" Color="#333333" />
+            <!-- Vue dark: stage-number #fafafa, stage-card-label #a0a0a0, stage-card-value #fafafa -->
+            <SolidColorBrush x:Key="StageCardNumber" Color="#FAFAFA" />
+            <SolidColorBrush x:Key="StageCardLabel" Color="#A0A0A0" />
+            <SolidColorBrush x:Key="StageCardValue" Color="#FAFAFA" />
+            <!-- Vue dark: stage-pill bg rgba(75,124,90,0.2), border rgba(75,124,90,0.4), color #5FAF78 -->
+            <SolidColorBrush x:Key="StagePillBg" Color="#334B7C5A" />
+            <SolidColorBrush x:Key="StagePillBorder" Color="#664B7C5A" />
+            <SolidColorBrush x:Key="StagePillText" Color="#5FAF78" />
+
+            <!-- ── ManageProject: Floating nav buttons (dark) ── -->
+            <!-- Vue dark: bg #1a1a1a, border #404040 -->
+            <SolidColorBrush x:Key="FloatingBtnBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="FloatingBtnBorder" Color="#404040" />
+            <SolidColorBrush x:Key="FloatingBtnText" Color="#FAFAFA" />
+            <BoxShadows x:Key="FloatingBtnShadow">0 4 12 0 #4D000000</BoxShadows>
+            <!-- Vue dark: private keys button: #fb923c -->
+            <SolidColorBrush x:Key="PrivateKeysBtnText" Color="#FB923C" />
+            <!-- Vue dark: detail-card bg #1a1a1a, border #404040 -->
+            <SolidColorBrush x:Key="DetailCardBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="DetailCardBorder" Color="#404040" />
+            <!-- Vue dark: project-id-label #9ca3af, project-id-value #fafafa -->
+            <SolidColorBrush x:Key="ProjectIdLabel" Color="#9CA3AF" />
+            <SolidColorBrush x:Key="ProjectIdValue" Color="#FAFAFA" />
+            <!-- Vue dark: edit/view project button: border #404040, color #4B7C5A -->
+            <SolidColorBrush x:Key="ProjectActionBtnBorder" Color="#404040" />
+            <SolidColorBrush x:Key="ProjectActionBtnText" Color="#4B7C5A" />
+            <!-- Vue dark: stats-card-title #fdba74 -->
+            <SolidColorBrush x:Key="StatsCardTitle" Color="#FDBA74" />
+            <!-- Vue dark: claim button disabled: transparent, border rgba(95,175,120,0.3), color rgba(95,175,120,0.5) -->
+            <SolidColorBrush x:Key="ClaimDisabledBg" Color="Transparent" />
+            <SolidColorBrush x:Key="ClaimDisabledText" Color="#805FAF78" />
+            <SolidColorBrush x:Key="ClaimDisabledBorder" Color="#4D5FAF78" />
             <!-- Progress percentage (dark: #5FAF78) -->
             <SolidColorBrush x:Key="ProgressPercentage" Color="#5FAF78" />
 
@@ -564,12 +758,49 @@
 
             <!-- ── Investment Card Status Pill Colors (dark) ── -->
 
+            <!-- ── Settings: Danger Zone (dark) ── -->
+            <!-- Vue: .dark-mode .danger-zone-card border-color #7f1d1d; .danger-header-bar bg #1a0a0a, border-bottom #7f1d1d -->
+            <SolidColorBrush x:Key="DangerZoneBorder" Color="#7F1D1D" />
+            <SolidColorBrush x:Key="DangerZoneHeaderBg" Color="#1A0A0A" />
+            <SolidColorBrush x:Key="DangerZoneHeaderBorder" Color="#7F1D1D" />
+            <SolidColorBrush x:Key="DangerButtonBg" Color="#EF4444" />
+            <SolidColorBrush x:Key="DangerButtonFg" Color="White" />
+            <SolidColorBrush x:Key="DangerSecondaryBg" Color="#7F1D1D" />
+            <SolidColorBrush x:Key="DangerSecondaryFg" Color="#FCA5A5" />
+            <SolidColorBrush x:Key="DangerSecondaryBorder" Color="#991B1B" />
+            <!-- Vue: .dark-mode .settings-status-badge.online bg #064e3b, color #6ee7b7 -->
+            <SolidColorBrush x:Key="StatusOnlineBg" Color="#064E3B" />
+            <SolidColorBrush x:Key="StatusOnlineFg" Color="#6EE7B7" />
+            <!-- Vue: .dark-mode .settings-status-badge.offline bg #7f1d1d, color #fca5a5 -->
+            <SolidColorBrush x:Key="StatusOfflineBg" Color="#7F1D1D" />
+            <SolidColorBrush x:Key="StatusOfflineFg" Color="#FCA5A5" />
+            <!-- Vue: .dark-mode .settings-link color #5FAF78 -->
+            <SolidColorBrush x:Key="SettingsLinkFg" Color="#5FAF78" />
+            <!-- Vue: .dark-mode .settings-table thead th bg #2a2a2a, color #9ca3af, border #333 -->
+            <SolidColorBrush x:Key="TableHeaderBg" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="TableHeaderFg" Color="#9CA3AF" />
+            <SolidColorBrush x:Key="TableHeaderBorder" Color="#333333" />
+            <!-- Vue: .dark-mode .settings-table tbody td color #fafafa, border #333 -->
+            <SolidColorBrush x:Key="TableRowBorder" Color="#333333" />
+            <SolidColorBrush x:Key="TableRowFg" Color="#FAFAFA" />
+            <!-- Vue: .dark-mode network-warning-container: bg #7f1d1d, border #991b1b, text #fecaca -->
+            <SolidColorBrush x:Key="NetworkWarningBg" Color="#7F1D1D" />
+            <SolidColorBrush x:Key="NetworkWarningBorder" Color="#991B1B" />
+            <SolidColorBrush x:Key="NetworkWarningText" Color="#FECACA" />
+            <!-- Vue: .dark-mode network-option: bg #2a2a2a, border #404040, active bg #1a3a2a, color #5FAF78 -->
+            <SolidColorBrush x:Key="NetworkOptionBg" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="NetworkOptionBorder" Color="#404040" />
+            <SolidColorBrush x:Key="NetworkOptionActiveBg" Color="#1A3A2A" />
+            <SolidColorBrush x:Key="NetworkOptionActiveText" Color="#5FAF78" />
+            <!-- Vue: .dark-mode modal-cancel-button bg #2a2a2a, color #9ca3af -->
+            <SolidColorBrush x:Key="ModalCancelBg" Color="#2A2A2A" />
+            <SolidColorBrush x:Key="ModalCancelFg" Color="#9CA3AF" />
+            <SolidColorBrush x:Key="SettingsHelpText" Color="#6B7280" />
+
             <!-- ── Type Card Resources (dark) ── -->
-            <!-- Vue: unselected bg-gradient from-#0A0A0A to-#1a1a1a, border #404040 -->
-            <LinearGradientBrush x:Key="TypeCardDefaultBg" StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#0A0A0A" Offset="0" />
-                <GradientStop Color="#1A1A1A" Offset="1" />
-            </LinearGradientBrush>
+            <!-- Vue: unselected bg-gradient from-#0A0A0A to-#1a1a1a, border #404040
+                 Changed to SolidColorBrush so BrushTransition can animate (can't interpolate LinearGradient→Solid). -->
+            <SolidColorBrush x:Key="TypeCardDefaultBg" Color="#121212" />
             <!-- Vue: icon bg #1a1a1a -->
             <SolidColorBrush x:Key="TypeCardIconDefaultBg" Color="#1A1A1A" />
             <!-- Vue: selected bg = brandColor at 5% opacity -->
@@ -588,6 +819,37 @@
             <SolidColorBrush x:Key="StatusRecoveredBackground" Color="#2660A5FA" />
             <SolidColorBrush x:Key="StatusRecoveredBorder" Color="#4D60A5FA" />
             <SolidColorBrush x:Key="StatusRecoveredForeground" Color="#60A5FA" />
+
+            <!-- ── ManageProject: Claim/Release Modal Resources (dark) ── -->
+            <!-- Vue dark: .available-transaction-item bg:rgba(75,124,90,0.1), border:rgba(75,124,90,0.3) -->
+            <SolidColorBrush x:Key="UtxoItemBg" Color="#1A4B7C5A" />
+            <SolidColorBrush x:Key="UtxoItemBorder" Color="#4D4B7C5A" />
+            <!-- Vue dark: .spent-transaction-item bg:#1a1a1a, border:#404040 -->
+            <SolidColorBrush x:Key="SpentItemBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="SpentItemBorder" Color="#404040" />
+            <!-- Vue dark: .settings-toggle-button bg:#1a1a1a, border:#404040 -->
+            <SolidColorBrush x:Key="ToggleCheckBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="ToggleCheckBorder" Color="#404040" />
+            <!-- Vue dark: success icon circle bg:rgba(75,124,90,0.2), modal bg:#2A2A2A -->
+            <SolidColorBrush x:Key="SuccessIconCircleBg" Color="#334B7C5A" />
+            <SolidColorBrush x:Key="SuccessModalBg" Color="#2A2A2A" />
+            <!-- Vue dark: modal cancel btn border:#404040, text:#D1D5DB -->
+            <SolidColorBrush x:Key="ModalCancelBtnBorder" Color="#404040" />
+            <SolidColorBrush x:Key="ModalCancelBtnText" Color="#D1D5DB" />
+            <!-- Vue dark: modal description text:#D1D5DB -->
+            <SolidColorBrush x:Key="ModalDescriptionText" Color="#D1D5DB" />
+            <!-- Vue dark: modal password input bg:#0A0A0A, border:#404040 -->
+            <SolidColorBrush x:Key="ModalInputBg" Color="#0A0A0A" />
+            <SolidColorBrush x:Key="ModalInputBorder" Color="#404040" />
+            <!-- Vue dark: UTXO txid text:#9CA3AF -->
+            <SolidColorBrush x:Key="UtxoTxidText" Color="#9CA3AF" />
+            <!-- Vue dark: release UTXO item bg:#0A0A0A, border:#4B7C5A -->
+            <SolidColorBrush x:Key="ReleaseUtxoItemBg" Color="#0A0A0A" />
+            <SolidColorBrush x:Key="ReleaseUtxoItemBorder" Color="#4B7C5A" />
+            <!-- Vue dark: modal close X button:#9CA3AF -->
+            <SolidColorBrush x:Key="ModalCloseBtn" Color="#9CA3AF" />
+            <!-- Vue dark: modal header border:#404040 -->
+            <SolidColorBrush x:Key="ModalHeaderBorder" Color="#404040" />
 
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>

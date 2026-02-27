@@ -24,11 +24,6 @@
         <Style Selector="Border.FilterTab">
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="Border.FilterTab:pointerover">
             <Setter Property="Opacity" Value="0.8" />
@@ -40,11 +35,6 @@
         <!-- Inactive tab text: muted -->
         <Style Selector="Border.FilterTab TextBlock.TabLabel">
             <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <!-- Active tab text: strong -->
         <Style Selector="Border.FilterTab.FilterTabActive TextBlock.TabLabel">
@@ -468,9 +458,9 @@
                                                 <TextBlock FontSize="14"
                                                            Foreground="{DynamicResource TextMuted}"
                                                            VerticalAlignment="Center">
-                                                    <Run Text="{Binding Date}" />
+                                                    <Run Text="{Binding Date, Mode=OneWay}" />
                                                     <Run Text=" " />
-                                                    <Run Text="{Binding Time}" />
+                                                    <Run Text="{Binding Time, Mode=OneWay}" />
                                                 </TextBlock>
                                             </StackPanel>
                                         </StackPanel>

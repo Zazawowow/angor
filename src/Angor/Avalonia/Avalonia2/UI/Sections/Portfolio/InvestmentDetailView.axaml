@@ -59,8 +59,8 @@
                  h:44px, gap:8px. Dark: bg:#1a1a1a, color:#fafafa, border-color:#333 -->
             <Border DockPanel.Dock="Left"
                     Classes="BackButton"
-                    Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
+                    Background="{DynamicResource FloatingBtnBg}"
+                    BorderBrush="{DynamicResource FloatingBtnBorder}"
                     BorderThickness="1"
                     CornerRadius="8"
                     BoxShadow="0 4 12 0 #26000000"
@@ -162,7 +162,7 @@
                                            FontWeight="SemiBold"
                                            Foreground="#4B7C5A"
                                            VerticalAlignment="Center">
-                                    <Run Text="Preview " /><Run Text="{Binding AmountNoun}" />
+                                    <Run Text="Preview " /><Run Text="{Binding AmountNoun, Mode=OneWay}" />
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -190,7 +190,7 @@
                                            FontWeight="Medium"
                                            Foreground="{DynamicResource TextMuted}"
                                            VerticalAlignment="Center">
-                                    <Run Text="Preview " /><Run Text="{Binding AmountNoun}" />
+                                    <Run Text="Preview " /><Run Text="{Binding AmountNoun, Mode=OneWay}" />
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -476,7 +476,7 @@
                                                        FontWeight="SemiBold"
                                                        Foreground="White"
                                                        VerticalAlignment="Center">
-                                                <Run Text="{Binding ActionVerb}" /><Run Text=" " /><Run Text="{Binding TotalInvested}" /><Run Text=" BTC" />
+                                                <Run Text="{Binding ActionVerb, Mode=OneWay}" /><Run Text=" " /><Run Text="{Binding TotalInvested, Mode=OneWay}" /><Run Text=" BTC" />
                                             </TextBlock>
                                         </StackPanel>
                                     </Button>
@@ -542,7 +542,7 @@
                                        FontWeight="Bold"
                                        Foreground="White"
                                        HorizontalAlignment="Center">
-                                <Run Text="{Binding AmountNoun}" /><Run Text=" Active" />
+                                <Run Text="{Binding AmountNoun, Mode=OneWay}" /><Run Text=" Active" />
                             </TextBlock>
 
                             <!-- Subtitle -->
@@ -672,7 +672,7 @@
                                 <TextBlock FontSize="13"
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource StatsDetailLabel}">
-                                    <Run Text="Total " /><Run Text="{Binding InvestorNoun}" />
+                                    <Run Text="Total " /><Run Text="{Binding InvestorNoun, Mode=OneWay}" />
                                 </TextBlock>
                                 <TextBlock Text="{Binding TotalInvestors}"
                                            FontSize="24"
@@ -721,7 +721,7 @@
                                        FontWeight="Bold"
                                        Foreground="{DynamicResource ProgressPercentage}"
                                        HorizontalAlignment="Right">
-                                <Run Text="{Binding TotalRaised}" /><Run Text=" / " /><Run Text="{Binding TargetAmount}" /><Run Text=" BTC" />
+                                <Run Text="{Binding TotalRaised, Mode=OneWay}" /><Run Text=" / " /><Run Text="{Binding TargetAmount, Mode=OneWay}" /><Run Text=" BTC" />
                             </TextBlock>
                         </DockPanel>
                         <!-- Progress bar: Vue .progress-bar-large h:12px, border-radius:6px -->
@@ -766,7 +766,7 @@
                                    FontWeight="Bold"
                                    Foreground="{DynamicResource TextStrong}"
                                    VerticalAlignment="Center">
-                            <Run Text="{Binding AmountNoun}" /><Run Text=" Information" />
+                            <Run Text="{Binding AmountNoun, Mode=OneWay}" /><Run Text=" Information" />
                         </TextBlock>
                     </StackPanel>
 
@@ -785,7 +785,7 @@
                                     <TextBlock FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}"
                                                DockPanel.Dock="Left" VerticalAlignment="Center">
-                                        <Run Text="{Binding AmountNoun}" /><Run Text=" Start Date" />
+                                        <Run Text="{Binding AmountNoun, Mode=OneWay}" /><Run Text=" Start Date" />
                                     </TextBlock>
                                     <Viewbox Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <Path Data="{StaticResource Calendar}"
@@ -816,7 +816,7 @@
                                     <TextBlock FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}"
                                                DockPanel.Dock="Left" VerticalAlignment="Center">
-                                        <Run Text="{Binding AmountNoun}" /><Run Text=" End Date" />
+                                        <Run Text="{Binding AmountNoun, Mode=OneWay}" /><Run Text=" End Date" />
                                     </TextBlock>
                                     <Viewbox Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <Path Data="{StaticResource Calendar}"
@@ -877,7 +877,7 @@
                                     <TextBlock FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextMuted}"
                                                DockPanel.Dock="Left" VerticalAlignment="Center">
-                                        <Run Text="{Binding AmountNoun}" /><Run Text=" Status" />
+                                        <Run Text="{Binding AmountNoun, Mode=OneWay}" /><Run Text=" Status" />
                                     </TextBlock>
                                     <Viewbox Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <Path Data="{StaticResource CheckCircle}"
@@ -998,7 +998,7 @@
                                                    FontSize="14"
                                                    FontWeight="SemiBold"
                                                    Foreground="{DynamicResource TextStrong}">
-                                            <Run Text="{Binding StagePrefix}" /><Run Text=" " /><Run Text="{Binding StageNumber}" />
+                                            <Run Text="{Binding StagePrefix, Mode=OneWay}" /><Run Text=" " /><Run Text="{Binding StageNumber, Mode=OneWay}" />
                                         </TextBlock>
 
                                         <!-- Percentage -->
@@ -1076,7 +1076,7 @@
                                                    FontWeight="SemiBold"
                                                    Foreground="{DynamicResource StageAmountGreen}"
                                                    HorizontalAlignment="Right">
-                                            <Run Text="{Binding Amount}" /><Run Text=" BTC" />
+                                            <Run Text="{Binding Amount, Mode=OneWay}" /><Run Text=" BTC" />
                                         </TextBlock>
                                     </Grid>
                                 </Border>

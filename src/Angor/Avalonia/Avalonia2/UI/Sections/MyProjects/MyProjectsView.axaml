@@ -216,8 +216,8 @@
                                         Progress="{Binding Progress}"
                                         ProjectType="{Binding TypePillValue}"
                                         Status="{Binding Status}"
-                                        Banner="{Binding BannerUri}"
-                                        Avatar="{Binding LogoUri}"
+                                        Banner="{Binding BannerUrl}"
+                                        Avatar="{Binding LogoUrl}"
                                         ShowManageFunds="True" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -230,6 +230,15 @@
         <!-- ═══ CREATE PROJECT WIZARD ═══ -->
         <Panel Name="CreateWizardPanel" IsVisible="False">
             <mp:CreateProjectView Name="CreateWizardView" />
+        </Panel>
+
+        <!-- ═══ MANAGE PROJECT DETAIL ═══ -->
+        <!--
+            Vue: Clicking "Manage Project" on a ProjectCard navigates to ManageFunds.vue.
+            This panel is shown when SelectedManageProject is set, hiding list + wizard.
+        -->
+        <Panel Name="ManageProjectPanel" IsVisible="False">
+            <mp:ManageProjectView Name="ManageProjectViewControl" />
         </Panel>
     </Panel>
 </UserControl>

@@ -56,12 +56,6 @@
         <Style Selector="Border.QuickAmountBtn">
             <Setter Property="Background" Value="{DynamicResource StatsDetailInnerBackground}" />
             <Setter Property="BorderBrush" Value="{DynamicResource StatsDetailInnerBorder}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.15" />
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <!-- Quick amount: selected = brand green bg + border, white text (same both themes) -->
         <Style Selector="Border.QuickAmountBtn.QuickAmountSelected">
@@ -71,22 +65,12 @@
         <!-- Quick amount: text colors follow parent selection state -->
         <Style Selector="Border.QuickAmountBtn > StackPanel > TextBlock.QuickAmountValue">
             <Setter Property="Foreground" Value="{DynamicResource StatsDetailValue}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="Border.QuickAmountBtn.QuickAmountSelected > StackPanel > TextBlock.QuickAmountValue">
             <Setter Property="Foreground" Value="White" />
         </Style>
         <Style Selector="Border.QuickAmountBtn > StackPanel > TextBlock.QuickAmountLabel">
             <Setter Property="Foreground" Value="{DynamicResource StatsDetailLabel}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="Border.QuickAmountBtn.QuickAmountSelected > StackPanel > TextBlock.QuickAmountLabel">
             <Setter Property="Foreground" Value="White" />
@@ -107,8 +91,8 @@
             <!-- LEFT: Back Button (standardized pattern) -->
             <Border DockPanel.Dock="Left"
                     Classes="BackButton"
-                    Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
+                    Background="{DynamicResource FloatingBtnBg}"
+                    BorderBrush="{DynamicResource FloatingBtnBorder}"
                     BorderThickness="1"
                     CornerRadius="8"
                     BoxShadow="0 4 12 0 #26000000"
@@ -147,8 +131,8 @@
             <!-- Vue: v-if="project.projectType === 'invest'" -->
             <Border DockPanel.Dock="Right"
                     Classes="FloatingBtn"
-                    Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
+                    Background="{DynamicResource FloatingBtnBg}"
+                    BorderBrush="{DynamicResource FloatingBtnBorder}"
                     BorderThickness="1"
                     CornerRadius="8"
                     BoxShadow="0 4 12 0 #26000000"
@@ -450,12 +434,6 @@
                                                 CornerRadius="12" Padding="16"
                                                 Cursor="Hand"
                                                 BorderThickness="2">
-                                            <Border.Transitions>
-                                                <Transitions>
-                                                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
-                                                    <BrushTransition Property="Background" Duration="0:0:0.2" />
-                                                </Transitions>
-                                            </Border.Transitions>
                                             <StackPanel Spacing="4">
                                                 <!-- Vue: .pattern-header { flex, space-between, center } -->
                                                 <Panel>

@@ -1,12 +1,12 @@
 using System.Collections.ObjectModel;
+using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.Funders;
 
 /// <summary>
-/// A signature/funding request from an investor.
+/// A signature/funding request displayed in the Funders section.
+/// Wraps SharedSignature data for XAML binding + UI-specific helpers.
 /// Vue reference: App.vue desktop Funders page (lines 3152-3335)
-/// Each card shows: project title, amount, date/time, status badge,
-/// and action buttons (Approve/Reject/Chat/Expand).
 /// </summary>
 public class SignatureRequestViewModel
 {
@@ -27,14 +27,27 @@ public class SignatureRequestViewModel
     public bool IsWaiting => Status == "waiting";
     public bool IsApproved => Status == "approved";
     public bool IsRejected => Status == "rejected";
+
+    /// <summary>Create from a SharedSignature.</summary>
+    public static SignatureRequestViewModel FromShared(SharedSignature sig) => new()
+    {
+        Id = sig.Id,
+        ProjectTitle = sig.ProjectTitle,
+        Amount = sig.Amount,
+        Currency = sig.Currency,
+        Date = sig.Date,
+        Time = sig.Time,
+        Status = sig.Status,
+        Npub = sig.Npub,
+        HasMessages = sig.HasMessages
+    };
 }
 
 /// <summary>
 /// Funders ViewModel — founder's view of incoming signature/funding requests.
+/// Reads from SharedViewModels.Signatures (shared store) so signatures created
+/// during the invest flow appear here. Also includes hardcoded sample data.
 /// Vue reference: App.vue desktop Funders page (lines 3152-3335).
-/// Shows "Funders Overview" heading, "Approve All" button,
-/// filter tabs (Awaiting Approval / Approved / Rejected),
-/// and signature request cards with Approve/Reject/Chat/Expand actions.
 /// </summary>
 public partial class FundersViewModel : ReactiveObject
 {
@@ -52,13 +65,13 @@ public partial class FundersViewModel : ReactiveObject
     public ObservableCollection<int> ExpandedSignatureIds { get; } = new();
 
     // ── Signature counts (Vue: signatureCounts) ──
-    public int WaitingCount => AllSignatures.Count(s => s.Status == "waiting");
-    public int ApprovedCount => AllSignatures.Count(s => s.Status == "approved");
-    public int RejectedCount => AllSignatures.Count(s => s.Status == "rejected");
+    public int WaitingCount => GetAllViewModels().Count(s => s.Status == "waiting");
+    public int ApprovedCount => GetAllViewModels().Count(s => s.Status == "approved");
+    public int RejectedCount => GetAllViewModels().Count(s => s.Status == "rejected");
     public bool HasRejected => RejectedCount > 0;
 
-    // ── All signatures ──
-    public ObservableCollection<SignatureRequestViewModel> AllSignatures { get; } = new()
+    // ── Sample signatures (always present as demo data) ──
+    private readonly List<SignatureRequestViewModel> _sampleSignatures = new()
     {
         new SignatureRequestViewModel
         {
@@ -123,51 +136,78 @@ public partial class FundersViewModel : ReactiveObject
         // React to filter changes
         this.WhenAnyValue(x => x.CurrentFilter)
             .Subscribe(_ => UpdateFilteredSignatures());
+
+        // Re-filter when the shared store changes (new investments)
+        SharedViewModels.Signatures.AllSignatures.CollectionChanged += (_, _) => UpdateFilteredSignatures();
+    }
+
+    /// <summary>
+    /// Get all signature view models: sample data + shared store entries.
+    /// </summary>
+    private List<SignatureRequestViewModel> GetAllViewModels()
+    {
+        var all = new List<SignatureRequestViewModel>(_sampleSignatures);
+        foreach (var shared in SharedViewModels.Signatures.AllSignatures)
+        {
+            all.Add(SignatureRequestViewModel.FromShared(shared));
+        }
+        return all;
     }
 
     private void UpdateFilteredSignatures()
     {
-        var filtered = AllSignatures.Where(s => s.Status == CurrentFilter).ToList();
+        var all = GetAllViewModels();
+        var filtered = all.Where(s => s.Status == CurrentFilter).ToList();
         FilteredSignatures = new ObservableCollection<SignatureRequestViewModel>(filtered);
 
-        // Update HasFunders based on whether there are any signatures at all
-        HasFunders = AllSignatures.Count > 0;
+        HasFunders = all.Count > 0;
+
+        this.RaisePropertyChanged(nameof(WaitingCount));
+        this.RaisePropertyChanged(nameof(ApprovedCount));
+        this.RaisePropertyChanged(nameof(RejectedCount));
+        this.RaisePropertyChanged(nameof(HasRejected));
     }
 
     public void ApproveSignature(int id)
     {
-        var sig = AllSignatures.FirstOrDefault(s => s.Id == id);
-        if (sig != null)
+        // Check sample signatures first
+        var sampleSig = _sampleSignatures.FirstOrDefault(s => s.Id == id);
+        if (sampleSig != null)
         {
-            sig.Status = "approved";
+            sampleSig.Status = "approved";
             UpdateFilteredSignatures();
-            this.RaisePropertyChanged(nameof(WaitingCount));
-            this.RaisePropertyChanged(nameof(ApprovedCount));
+            return;
         }
+
+        // Otherwise delegate to shared store (which fires SignatureStatusChanged event)
+        SharedViewModels.Signatures.Approve(id);
+        UpdateFilteredSignatures();
     }
 
     public void RejectSignature(int id)
     {
-        var sig = AllSignatures.FirstOrDefault(s => s.Id == id);
-        if (sig != null)
+        var sampleSig = _sampleSignatures.FirstOrDefault(s => s.Id == id);
+        if (sampleSig != null)
         {
-            sig.Status = "rejected";
+            sampleSig.Status = "rejected";
             UpdateFilteredSignatures();
-            this.RaisePropertyChanged(nameof(WaitingCount));
-            this.RaisePropertyChanged(nameof(RejectedCount));
-            this.RaisePropertyChanged(nameof(HasRejected));
+            return;
         }
+
+        SharedViewModels.Signatures.Reject(id);
+        UpdateFilteredSignatures();
     }
 
     public void ApproveAll()
     {
-        foreach (var sig in AllSignatures.Where(s => s.Status == "waiting").ToList())
+        // Approve sample signatures
+        foreach (var sig in _sampleSignatures.Where(s => s.Status == "waiting").ToList())
         {
             sig.Status = "approved";
         }
+        // Approve shared store signatures
+        SharedViewModels.Signatures.ApproveAll();
         UpdateFilteredSignatures();
-        this.RaisePropertyChanged(nameof(WaitingCount));
-        this.RaisePropertyChanged(nameof(ApprovedCount));
     }
 
     public void ToggleExpanded(int id)

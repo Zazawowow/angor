@@ -20,12 +20,6 @@
         <Style Selector="Border.WalletCard">
             <Setter Property="Background" Value="{DynamicResource DeployWalletItemBg}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DeployWalletItemBorder}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.15" />
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="Border.WalletCard.WalletSelected">
             <Setter Property="Background" Value="{DynamicResource DeployWalletSelectedBg}" />

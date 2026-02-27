@@ -60,8 +60,8 @@
             <!-- LEFT: Back Button -->
             <Border DockPanel.Dock="Left"
                     Classes="BackButton"
-                    Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
+                    Background="{DynamicResource FloatingBtnBg}"
+                    BorderBrush="{DynamicResource FloatingBtnBorder}"
                     BorderThickness="1"
                     CornerRadius="8"
                     BoxShadow="0 4 12 0 #26000000"
@@ -99,8 +99,8 @@
             <!-- RIGHT: Share Button -->
             <Border DockPanel.Dock="Right"
                     Classes="FloatingBtn"
-                    Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
+                    Background="{DynamicResource FloatingBtnBg}"
+                    BorderBrush="{DynamicResource FloatingBtnBorder}"
                     BorderThickness="1"
                     CornerRadius="8"
                     BoxShadow="0 4 12 0 #26000000"
@@ -133,8 +133,8 @@
             </Border>
 
             <!-- CENTER: Project Name pill -->
-            <Border Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
+            <Border Background="{DynamicResource FloatingBtnBg}"
+                    BorderBrush="{DynamicResource FloatingBtnBorder}"
                     BorderThickness="1"
                     CornerRadius="8"
                     BoxShadow="0 4 12 0 #26000000"
@@ -311,7 +311,7 @@
                                        TextAlignment="Center"
                                        TextWrapping="Wrap"
                                        HorizontalAlignment="Center">
-                                <Run Text="Reached goal of " /><Run Text="{Binding Target}" /><Run Text=" BTC (" /><Run Text="{Binding Progress, StringFormat={}{0:0}}" /><Run Text="% of target)" />
+                                <Run Text="Reached goal of " /><Run Text="{Binding Target, Mode=OneWay}" /><Run Text=" BTC (" /><Run Text="{Binding Progress, StringFormat={}{0:0}, Mode=OneWay}" /><Run Text="% of target)" />
                             </TextBlock>
                         </StackPanel>
                     </Border>
@@ -349,7 +349,7 @@
                                        TextAlignment="Center"
                                        TextWrapping="Wrap"
                                        HorizontalAlignment="Center">
-                                <Run Text="Raised " /><Run Text="{Binding Raised}" /><Run Text=" BTC of " /><Run Text="{Binding Target}" /><Run Text=" BTC goal (" /><Run Text="{Binding Progress, StringFormat={}{0:0}}" /><Run Text="% funded)" />
+                                <Run Text="Raised " /><Run Text="{Binding Raised, Mode=OneWay}" /><Run Text=" BTC of " /><Run Text="{Binding Target, Mode=OneWay}" /><Run Text=" BTC goal (" /><Run Text="{Binding Progress, StringFormat={}{0:0}, Mode=OneWay}" /><Run Text="% funded)" />
                             </TextBlock>
                         </StackPanel>
                     </Border>
@@ -417,7 +417,7 @@
                                 </DockPanel>
                                 <TextBlock FontSize="24" FontWeight="Bold"
                                            Foreground="{DynamicResource StatsDetailValue}">
-                                    <Run Text="{Binding Target}" /><Run Text=" BTC" />
+                                    <Run Text="{Binding Target, Mode=OneWay}" /><Run Text=" BTC" />
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -447,7 +447,7 @@
                                 </DockPanel>
                                 <TextBlock FontSize="24" FontWeight="Bold"
                                            Foreground="{DynamicResource StatsDetailValue}">
-                                    <Run Text="{Binding Raised}" /><Run Text=" BTC" />
+                                    <Run Text="{Binding Raised, Mode=OneWay}" /><Run Text=" BTC" />
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -495,7 +495,7 @@
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource ProgressPercentage}"
                                        HorizontalAlignment="Right">
-                                <Run Text="{Binding Progress, StringFormat={}{0:0}}" /><Run Text="%" />
+                                <Run Text="{Binding Progress, StringFormat={}{0:0}, Mode=OneWay}" /><Run Text="%" />
                             </TextBlock>
                         </DockPanel>
                         <Panel Height="12">
@@ -605,7 +605,7 @@
                                 </DockPanel>
                                 <TextBlock FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}">
-                                    <Run Text="{Binding PenaltyDays}" /><Run Text=" days" />
+                                    <Run Text="{Binding PenaltyDays, Mode=OneWay}" /><Run Text=" days" />
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -673,7 +673,7 @@
                                 </DockPanel>
                                 <TextBlock FontSize="20" FontWeight="Bold"
                                            Foreground="{DynamicResource TextStrong}">
-                                    <Run Text="{Binding PenaltyDays}" /><Run Text=" days" />
+                                    <Run Text="{Binding PenaltyDays, Mode=OneWay}" /><Run Text=" days" />
                                 </TextBlock>
                             </StackPanel>
                         </Border>
@@ -794,13 +794,13 @@
                                         <TextBlock Grid.Column="3"
                                                    FontSize="14"
                                                    Foreground="{DynamicResource TextMuted}">
-                                            <Run Text="{Binding Status}" />
+                                            <Run Text="{Binding Status, Mode=OneWay}" />
                                         </TextBlock>
                                         <TextBlock Grid.Column="4"
                                                    FontSize="14" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource StageAmountGreen}"
                                                    HorizontalAlignment="Right">
-                                            <Run Text="{Binding Amount}" /><Run Text=" BTC" />
+                                            <Run Text="{Binding Amount, Mode=OneWay}" /><Run Text=" BTC" />
                                         </TextBlock>
                                     </Grid>
                                 </Border>

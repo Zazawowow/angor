@@ -23,50 +23,20 @@
         <Style Selector="Border.TypeCard">
             <Setter Property="Background" Value="{DynamicResource TypeCardDefaultBg}" />
             <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
-                    <BrushTransition Property="Background" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
 
         <!-- ═══ TYPE CARD: Icon Background ═══ -->
         <Style Selector="Border.TypeCardIconBg">
             <Setter Property="Background" Value="{DynamicResource TypeCardIconDefaultBg}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
 
         <!-- ═══ TYPE CARD: Title Text ═══ -->
         <Style Selector="TextBlock.TypeCardTitle">
             <Setter Property="Foreground" Value="{DynamicResource TextStrong}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
 
         <!-- ═══ TYPE CARD: Icon Path (stroke-based icons: Invest, Subscription) ═══ -->
-        <Style Selector="Path.TypeCardIconStroke">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Stroke" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
-        </Style>
         <!-- ═══ TYPE CARD: Icon Path (fill-based icon: Fund) ═══ -->
-        <Style Selector="Path.TypeCardIconFill">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Fill" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
-        </Style>
 
         <!-- ═══ TYPE CARD: Default icon colors ═══ -->
         <Style Selector="Path.TypeCardIconStroke.IconInvest">
@@ -82,11 +52,6 @@
         <!-- ═══ TYPE CARD: Radio circle ═══ -->
         <Style Selector="Border.TypeCardRadio">
             <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
 
         <!-- ═══ TYPE CARD: INVEST — Hover (unselected) ═══ -->
@@ -171,12 +136,6 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{DynamicResource StepInactiveGray}" />
             <Setter Property="BorderThickness" Value="1.5" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.2" />
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
         <!-- Current step circle: green border, transparent fill -->
         <Style Selector="Border.StepCircle.StepCurrent">
@@ -192,11 +151,6 @@
         <!-- Base step number text: gray -->
         <Style Selector="TextBlock.StepNum">
             <Setter Property="Foreground" Value="{DynamicResource StepInactiveGray}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="TextBlock.StepNum.StepCurrent">
             <Setter Property="Foreground" Value="{DynamicResource StepCurrentGreen}" />
@@ -209,11 +163,6 @@
         <Style Selector="TextBlock.StepLabel">
             <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
             <Setter Property="FontWeight" Value="Normal" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Foreground" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="TextBlock.StepLabel.StepCurrent">
             <Setter Property="Foreground" Value="{DynamicResource TextStrong}" />
@@ -227,11 +176,6 @@
         <!-- Base step line: stroke color -->
         <Style Selector="Border.StepLine">
             <Setter Property="Background" Value="{DynamicResource Stroke}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.2" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="Border.StepLine.StepLineCompleted">
             <Setter Property="Background" Value="{DynamicResource StepLineGreen}" />
@@ -963,42 +907,8 @@
                                             </StackPanel>
                                         </Border>
 
-                                        <!-- Card 3: Project Nature (Penalty) -->
-                                        <Border CornerRadius="12" BorderBrush="{DynamicResource Stroke}" BorderThickness="1"
-                                                Background="{DynamicResource Surface}" ClipToBounds="True">
-                                            <StackPanel>
-                                                <Border Background="{DynamicResource SurfaceMedium}" Padding="24">
-                                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                                        <TextBlock Text="Project Nature (Penalty)" FontSize="16" FontWeight="Bold"
-                                                                   Foreground="{DynamicResource TextStrong}" VerticalAlignment="Center" />
-                                                        <Border Background="{DynamicResource BitcoinAccent}" CornerRadius="6" Padding="8,3">
-                                                            <TextBlock Text="Help" FontSize="11" FontWeight="Bold" Foreground="White" />
-                                                        </Border>
-                                                    </StackPanel>
-                                                </Border>
-                                                <StackPanel Spacing="16" Margin="24">
-                                                    <!-- Experimental / High Value labels -->
-                                                    <Grid ColumnDefinitions="*,*">
-                                                        <TextBlock Grid.Column="0" Text="Experimental" FontSize="12"
-                                                                   Foreground="{DynamicResource TextMuted}" />
-                                                        <TextBlock Grid.Column="1" Text="High Value" FontSize="12"
-                                                                   Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Right" />
-                                                    </Grid>
-
-                                                    <!-- Slider -->
-                                                    <Slider Name="PenaltySlider" Minimum="30" Maximum="180"
-                                                            Value="{Binding PenaltyDays, Mode=TwoWay}"
-                                                            Foreground="{DynamicResource Accent}" />
-
-                                                    <!-- Days display -->
-                                                    <TextBlock FontSize="20" FontWeight="Bold"
-                                                               Foreground="{DynamicResource TextStrong}"
-                                                               HorizontalAlignment="Center">
-                                                        <Run Text="{Binding PenaltyDays}" /><Run Text=" days" />
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                        <!-- Card 3: Project Nature (Penalty) — hidden in Vue prototype (v-if="false") -->
+                                        <!-- Penalty days kept in ViewModel for Step 6 review display -->
                                     </StackPanel>
                                 </Panel>
 
@@ -1110,7 +1020,7 @@
                                                     </Grid>
                                                     <TextBlock FontSize="12" Foreground="#3B82F6" TextWrapping="Wrap">
                                                         <Run Text="Supporters who contribute over " />
-                                                        <Run Text="{Binding ApprovalThreshold}" FontWeight="SemiBold" />
+                                                        <Run Text="{Binding ApprovalThreshold, Mode=OneWay}" FontWeight="SemiBold" />
                                                         <Run Text=" BTC will require approval by you" />
                                                     </TextBlock>
                                                 </StackPanel>
@@ -1547,7 +1457,7 @@
                                                     <TextBlock FontSize="16" FontWeight="Bold"
                                                                Foreground="{DynamicResource TextStrong}"
                                                                VerticalAlignment="Center">
-                                                        <Run Text="{Binding ScheduleTitle}" />
+                                                        <Run Text="{Binding ScheduleTitle, Mode=OneWay}" />
                                                     </TextBlock>
                                                 </StackPanel>
                                             </DockPanel>
@@ -1567,11 +1477,11 @@
                                                             <DockPanel>
                                                                 <TextBlock FontSize="14" Foreground="{DynamicResource Accent}"
                                                                            FontWeight="SemiBold" DockPanel.Dock="Left">
-                                                                    <Run Text="{Binding StageLabel}" /><Run Text=" " /><Run Text="{Binding StageNumber}" />
+                                                                    <Run Text="{Binding StageLabel, Mode=OneWay}" /><Run Text=" " /><Run Text="{Binding StageNumber, Mode=OneWay}" />
                                                                 </TextBlock>
                                                                 <TextBlock FontSize="14" Foreground="{DynamicResource Accent}"
                                                                            FontWeight="Bold" HorizontalAlignment="Right">
-                                                                    <Run Text="{Binding Percentage}" /><Run Text=" paid on " /><Run Text="{Binding ReleaseDate}" />
+                                                                    <Run Text="{Binding Percentage, Mode=OneWay}" /><Run Text=" paid on " /><Run Text="{Binding ReleaseDate, Mode=OneWay}" />
                                                                 </TextBlock>
                                                             </DockPanel>
                                                         </Border>
@@ -1702,7 +1612,7 @@
                                                 <TextBlock Grid.Column="1" FontSize="14"
                                                            Foreground="{DynamicResource TextStrong}" FontWeight="Bold"
                                                            HorizontalAlignment="Right">
-                                                    <Run Text="{Binding PenaltyDays}" /><Run Text=" days" />
+                                                    <Run Text="{Binding PenaltyDays, Mode=OneWay}" /><Run Text=" days" />
                                                 </TextBlock>
                                             </Grid>
                                             <!-- Approval Threshold (fund/subscription only) -->
@@ -1712,7 +1622,7 @@
                                                 <TextBlock Grid.Column="1" FontSize="14"
                                                            Foreground="{DynamicResource TextStrong}" FontWeight="Bold"
                                                            HorizontalAlignment="Right">
-                                                    <Run Text="{Binding ApprovalThreshold}" /><Run Text=" BTC" />
+                                                    <Run Text="{Binding ApprovalThreshold, Mode=OneWay}" /><Run Text=" BTC" />
                                                 </TextBlock>
                                             </Grid>
                                         </StackPanel>
@@ -1762,11 +1672,11 @@
                                                             <DockPanel>
                                                                 <TextBlock FontSize="14" Foreground="{DynamicResource Accent}"
                                                                            FontWeight="SemiBold" DockPanel.Dock="Left">
-                                                                    <Run Text="{Binding StageLabel}" /><Run Text=" " /><Run Text="{Binding StageNumber}" />
+                                                                    <Run Text="{Binding StageLabel, Mode=OneWay}" /><Run Text=" " /><Run Text="{Binding StageNumber, Mode=OneWay}" />
                                                                 </TextBlock>
                                                                 <TextBlock FontSize="14" Foreground="{DynamicResource Accent}"
                                                                            FontWeight="Bold" HorizontalAlignment="Right">
-                                                                    <Run Text="{Binding Percentage}" /><Run Text=" paid on " /><Run Text="{Binding ReleaseDate}" />
+                                                                    <Run Text="{Binding Percentage, Mode=OneWay}" /><Run Text=" paid on " /><Run Text="{Binding ReleaseDate, Mode=OneWay}" />
                                                                 </TextBlock>
                                                             </DockPanel>
                                                         </Border>

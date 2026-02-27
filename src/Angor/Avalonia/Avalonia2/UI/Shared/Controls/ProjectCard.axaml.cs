@@ -11,11 +11,11 @@ namespace Avalonia2.UI.Shared.Controls;
 /// </summary>
 public class ProjectCard : TemplatedControl
 {
-    public static readonly StyledProperty<Uri?> BannerProperty =
-        AvaloniaProperty.Register<ProjectCard, Uri?>(nameof(Banner));
+    public static readonly StyledProperty<string?> BannerProperty =
+        AvaloniaProperty.Register<ProjectCard, string?>(nameof(Banner));
 
-    public static readonly StyledProperty<Uri?> AvatarProperty =
-        AvaloniaProperty.Register<ProjectCard, Uri?>(nameof(Avatar));
+    public static readonly StyledProperty<string?> AvatarProperty =
+        AvaloniaProperty.Register<ProjectCard, string?>(nameof(Avatar));
 
     public static readonly StyledProperty<string?> ProjectNameProperty =
         AvaloniaProperty.Register<ProjectCard, string?>(nameof(ProjectName));
@@ -68,13 +68,13 @@ public class ProjectCard : TemplatedControl
     public static readonly StyledProperty<bool> ShowAmountsProperty =
         AvaloniaProperty.Register<ProjectCard, bool>(nameof(ShowAmounts), true);
 
-    public Uri? Banner
+    public string? Banner
     {
         get => GetValue(BannerProperty);
         set => SetValue(BannerProperty, value);
     }
 
-    public Uri? Avatar
+    public string? Avatar
     {
         get => GetValue(AvatarProperty);
         set => SetValue(AvatarProperty, value);
