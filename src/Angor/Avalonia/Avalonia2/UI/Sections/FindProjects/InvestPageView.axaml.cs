@@ -27,6 +27,10 @@ public partial class InvestPageView : UserControl
     {
         base.OnDataContextChanged(e);
 
+        // Reset scroll to top when navigating to a new invest page
+        var scroller = this.FindControl<ScrollViewer>("ContentScroller");
+        scroller?.ScrollToHome();
+
         _screenSubscription?.Dispose();
         _screenSubscription = null;
 

@@ -53,6 +53,7 @@ public partial class CreateProjectViewModel : ReactiveObject
     [Reactive] private int currentStep = 1;
     [Reactive] private int maxStepReached = 1;
     [Reactive] private bool showWelcome = true; // Vue: Xe.value — welcome card before type selection
+    [Reactive] private bool showStep5Welcome = true; // Interstitial "welcome" screen before stages/payouts form
 
     // ── Step 1: Project Type ──
     [Reactive] private string projectType = ""; // "investment", "fund", "subscription"
@@ -87,9 +88,11 @@ public partial class CreateProjectViewModel : ReactiveObject
 
     // Fund/Subscription type: payout-based
     [Reactive] private string payoutFrequency = ""; // "Monthly" or "Weekly"
-    [Reactive] private int? selectedInstallments; // 3, 6, 12
     [Reactive] private int? monthlyPayoutDate; // 1-29
     [Reactive] private string weeklyPayoutDay = ""; // Mon, Tue, ... Sun
+
+    /// <summary>Multiselect installment counts (e.g. [3, 6, 9]). Vue: installmentCounts array.</summary>
+    public ObservableCollection<int> SelectedInstallmentCounts { get; } = new();
 
     // Shared
     [Reactive] private bool isAdvancedEditor;
@@ -176,10 +179,15 @@ public partial class CreateProjectViewModel : ReactiveObject
     public bool IsStep3 => CurrentStep == 3;
     public bool IsStep4 => CurrentStep == 4;
     public bool IsStep5 => CurrentStep == 5;
+    public bool IsStep5Welcome => CurrentStep == 5 && ShowStep5Welcome;
+    public bool IsStep5Form => CurrentStep == 5 && !ShowStep5Welcome;
     public bool IsStep6 => CurrentStep == 6;
 
-    // ── Navigation bar visibility — show when past welcome screen ──
-    public bool ShowNavFooter => !ShowWelcome;
+    // ── Navigation bar visibility — hide on welcome screens ──
+    public bool ShowNavFooter => !ShowWelcome && !IsStep5Welcome;
+
+    // ── Scroll content visibility — hide on any interstitial/welcome screen ──
+    public bool ShowScrollContent => !ShowWelcome && !IsStep5Welcome;
 
     // ── Project type visibility ──
     public bool IsInvestment => ProjectType == "investment";
@@ -244,6 +252,30 @@ public partial class CreateProjectViewModel : ReactiveObject
         _ => "Stages"
     };
 
+    /// <summary>Step 5 interstitial welcome screen title.</summary>
+    public string Step5WelcomeTitle => ProjectType switch
+    {
+        "fund" => "Payouts",
+        "subscription" => "Payouts",
+        _ => "Set Funding Release Schedule"
+    };
+
+    /// <summary>Step 5 interstitial welcome screen subtitle (empty for investment type).</summary>
+    public string Step5WelcomeSubtitle => ProjectType switch
+    {
+        "fund" => "Select a payout schedule for your recurring funding model.",
+        "subscription" => "On the next screen you'll choose what subscriptions you want to offer.",
+        _ => ""
+    };
+
+    /// <summary>Step 5 interstitial welcome screen info box text.</summary>
+    public string Step5WelcomeInfo => ProjectType switch
+    {
+        "fund" => "Payouts are scheduled based on your selection of weekly or monthly payouts and paid on the day you choose.",
+        "subscription" => "Subscribers pay their full plan upfront. You can offer 3, 6, and 12 month payment plans and choose your monthly payout day.",
+        _ => "We protect investors and founders by releasing funds in stages as project milestones are completed, rather than receiving everything upfront."
+    };
+
     // ── Navigation commands ──
     public bool CanGoNext => CurrentStep < TotalSteps && IsCurrentStepValid;
     public bool CanGoBack => CurrentStep > 1;
@@ -268,6 +300,13 @@ public partial class CreateProjectViewModel : ReactiveObject
     public void DismissWelcome()
     {
         ShowWelcome = false;
+        RaiseAllStepProperties();
+    }
+
+    /// <summary>Dismiss step 5 interstitial, show stages/payouts form.</summary>
+    public void DismissStep5Welcome()
+    {
+        ShowStep5Welcome = false;
         RaiseAllStepProperties();
     }
 
@@ -304,6 +343,9 @@ public partial class CreateProjectViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(StepNames));
         this.RaisePropertyChanged(nameof(Step4Title));
         this.RaisePropertyChanged(nameof(Step5Title));
+        this.RaisePropertyChanged(nameof(Step5WelcomeTitle));
+        this.RaisePropertyChanged(nameof(Step5WelcomeSubtitle));
+        this.RaisePropertyChanged(nameof(Step5WelcomeInfo));
         this.RaisePropertyChanged(nameof(TargetLabel));
         this.RaisePropertyChanged(nameof(ActionVerb));
         this.RaisePropertyChanged(nameof(AmountNoun));
@@ -343,7 +385,7 @@ public partial class CreateProjectViewModel : ReactiveObject
     // ── Step 5: Fund/Subscription — can we generate payouts? ──
     public bool CanGeneratePayouts =>
         !string.IsNullOrEmpty(PayoutFrequency) &&
-        SelectedInstallments.HasValue &&
+        SelectedInstallmentCounts.Count > 0 &&
         ((IsPayoutMonthly && MonthlyPayoutDate.HasValue) ||
          (IsPayoutWeekly && !string.IsNullOrEmpty(WeeklyPayoutDay)));
 
@@ -415,12 +457,13 @@ public partial class CreateProjectViewModel : ReactiveObject
     /// </summary>
     public void GeneratePayoutSchedule()
     {
-        if (!SelectedInstallments.HasValue) return;
+        if (SelectedInstallmentCounts.Count == 0) return;
         if (string.IsNullOrEmpty(PayoutFrequency)) return;
 
         Stages.Clear();
 
-        var count = SelectedInstallments.Value;
+        // Vue: uses max of selected installment counts as the number of payouts
+        var count = SelectedInstallmentCounts.Max();
         var baseDate = DateTime.TryParse(StartDate, out var sd) ? sd : DateTime.UtcNow;
         var targetBtc = double.TryParse(TargetAmount, out var t) ? t : 1.0;
 
@@ -470,6 +513,24 @@ public partial class CreateProjectViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(HasStages));
         this.RaisePropertyChanged(nameof(CanGoNext));
         this.RaisePropertyChanged(nameof(ScheduleSummary));
+    }
+
+    /// <summary>Toggle an installment count in the multiselect list. Vue: toggleInstallmentCount().</summary>
+    public void ToggleInstallmentCount(int count)
+    {
+        if (SelectedInstallmentCounts.Contains(count))
+            SelectedInstallmentCounts.Remove(count);
+        else
+            SelectedInstallmentCounts.Add(count);
+
+        // Keep sorted
+        var sorted = SelectedInstallmentCounts.OrderBy(x => x).ToList();
+        SelectedInstallmentCounts.Clear();
+        foreach (var c in sorted)
+            SelectedInstallmentCounts.Add(c);
+
+        this.RaisePropertyChanged(nameof(CanGeneratePayouts));
+        this.RaisePropertyChanged(nameof(CanGoNext));
     }
 
     /// <summary>Clear all generated stages/payouts and re-show the generate form.</summary>
@@ -618,8 +679,11 @@ public partial class CreateProjectViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(IsStep3));
         this.RaisePropertyChanged(nameof(IsStep4));
         this.RaisePropertyChanged(nameof(IsStep5));
+        this.RaisePropertyChanged(nameof(IsStep5Welcome));
+        this.RaisePropertyChanged(nameof(IsStep5Form));
         this.RaisePropertyChanged(nameof(IsStep6));
         this.RaisePropertyChanged(nameof(ShowNavFooter));
+        this.RaisePropertyChanged(nameof(ShowScrollContent));
         this.RaisePropertyChanged(nameof(BackButtonText));
         this.RaisePropertyChanged(nameof(CanGoNext));
         this.RaisePropertyChanged(nameof(CanGoBack));

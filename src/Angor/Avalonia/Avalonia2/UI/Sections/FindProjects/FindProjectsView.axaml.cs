@@ -9,6 +9,8 @@ namespace Avalonia2.UI.Sections.FindProjects;
 
 public partial class FindProjectsView : UserControl
 {
+    private IDisposable? _visibilitySubscription;
+
     public FindProjectsView()
     {
         InitializeComponent();
@@ -24,13 +26,15 @@ public partial class FindProjectsView : UserControl
 
     private void SubscribeToVisibility()
     {
+        _visibilitySubscription?.Dispose();
+
         if (DataContext is FindProjectsViewModel vm)
         {
             // Manage 3 mutually exclusive panels:
             // - ProjectListPanel: visible when no selection at all
             // - ProjectDetailPanel: visible when project selected but invest page not open
             // - InvestPagePanel: visible when invest page is open
-            vm.WhenAnyValue(x => x.SelectedProject, x => x.InvestPageViewModel)
+            _visibilitySubscription = vm.WhenAnyValue(x => x.SelectedProject, x => x.InvestPageViewModel)
               .Subscribe(tuple =>
               {
                   var hasProject = tuple.Item1 != null;
@@ -48,6 +52,13 @@ public partial class FindProjectsView : UserControl
                       investPanel.IsVisible = hasInvest;
               });
         }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        _visibilitySubscription?.Dispose();
+        _visibilitySubscription = null;
+        base.OnDetachedFromLogicalTree(e);
     }
 
     private void OnCardTapped(object? sender, TappedEventArgs e)

@@ -57,28 +57,35 @@ public class ResponsiveGrid : Panel
         var itemWidth = (availableSize.Width - (columnCount - 1) * ColumnSpacing) / columnCount;
         itemWidth = Math.Max(itemWidth, 0);
 
-        var visibleChildren = Children.Where(c => c.IsVisible).ToList();
-        var rowCount = visibleChildren.Count > 0
-            ? (int)Math.Ceiling((double)visibleChildren.Count / columnCount)
-            : 0;
-
         double maxRowHeight = 0;
         double totalHeight = 0;
+        var colIndex = 0; // tracks position within current row
 
-        for (var i = 0; i < visibleChildren.Count; i++)
+        for (var i = 0; i < Children.Count; i++)
         {
-            visibleChildren[i].Measure(new Size(itemWidth, double.PositiveInfinity));
-            maxRowHeight = Math.Max(maxRowHeight, visibleChildren[i].DesiredSize.Height);
+            var child = Children[i];
+            if (!child.IsVisible)
+                continue;
 
-            // End of row or end of items
-            if ((i + 1) % columnCount == 0 || i == visibleChildren.Count - 1)
+            child.Measure(new Size(itemWidth, double.PositiveInfinity));
+            maxRowHeight = Math.Max(maxRowHeight, child.DesiredSize.Height);
+            colIndex++;
+
+            // End of row
+            if (colIndex == columnCount)
             {
                 totalHeight += maxRowHeight;
-                if (i < visibleChildren.Count - 1)
-                    totalHeight += RowSpacing;
+                totalHeight += RowSpacing;
                 maxRowHeight = 0;
+                colIndex = 0;
             }
         }
+
+        // Final partial row
+        if (colIndex > 0)
+            totalHeight += maxRowHeight;
+        else if (totalHeight > 0)
+            totalHeight -= RowSpacing; // remove trailing RowSpacing from last full row
 
         return new Size(availableSize.Width, totalHeight);
     }
@@ -89,29 +96,32 @@ public class ResponsiveGrid : Panel
         var itemWidth = (finalSize.Width - (columnCount - 1) * ColumnSpacing) / columnCount;
         itemWidth = Math.Max(itemWidth, 0);
 
-        var visibleChildren = Children.Where(c => c.IsVisible).ToList();
         double y = 0;
         double maxRowHeight = 0;
+        var colIndex = 0;
 
-        for (var i = 0; i < visibleChildren.Count; i++)
+        for (var i = 0; i < Children.Count; i++)
         {
-            var col = i % columnCount;
-            var x = col * (itemWidth + ColumnSpacing);
+            var child = Children[i];
+            if (!child.IsVisible)
+                continue;
 
-            var child = visibleChildren[i];
+            var x = colIndex * (itemWidth + ColumnSpacing);
             child.Arrange(new Rect(x, y, itemWidth, child.DesiredSize.Height));
             maxRowHeight = Math.Max(maxRowHeight, child.DesiredSize.Height);
+            colIndex++;
 
             // End of row
-            if ((i + 1) % columnCount == 0)
+            if (colIndex == columnCount)
             {
                 y += maxRowHeight + RowSpacing;
                 maxRowHeight = 0;
+                colIndex = 0;
             }
         }
 
-        // Final row height
-        if (visibleChildren.Count % columnCount != 0)
+        // Final partial row height
+        if (colIndex > 0)
             y += maxRowHeight;
 
         return new Size(finalSize.Width, y);

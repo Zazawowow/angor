@@ -88,20 +88,27 @@
                                     CornerRadius="12"
                                     Padding="16"
                                     Margin="0,0,8,0">
-                                <StackPanel Spacing="8">
-                                    <Border Width="28" Height="28" CornerRadius="14"
-                                            Background="#1A4B7C5A" HorizontalAlignment="Left">
+                                <Grid RowDefinitions="28,Auto,Auto" HorizontalAlignment="Left">
+                                    <!-- Row 0: Icon -->
+                                    <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
+                                            Background="#1A4B7C5A" HorizontalAlignment="Left"
+                                            VerticalAlignment="Top">
                                         <i:Icon Value="fa-solid fa-file-lines"
                                                FontSize="14"
                                                Foreground="{DynamicResource TextMuted}" />
                                     </Border>
-                                    <TextBlock Text="{Binding Projects.Count}"
+                                    <!-- Row 1: Value -->
+                                    <TextBlock Grid.Row="1" Text="{Binding Projects.Count}"
                                                FontSize="20" FontWeight="Bold"
-                                               Foreground="{DynamicResource TextStrong}" />
-                                    <TextBlock Text="Active Projects"
+                                               Foreground="{DynamicResource TextStrong}"
+                                               Margin="0,8,0,0"
+                                               VerticalAlignment="Bottom" />
+                                    <!-- Row 2: Label -->
+                                    <TextBlock Grid.Row="2" Text="Active Projects"
                                                FontSize="12"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                </StackPanel>
+                                               Foreground="{DynamicResource TextMuted}"
+                                               Margin="0,8,0,0" />
+                                </Grid>
                             </Border>
 
                             <!-- Total Raised stat -->
@@ -112,14 +119,19 @@
                                     CornerRadius="12"
                                     Padding="16"
                                     Margin="8,0,0,0">
-                                <StackPanel Spacing="8">
-                                    <Border Width="28" Height="28" CornerRadius="14"
-                                            Background="#F7931A" HorizontalAlignment="Left">
+                                <Grid RowDefinitions="28,Auto,Auto" HorizontalAlignment="Left">
+                                    <!-- Row 0: Icon -->
+                                    <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
+                                            Background="#F7931A" HorizontalAlignment="Left"
+                                            VerticalAlignment="Top">
                                         <i:Icon Value="fa-brands fa-bitcoin"
                                                FontSize="14"
                                                Foreground="White" />
                                     </Border>
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <!-- Row 1: Value -->
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="4"
+                                                Margin="0,8,0,0"
+                                                VerticalAlignment="Bottom">
                                         <TextBlock Text="{Binding TotalRaised}"
                                                    FontSize="18" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextStrong}" />
@@ -128,10 +140,12 @@
                                                    Foreground="{DynamicResource TextMuted}"
                                                    VerticalAlignment="Bottom" Margin="0,0,0,1" />
                                     </StackPanel>
-                                    <TextBlock Text="Total Raised"
+                                    <!-- Row 2: Label -->
+                                    <TextBlock Grid.Row="2" Text="Total Raised"
                                                FontSize="12"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                </StackPanel>
+                                               Foreground="{DynamicResource TextMuted}"
+                                               Margin="0,8,0,0" />
+                                </Grid>
                             </Border>
                         </Grid>
 

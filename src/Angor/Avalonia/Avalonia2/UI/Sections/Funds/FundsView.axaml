@@ -181,6 +181,11 @@
                         Wallet list: padding 0 16px 12px
                     -->
                     <ItemsControl ItemsSource="{Binding SeedGroups}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="24" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="funds:SeedGroupViewModel">
                                 <Border Background="{DynamicResource Surface}"

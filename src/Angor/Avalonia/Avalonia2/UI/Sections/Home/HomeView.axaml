@@ -3,9 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:home="clr-namespace:Avalonia2.UI.Sections.Home"
-             xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
-             xmlns:i="https://github.com/projektanker/icons.avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Avalonia2.UI.Sections.Home.HomeView"
              x:DataType="home:HomeViewModel">
     <Design.DataContext>
@@ -31,11 +30,15 @@
                 <Border CornerRadius="12" Background="{DynamicResource TiledLogoBrush}" IsHitTestVisible="False" />
                 <!-- Content -->
                 <StackPanel Spacing="0" VerticalAlignment="Center" Margin="48">
-                    <!-- Bitcoin coin logo (PNG, green-tinted, 80x80) — Vue: w-24 h-24 mb-8 -->
-                    <Image Height="80" Width="80"
-                           Margin="0,0,0,32"
-                           HorizontalAlignment="Center"
-                           Source="/Assets/bitcoin-coin-green.png" />
+                    <!-- Bitcoin coin logo (filled SVG path, 80x80) — Vue: w-24 h-24 mb-8, fill=currentColor -->
+                    <Viewbox Width="80" Height="80"
+                             Margin="0,0,0,32"
+                             HorizontalAlignment="Center">
+                        <Path Data="{StaticResource BitcoinCoinHero}"
+                              Fill="{DynamicResource Brand}"
+                              Width="24" Height="24"
+                              Stretch="Uniform" />
+                    </Viewbox>
                     <!-- Title — Vue: text-3xl font-bold mb-4 tracking-tight -->
                     <TextBlock Classes="Title Strong"
                                Margin="0,0,0,16"
@@ -65,12 +68,19 @@
                 <Border Classes="Panel" ClipToBounds="False" />
                 <!-- Content -->
                 <StackPanel Spacing="0" VerticalAlignment="Center" Margin="48">
-                    <!-- Lightning icon (80x80) — Vue: w-24 h-24 mb-8 -->
-                    <i:Icon Value="fa-solid fa-bolt"
-                            FontSize="80"
-                            Foreground="{DynamicResource Brand}"
-                            Margin="0,0,0,32"
-                            HorizontalAlignment="Center" />
+                    <!-- Lightning bolt outline (stroked SVG path, 80x80) — Vue: w-24 h-24 mb-8, fill=none stroke=currentColor stroke-width=1.5 -->
+                    <Viewbox Width="80" Height="80"
+                             Margin="0,0,0,32"
+                             HorizontalAlignment="Center">
+                        <Path Data="{StaticResource LightningBoltHero}"
+                              Stroke="{DynamicResource Brand}"
+                              StrokeThickness="1.5"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Fill="Transparent"
+                              Width="24" Height="24"
+                              Stretch="Uniform" />
+                    </Viewbox>
                     <!-- Title — Vue: text-3xl font-bold mb-4 tracking-tight -->
                     <TextBlock Classes="Title Strong"
                                Margin="0,0,0,16"

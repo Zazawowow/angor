@@ -4,12 +4,15 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 namespace Avalonia2.UI.Sections.Funders;
 
 public partial class FundersView : UserControl
 {
+    private CompositeDisposable? _subscriptions;
+
     public FundersView()
     {
         InitializeComponent();
@@ -37,10 +40,14 @@ public partial class FundersView : UserControl
 
     private void SubscribeToVisibility()
     {
+        _subscriptions?.Dispose();
+
         if (DataContext is not FundersViewModel vm) return;
 
+        _subscriptions = new CompositeDisposable();
+
         // Show/hide the empty filter panel and signatures list based on FilteredSignatures count
-        vm.WhenAnyValue(x => x.FilteredSignatures)
+        var filterSub = vm.WhenAnyValue(x => x.FilteredSignatures)
           .Subscribe(filtered =>
           {
               var hasItems = filtered is { Count: > 0 };
@@ -49,10 +56,19 @@ public partial class FundersView : UserControl
               if (SignaturesListPanel != null)
                   SignaturesListPanel.IsVisible = hasItems;
           });
+        _subscriptions.Add(filterSub);
 
         // Update tab visual states when CurrentFilter changes
-        vm.WhenAnyValue(x => x.CurrentFilter)
+        var tabSub = vm.WhenAnyValue(x => x.CurrentFilter)
           .Subscribe(filter => UpdateTabVisuals(filter));
+        _subscriptions.Add(tabSub);
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        _subscriptions?.Dispose();
+        _subscriptions = null;
+        base.OnDetachedFromLogicalTree(e);
     }
 
     /// <summary>

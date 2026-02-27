@@ -8,6 +8,8 @@ namespace Avalonia2.UI.Sections.Portfolio;
 
 public partial class PortfolioView : UserControl
 {
+    private IDisposable? _visibilitySubscription;
+
     public PortfolioView()
     {
         InitializeComponent();
@@ -27,12 +29,14 @@ public partial class PortfolioView : UserControl
 
     private void SubscribeToVisibility()
     {
+        _visibilitySubscription?.Dispose();
+
         if (DataContext is PortfolioViewModel vm)
         {
             // Portfolio list is visible when: HasInvestments AND no detail selected.
             // HasInvestments is handled by XAML binding; here we also hide when
             // SelectedInvestment is set (drill-down to detail view).
-            vm.WhenAnyValue(
+            _visibilitySubscription = vm.WhenAnyValue(
                 x => x.HasInvestments,
                 x => x.SelectedInvestment,
                 (hasInvestments, selected) => hasInvestments && selected == null)
@@ -42,6 +46,13 @@ public partial class PortfolioView : UserControl
                       PortfolioListPanel.IsVisible = visible;
               });
         }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        _visibilitySubscription?.Dispose();
+        _visibilitySubscription = null;
+        base.OnDetachedFromLogicalTree(e);
     }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)

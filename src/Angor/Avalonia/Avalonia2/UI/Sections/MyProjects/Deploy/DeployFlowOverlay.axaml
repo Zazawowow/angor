@@ -79,7 +79,7 @@
                                     CornerRadius="8">
                                 <Viewbox Width="20" Height="20">
                                     <Path Data="{StaticResource XMark}"
-                                          Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
+                                          Stroke="{DynamicResource ModalCloseBtn}" StrokeThickness="2"
                                           StrokeLineCap="Round" StrokeJoin="Round"
                                           Width="24" Height="24" Stretch="Uniform" />
                                 </Viewbox>
@@ -263,10 +263,11 @@
                                VerticalAlignment="Center" />
                     <Button Name="ClosePayFee" HorizontalAlignment="Right"
                             VerticalAlignment="Top" Background="Transparent"
-                            Padding="4" Cursor="Hand" BorderThickness="0">
-                        <Viewbox Width="22" Height="22">
+                            Padding="8" Cursor="Hand" BorderThickness="0"
+                            CornerRadius="8">
+                        <Viewbox Width="20" Height="20">
                             <Path Data="{StaticResource XMark}"
-                                  Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
+                                  Stroke="{DynamicResource ModalCloseBtn}" StrokeThickness="2"
                                   StrokeLineCap="Round" StrokeJoin="Round"
                                   Width="24" Height="24" Stretch="Uniform" />
                         </Viewbox>
@@ -435,15 +436,10 @@
                 <Border Width="80" Height="80" CornerRadius="40"
                         HorizontalAlignment="Center" Margin="0,0,0,24"
                         Background="{DynamicResource DeploySuccessIconBg}">
-                    <Viewbox Width="48" Height="48"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center">
-                        <!-- Simple checkmark: M5 13l4 4L19 7 -->
-                        <Path Data="M5 13l4 4L19 7"
-                              Stroke="{DynamicResource DeploySuccessCheck}" StrokeThickness="2.5"
-                              StrokeLineCap="Round" StrokeJoin="Round"
-                              Width="24" Height="24" Stretch="Uniform" />
-                    </Viewbox>
+                    <i:Icon Value="fa-solid fa-check" FontSize="36"
+                            Foreground="{DynamicResource DeploySuccessCheck}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
                 </Border>
 
                 <!-- Title: text-3xl font-bold text-center mb-3 -->

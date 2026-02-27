@@ -128,20 +128,22 @@
                                     CornerRadius="12"
                                     Padding="16"
                                     Margin="0,0,8,8">
-                                <StackPanel Spacing="8">
-                                    <Border Width="28" Height="28" CornerRadius="14"
+                                <Grid RowDefinitions="28,Auto,Auto">
+                                    <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
                                         <i:Icon Value="fa-solid fa-file-lines"
                                                FontSize="14"
                                                Foreground="{DynamicResource TextMuted}" />
                                     </Border>
-                                    <TextBlock Text="{Binding FundedProjects}"
+                                    <TextBlock Grid.Row="1" Text="{Binding FundedProjects}"
                                                FontSize="20" FontWeight="Bold"
-                                               Foreground="{DynamicResource TextStrong}" />
-                                    <TextBlock Text="Funded Projects"
+                                               Foreground="{DynamicResource TextStrong}"
+                                               Margin="0,8,0,0" />
+                                    <TextBlock Grid.Row="2" Text="Funded Projects"
                                                FontSize="12"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                </StackPanel>
+                                               Foreground="{DynamicResource TextMuted}"
+                                               Margin="0,8,0,0" />
+                                </Grid>
                             </Border>
 
                             <!-- Total Invested -->
@@ -152,14 +154,15 @@
                                     CornerRadius="12"
                                     Padding="16"
                                     Margin="8,0,0,8">
-                                <StackPanel Spacing="8">
-                                    <Border Width="28" Height="28" CornerRadius="14"
+                                <Grid RowDefinitions="28,Auto,Auto">
+                                    <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
                                             Background="#F7931A" HorizontalAlignment="Left">
                                         <i:Icon Value="fa-brands fa-bitcoin"
                                                FontSize="14"
                                                Foreground="White" />
                                     </Border>
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="4"
+                                                Margin="0,8,0,0">
                                         <TextBlock Text="{Binding TotalInvested}"
                                                    FontSize="18" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextStrong}" />
@@ -168,10 +171,11 @@
                                                    Foreground="{DynamicResource TextMuted}"
                                                    VerticalAlignment="Bottom" Margin="0,0,0,1" />
                                     </StackPanel>
-                                    <TextBlock Text="Total invested"
+                                    <TextBlock Grid.Row="2" Text="Total invested"
                                                FontSize="12"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                </StackPanel>
+                                               Foreground="{DynamicResource TextMuted}"
+                                               Margin="0,8,0,0" />
+                                </Grid>
                             </Border>
 
                             <!-- Recovered to penalty -->
@@ -182,14 +186,15 @@
                                     CornerRadius="12"
                                     Padding="16"
                                     Margin="0,0,8,0">
-                                <StackPanel Spacing="8">
-                                    <Border Width="28" Height="28" CornerRadius="14"
+                                <Grid RowDefinitions="28,Auto,Auto">
+                                    <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
                                         <i:Icon Value="fa-solid fa-arrows-rotate"
                                                FontSize="14"
                                                Foreground="{DynamicResource TextMuted}" />
                                     </Border>
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="4"
+                                                Margin="0,8,0,0">
                                         <TextBlock Text="{Binding RecoveredToPenalty}"
                                                    FontSize="18" FontWeight="Bold"
                                                    Foreground="{DynamicResource TextStrong}" />
@@ -198,11 +203,12 @@
                                                    Foreground="{DynamicResource TextMuted}"
                                                    VerticalAlignment="Bottom" Margin="0,0,0,1" />
                                     </StackPanel>
-                                    <TextBlock Text="Recovered to penalty"
+                                    <TextBlock Grid.Row="2" Text="Recovered to penalty"
                                                FontSize="12"
                                                Foreground="{DynamicResource TextMuted}"
-                                               TextWrapping="Wrap" />
-                                </StackPanel>
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,0" />
+                                </Grid>
                             </Border>
 
                             <!-- Projects in Recovery -->
@@ -213,21 +219,23 @@
                                     CornerRadius="12"
                                     Padding="16"
                                     Margin="8,0,0,0">
-                                <StackPanel Spacing="8">
-                                    <Border Width="28" Height="28" CornerRadius="14"
+                                <Grid RowDefinitions="28,Auto,Auto">
+                                    <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
                                             Background="#1A4B7C5A" HorizontalAlignment="Left">
                                         <i:Icon Value="fa-solid fa-triangle-exclamation"
                                                FontSize="14"
                                                Foreground="{DynamicResource TextMuted}" />
                                     </Border>
-                                    <TextBlock Text="{Binding ProjectsInRecovery}"
+                                    <TextBlock Grid.Row="1" Text="{Binding ProjectsInRecovery}"
                                                FontSize="20" FontWeight="Bold"
-                                               Foreground="{DynamicResource TextStrong}" />
-                                    <TextBlock Text="Projects in Recovery"
+                                               Foreground="{DynamicResource TextStrong}"
+                                               Margin="0,8,0,0" />
+                                    <TextBlock Grid.Row="2" Text="Projects in Recovery"
                                                FontSize="12"
                                                Foreground="{DynamicResource TextMuted}"
-                                               TextWrapping="Wrap" />
-                                </StackPanel>
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,0" />
+                                </Grid>
                             </Border>
                         </Grid>
                     </StackPanel>
@@ -295,77 +303,37 @@
                                         <!-- Content area — Vue: padding 20px, padding-top 48px -->
                                         <StackPanel Spacing="12" Margin="20,48,20,20">
 
-                                            <!-- Type + Status pills -->
-                                            <!-- Vue: .investment-pills gap:8px, .investment-type-pill, .stage-status -->
+                                            <!-- Type + Status pills — using shared Pill style classes -->
+                                            <!-- Vue: .investment-pills gap:8px -->
                                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <!-- Type pill: Investment (blue), Funding (amber), Subscription (purple) -->
-                                                <!-- Uses DynamicResource for theme-aware colors -->
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        Background="{DynamicResource TypeInvestBackground}"
-                                                        IsVisible="{Binding IsTypeInvest}">
-                                                    <TextBlock Text="{Binding TypeLabel}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource TypeInvestForeground}" />
-                                                </Border>
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        Background="{DynamicResource TypeFundBackground}"
-                                                        IsVisible="{Binding IsTypeFund}">
-                                                    <TextBlock Text="{Binding TypeLabel}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource TypeFundForeground}" />
-                                                </Border>
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        Background="{DynamicResource TypeSubscriptionBackground}"
-                                                        IsVisible="{Binding IsTypeSubscription}">
-                                                    <TextBlock Text="{Binding TypeLabel}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource TypeSubscriptionForeground}" />
-                                                </Border>
+                                                <!-- Type pill: Investment (blue), Funding (amber), Subscription (pink) -->
+                                                <ContentControl Classes="Pill Blue"
+                                                                Content="{Binding TypeLabel}"
+                                                                IsVisible="{Binding IsTypeInvest}" />
+                                                <ContentControl Classes="Pill Amber"
+                                                                Content="{Binding TypeLabel}"
+                                                                IsVisible="{Binding IsTypeFund}" />
+                                                <ContentControl Classes="Pill Pink"
+                                                                Content="{Binding TypeLabel}"
+                                                                IsVisible="{Binding IsTypeSubscription}" />
 
-                                                <!-- Status pill — color varies by StatusClass, using DynamicResource -->
-                                                <!-- Awaiting Approval (waiting) -->
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        BorderThickness="1"
-                                                        IsVisible="{Binding IsStatusWaiting}"
-                                                        Background="{DynamicResource StatusWaitingBackground}"
-                                                        BorderBrush="{DynamicResource StatusWaitingBorder}">
-                                                    <TextBlock Text="{Binding StatusText}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource StatusWaitingForeground}" />
-                                                </Border>
-
-                                                <!-- Transaction signed (signed) -->
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        BorderThickness="1"
-                                                        IsVisible="{Binding IsStatusSigned}"
-                                                        Background="{DynamicResource StatusSignedBackground}"
-                                                        BorderBrush="{DynamicResource StatusSignedBorder}">
-                                                    <TextBlock Text="{Binding StatusText}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource StatusSignedForeground}" />
-                                                </Border>
-
-                                                <!-- Investment Active (active) — same colors as signed -->
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        BorderThickness="1"
-                                                        IsVisible="{Binding IsStatusActive}"
-                                                        Background="{DynamicResource StatusSignedBackground}"
-                                                        BorderBrush="{DynamicResource StatusSignedBorder}">
-                                                    <TextBlock Text="{Binding StatusText}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource StatusSignedForeground}" />
-                                                </Border>
-
-                                                <!-- Funds recovered -->
-                                                <Border CornerRadius="12" Padding="12,4"
-                                                        BorderThickness="1"
-                                                        IsVisible="{Binding IsStatusRecovered}"
-                                                        Background="{DynamicResource StatusRecoveredBackground}"
-                                                        BorderBrush="{DynamicResource StatusRecoveredBorder}">
-                                                    <TextBlock Text="{Binding StatusText}"
-                                                               FontSize="12" FontWeight="SemiBold"
-                                                               Foreground="{DynamicResource StatusRecoveredForeground}" />
-                                                </Border>
+                                                <!-- Status pill — color varies by StatusClass -->
+                                                <!-- Awaiting Approval (waiting) → Amber -->
+                                                <ContentControl Classes="Pill Amber"
+                                                                Content="{Binding StatusText}"
+                                                                IsVisible="{Binding IsStatusWaiting}" />
+                                                <!-- Transaction signed → Green -->
+                                                <ContentControl Classes="Pill Green"
+                                                                Content="{Binding StatusText}"
+                                                                IsVisible="{Binding IsStatusSigned}" />
+                                                <!-- Investment Active → Green (same as signed) -->
+                                                <ContentControl Classes="Pill Green"
+                                                                Content="{Binding StatusText}"
+                                                                IsVisible="{Binding IsStatusActive}" />
+                                                <!-- Funds recovered → Blue -->
+                                                <ContentControl Classes="Pill Blue"
+                                                                Content="{Binding StatusText}"
+                                                                IsVisible="{Binding IsStatusRecovered}" />
                                             </StackPanel>
 
                                             <!-- Project name — Vue: .investment-title font-size:16px font-weight:700 -->

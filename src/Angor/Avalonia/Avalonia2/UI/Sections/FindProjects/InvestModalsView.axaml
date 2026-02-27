@@ -72,7 +72,7 @@
                                     CornerRadius="8">
                                 <Viewbox Width="20" Height="20">
                                     <Path Data="{StaticResource XMark}"
-                                          Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
+                                          Stroke="{DynamicResource ModalCloseBtn}" StrokeThickness="2"
                                           StrokeLineCap="Round" StrokeJoin="Round"
                                           Width="24" Height="24" Stretch="Uniform" />
                                 </Viewbox>
@@ -250,10 +250,11 @@
                                VerticalAlignment="Center" />
                     <Button Name="CloseInvoice" HorizontalAlignment="Right"
                             VerticalAlignment="Top" Background="Transparent"
-                            Padding="4" Cursor="Hand" BorderThickness="0">
-                        <Viewbox Width="22" Height="22">
+                            Padding="8" Cursor="Hand" BorderThickness="0"
+                            CornerRadius="8">
+                        <Viewbox Width="20" Height="20">
                             <Path Data="{StaticResource XMark}"
-                                  Stroke="{DynamicResource TextMuted}" StrokeThickness="2"
+                                  Stroke="{DynamicResource ModalCloseBtn}" StrokeThickness="2"
                                   StrokeLineCap="Round" StrokeJoin="Round"
                                   Width="24" Height="24" Stretch="Uniform" />
                         </Viewbox>

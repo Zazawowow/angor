@@ -9,8 +9,8 @@ namespace Avalonia2.UI.Sections.FindProjects;
 
 public partial class ProjectDetailView : UserControl
 {
-    private bool _detailsExpanded = true;
-    private bool _nostrExpanded = true;
+    private bool _detailsExpanded = false;
+    private bool _nostrExpanded = false;
     private bool _navCtaVisible;
 
     public ProjectDetailView()
@@ -21,6 +21,9 @@ public partial class ProjectDetailView : UserControl
         var backBtn = this.FindControl<Button>("BackButton");
         if (backBtn != null)
             backBtn.Click += OnBackClick;
+
+        // Reset scroll to top whenever the project changes
+        DataContextChanged += OnDataContextChanged;
 
         // Invest button — navigate to InvestPage
         var investBtn = this.FindControl<Border>("InvestButton");
@@ -37,17 +40,31 @@ public partial class ProjectDetailView : UserControl
         if (scroller != null)
             scroller.ScrollChanged += OnScrollChanged;
 
-        // Collapsible sections
-        var detailsHeader = this.FindControl<Border>("DetailsHeader");
-        if (detailsHeader != null)
-            detailsHeader.PointerPressed += OnDetailsHeaderPressed;
+        // Collapsible sections — single handler on each container
+        var detailsContainer = this.FindControl<Border>("DetailsContainer");
+        if (detailsContainer != null)
+            detailsContainer.PointerPressed += OnDetailsContainerPressed;
 
-        var nostrHeader = this.FindControl<Border>("NostrHeader");
-        if (nostrHeader != null)
-            nostrHeader.PointerPressed += OnNostrHeaderPressed;
+        var nostrContainer = this.FindControl<Border>("NostrContainer");
+        if (nostrContainer != null)
+            nostrContainer.PointerPressed += OnNostrContainerPressed;
 
         // Set progress bar width after loaded
         Loaded += OnLoaded;
+    }
+
+    private void OnDataContextChanged(object? sender, EventArgs e)
+    {
+        var scroller = this.FindControl<ScrollViewer>("ContentScroller");
+        scroller?.ScrollToHome();
+        _navCtaVisible = false;
+        var navCta = this.FindControl<Border>("NavCtaButton");
+        if (navCta != null)
+        {
+            navCta.Opacity = 0;
+            navCta.IsHitTestVisible = false;
+        }
+        UpdateProgressBar();
     }
 
     private void OnLoaded(object? sender, EventArgs e)
@@ -118,25 +135,75 @@ public partial class ProjectDetailView : UserControl
         }
     }
 
-    private void OnDetailsHeaderPressed(object? sender, PointerPressedEventArgs e)
+    private void OnDetailsContainerPressed(object? sender, PointerPressedEventArgs e)
     {
-        _detailsExpanded = !_detailsExpanded;
-        var content = this.FindControl<StackPanel>("DetailsContent");
-        if (content != null)
-            content.IsVisible = _detailsExpanded;
+        var container = this.FindControl<Border>("DetailsContainer");
+        var header = this.FindControl<Border>("DetailsHeader");
+        if (container == null || header == null) return;
 
-        var chevron = this.FindControl<Control>("DetailsChevron");
-        chevron?.Classes.Set("ChevronExpanded", _detailsExpanded);
+        if (!_detailsExpanded)
+        {
+            // Collapsed → expand (click anywhere on container)
+            _detailsExpanded = true;
+            var content = this.FindControl<StackPanel>("DetailsContent");
+            if (content != null)
+                content.IsVisible = true;
+
+            var chevron = this.FindControl<Control>("DetailsChevron");
+            chevron?.Classes.Set("ChevronExpanded", true);
+            container.Cursor = null;
+        }
+        else
+        {
+            // Expanded → collapse only if click is within the header area
+            var pos = e.GetPosition(header);
+            if (pos.X >= 0 && pos.Y >= 0 && pos.X <= header.Bounds.Width && pos.Y <= header.Bounds.Height)
+            {
+                _detailsExpanded = false;
+                var content = this.FindControl<StackPanel>("DetailsContent");
+                if (content != null)
+                    content.IsVisible = false;
+
+                var chevron = this.FindControl<Control>("DetailsChevron");
+                chevron?.Classes.Set("ChevronExpanded", false);
+                container.Cursor = new Avalonia.Input.Cursor(StandardCursorType.Hand);
+            }
+        }
     }
 
-    private void OnNostrHeaderPressed(object? sender, PointerPressedEventArgs e)
+    private void OnNostrContainerPressed(object? sender, PointerPressedEventArgs e)
     {
-        _nostrExpanded = !_nostrExpanded;
-        var content = this.FindControl<StackPanel>("NostrContent");
-        if (content != null)
-            content.IsVisible = _nostrExpanded;
+        var container = this.FindControl<Border>("NostrContainer");
+        var header = this.FindControl<Border>("NostrHeader");
+        if (container == null || header == null) return;
 
-        var chevron = this.FindControl<Control>("NostrChevron");
-        chevron?.Classes.Set("ChevronExpanded", _nostrExpanded);
+        if (!_nostrExpanded)
+        {
+            // Collapsed → expand (click anywhere on container)
+            _nostrExpanded = true;
+            var content = this.FindControl<StackPanel>("NostrContent");
+            if (content != null)
+                content.IsVisible = true;
+
+            var chevron = this.FindControl<Control>("NostrChevron");
+            chevron?.Classes.Set("ChevronExpanded", true);
+            container.Cursor = null;
+        }
+        else
+        {
+            // Expanded → collapse only if click is within the header area
+            var pos = e.GetPosition(header);
+            if (pos.X >= 0 && pos.Y >= 0 && pos.X <= header.Bounds.Width && pos.Y <= header.Bounds.Height)
+            {
+                _nostrExpanded = false;
+                var content = this.FindControl<StackPanel>("NostrContent");
+                if (content != null)
+                    content.IsVisible = false;
+
+                var chevron = this.FindControl<Control>("NostrChevron");
+                chevron?.Classes.Set("ChevronExpanded", false);
+                container.Cursor = new Avalonia.Input.Cursor(StandardCursorType.Hand);
+            }
+        }
     }
 }

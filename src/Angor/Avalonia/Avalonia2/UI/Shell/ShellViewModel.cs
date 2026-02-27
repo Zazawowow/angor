@@ -316,22 +316,53 @@ public partial class ShellViewModel : ReactiveObject
         }
     }
 
+    /// <summary>
+    /// Cached section views — avoids recreating views (and their subscriptions,
+    /// image loaders, sample data) on every sidebar navigation.
+    /// Key = NavItem label (or "Settings"); Value = the View UserControl.
+    /// </summary>
+    private readonly Dictionary<string, object> _viewCache = new();
+
     public object? CurrentSectionContent
     {
         get
         {
-            if (IsSettingsOpen) return new SettingsView();
+            if (IsSettingsOpen)
+                return GetOrCreateView("Settings", () => new SettingsView());
 
             return SelectedNavItem?.Label switch
             {
-                "Home" => new HomeView(),
-                "Funds" => new FundsView(),
-                "Find Projects" => new FindProjectsView(),
-                "Funded" => new PortfolioView(),
-                "My Projects" => new MyProjectsView(),
-                "Funders" => new FundersView(),
+                "Home" => GetOrCreateView("Home", () => new HomeView()),
+                "Funds" => GetOrCreateView("Funds", () => new FundsView()),
+                "Find Projects" => GetOrCreateView("Find Projects", () => new FindProjectsView()),
+                "Funded" => GetOrCreateView("Funded", () =>
+                {
+                    // PortfolioView constructor calls CloseInvestmentDetail(),
+                    // so on first creation the reset happens automatically.
+                    return new PortfolioView();
+                }, onReuse: _ => SharedViewModels.Portfolio.CloseInvestmentDetail()),
+                "My Projects" => GetOrCreateView("My Projects", () => new MyProjectsView()),
+                "Funders" => GetOrCreateView("Funders", () => new FundersView()),
                 _ => null,
             };
         }
+    }
+
+    /// <summary>
+    /// Returns a cached view or creates + caches a new one.
+    /// Optional <paramref name="onReuse"/> callback runs when returning an already-cached view
+    /// (e.g. to reset sub-navigation state).
+    /// </summary>
+    private object GetOrCreateView(string key, Func<object> factory, Action<object>? onReuse = null)
+    {
+        if (_viewCache.TryGetValue(key, out var existing))
+        {
+            onReuse?.Invoke(existing);
+            return existing;
+        }
+
+        var view = factory();
+        _viewCache[key] = view;
+        return view;
     }
 }

@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:fp="clr-namespace:Avalonia2.UI.Sections.FindProjects"
-             xmlns:portfolio="clr-namespace:Avalonia2.UI.Sections.Portfolio"
+
+
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:i="https://github.com/projektanker/icons.avalonia"
@@ -17,9 +18,8 @@
         2. Top section: project-card-compact (left) + investment/status card (right) — grid 1fr 400px gap 24
         3. Stats detail card (orange gradient, 3 stat cards + progress bar)
         4. Investment/Funding/Subscription information card
-        5. Stages table (investment projects only)
-        6. Project Details collapsible section
-        7. Nostr collapsible section
+        5. Project Details collapsible section
+        6. Nostr collapsible section
     -->
 
     <UserControl.Styles>
@@ -747,98 +747,17 @@
             </Border>
 
             <!-- ═══════════════════════════════════════ -->
-            <!-- STAGES TABLE (investment only)           -->
-            <!-- Vue: detail-card with table              -->
+            <!-- PROJECT DETAILS (collapsible)            -->
+            <!-- Vue: detail-card, collapsible-header     -->
             <!-- ═══════════════════════════════════════ -->
-            <Border Background="{DynamicResource Surface}"
+            <Border Name="DetailsContainer"
+                    Background="{DynamicResource Surface}"
                     BorderBrush="{DynamicResource Stroke}"
                     BorderThickness="1"
                     CornerRadius="16"
                     Padding="24"
                     BoxShadow="{DynamicResource ItemShadow}"
-                    IsVisible="{Binding IsInvestmentType}">
-                <StackPanel Spacing="20">
-                    <!-- Header -->
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <i:Icon Value="fa-solid fa-box"
-                               FontSize="24"
-                               Foreground="{DynamicResource TextStrong}" />
-                        <TextBlock Text="Stages"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource TextStrong}"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-
-                    <!-- Table header row -->
-                    <!-- Vue: th padding 12px, font-size 13px, font-weight 600, border-bottom 2px solid #e0e0e0 -->
-                    <Border BorderBrush="{DynamicResource Stroke}"
-                            BorderThickness="0,0,0,2"
-                            Padding="12,12,12,12">
-                        <Grid ColumnDefinitions="80,100,*,140,*">
-                            <TextBlock Grid.Column="0" Text="Stage" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="1" Text="Stage %" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="2" Text="Release Date" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="3" Text="Days Until Stage" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="4" Text="Amount Per Stage" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMuted}"
-                                       HorizontalAlignment="Right" />
-                        </Grid>
-                    </Border>
-
-                    <!-- Table rows -->
-                    <ItemsControl ItemsSource="{Binding Stages}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="portfolio:InvestmentStageViewModel">
-                                <Border Padding="12,16,12,16"
-                                        BorderBrush="{DynamicResource Stroke}"
-                                        BorderThickness="0,0,0,1">
-                                    <Grid ColumnDefinitions="80,100,*,140,*">
-                                        <TextBlock Grid.Column="0"
-                                                   Text="{Binding StageNumber}"
-                                                   FontSize="14" FontWeight="SemiBold"
-                                                   Foreground="{DynamicResource TextStrong}" />
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding Percentage}"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource TextStrong}" />
-                                        <TextBlock Grid.Column="2"
-                                                   Text="{Binding ReleaseDate}"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource TextStrong}" />
-                                        <TextBlock Grid.Column="3"
-                                                   FontSize="14"
-                                                   Foreground="{DynamicResource TextMuted}">
-                                            <Run Text="{Binding Status, Mode=OneWay}" />
-                                        </TextBlock>
-                                        <TextBlock Grid.Column="4"
-                                                   FontSize="14" FontWeight="SemiBold"
-                                                   Foreground="{DynamicResource StageAmountGreen}"
-                                                   HorizontalAlignment="Right">
-                                            <Run Text="{Binding Amount, Mode=OneWay}" /><Run Text=" BTC" />
-                                        </TextBlock>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </Border>
-
-            <!-- ═══════════════════════════════════════ -->
-            <!-- PROJECT DETAILS (collapsible)            -->
-            <!-- Vue: detail-card, collapsible-header     -->
-            <!-- ═══════════════════════════════════════ -->
-            <Border Background="{DynamicResource Surface}"
-                    BorderBrush="{DynamicResource Stroke}"
-                    BorderThickness="1"
-                    CornerRadius="16"
-                    Padding="24"
-                    BoxShadow="{DynamicResource ItemShadow}">
+                    Cursor="Hand">
                 <StackPanel Spacing="0">
                     <!-- Collapsible header — Background="Transparent" ensures entire row is a hit target -->
                     <Border Name="DetailsHeader" Cursor="Hand" Background="Transparent" Padding="0,4">
@@ -848,7 +767,7 @@
                                    Foreground="{DynamicResource TextStrong}"
                                    DockPanel.Dock="Left" Margin="0,0,12,0" />
                             <Border Name="DetailsChevron"
-                                    Classes="CollapsibleChevron ChevronExpanded"
+                                    Classes="CollapsibleChevron"
                                     DockPanel.Dock="Right" HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
                                 <i:Icon Value="fa-solid fa-chevron-down"
@@ -863,7 +782,7 @@
                     </Border>
 
                     <!-- Collapsible content -->
-                    <StackPanel Name="DetailsContent" Spacing="16" Margin="0,20,0,0">
+                    <StackPanel Name="DetailsContent" IsVisible="False" Spacing="16" Margin="0,20,0,0">
                         <!-- Explorer -->
                         <StackPanel Spacing="6">
                             <TextBlock Text="Explorer" FontSize="13" FontWeight="SemiBold"
@@ -955,12 +874,14 @@
             <!-- NOSTR SECTION (collapsible)              -->
             <!-- Vue: detail-card, Nostr npub + hex + relays -->
             <!-- ═══════════════════════════════════════ -->
-            <Border Background="{DynamicResource Surface}"
+            <Border Name="NostrContainer"
+                    Background="{DynamicResource Surface}"
                     BorderBrush="{DynamicResource Stroke}"
                     BorderThickness="1"
                     CornerRadius="16"
                     Padding="24"
-                    BoxShadow="{DynamicResource ItemShadow}">
+                    BoxShadow="{DynamicResource ItemShadow}"
+                    Cursor="Hand">
                 <StackPanel Spacing="0">
                     <!-- Collapsible header — Background="Transparent" ensures entire row is a hit target -->
                     <Border Name="NostrHeader" Cursor="Hand" Background="Transparent" Padding="0,4">
@@ -970,7 +891,7 @@
                                    Foreground="{DynamicResource TextStrong}"
                                    DockPanel.Dock="Left" Margin="0,0,12,0" />
                             <Border Name="NostrChevron"
-                                    Classes="CollapsibleChevron ChevronExpanded"
+                                    Classes="CollapsibleChevron"
                                     DockPanel.Dock="Right" HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
                                 <i:Icon Value="fa-solid fa-chevron-down"
@@ -985,7 +906,7 @@
                     </Border>
 
                     <!-- Collapsible content -->
-                    <StackPanel Name="NostrContent" Spacing="16" Margin="0,20,0,0">
+                    <StackPanel Name="NostrContent" IsVisible="False" Spacing="16" Margin="0,20,0,0">
                         <!-- Nostr npub -->
                         <StackPanel Spacing="6">
                             <TextBlock Text="Nostr Public Key (npub)" FontSize="13" FontWeight="SemiBold"

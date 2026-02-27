@@ -128,47 +128,62 @@
                 </Button>
             </Border>
 
-            <!-- RIGHT: Stats pill (Total Raised + Progress) — HIDDEN for subscription -->
-            <!-- Vue: v-if="project.projectType === 'invest'" -->
-            <Border DockPanel.Dock="Right"
-                    Classes="FloatingBtn"
-                    Background="{DynamicResource FloatingBtnBg}"
-                    BorderBrush="{DynamicResource FloatingBtnBorder}"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    BoxShadow="0 4 12 0 #26000000"
-                    Padding="16,0,16,0"
-                    Height="44"
-                    VerticalAlignment="Center"
-                    RenderTransform="translate(0px, 0px)"
-                    IsVisible="{Binding IsNotSubscription}">
-                <Border.Transitions>
-                    <Transitions>
-                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
-                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
-                    </Transitions>
-                </Border.Transitions>
-                <StackPanel Orientation="Horizontal" Spacing="24" VerticalAlignment="Center">
-                    <!-- Total Raised -->
-                    <StackPanel Spacing="0">
-                        <TextBlock Text="{Binding Project.RaisedNoun}"
+            <!-- RIGHT: Stats pills (Total Raised + Progress as separate cards) — HIDDEN for subscription -->
+            <!-- Vue: two separate .nav-stat-item divs with gap: 16px -->
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="16"
+                        VerticalAlignment="Center"
+                        IsVisible="{Binding IsNotSubscription}">
+                <!-- Total Raised pill -->
+                <Border Classes="FloatingBtn"
+                        Background="{DynamicResource FloatingBtnBg}"
+                        BorderBrush="{DynamicResource FloatingBtnBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        BoxShadow="0 4 12 0 #26000000"
+                        Padding="20,0"
+                        Height="44"
+                        RenderTransform="translate(0px, 0px)">
+                    <Border.Transitions>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                        </Transitions>
+                    </Border.Transitions>
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Project.RaisedNoun, StringFormat='{}{0}:'}"
                                    FontSize="13" FontWeight="Medium"
                                    Foreground="{DynamicResource TextMuted}" />
                         <TextBlock Text="{Binding Project.Raised, StringFormat='{}{0} BTC'}"
                                    FontSize="13" FontWeight="Bold"
                                    Foreground="{DynamicResource TextStrong}" />
                     </StackPanel>
-                    <!-- Progress -->
-                    <StackPanel Spacing="0">
-                        <TextBlock Text="Progress"
+                </Border>
+                <!-- Progress pill -->
+                <Border Classes="FloatingBtn"
+                        Background="{DynamicResource FloatingBtnBg}"
+                        BorderBrush="{DynamicResource FloatingBtnBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        BoxShadow="0 4 12 0 #26000000"
+                        Padding="20,0"
+                        Height="44"
+                        RenderTransform="translate(0px, 0px)">
+                    <Border.Transitions>
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                            <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+                        </Transitions>
+                    </Border.Transitions>
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="Progress:"
                                    FontSize="13" FontWeight="Medium"
                                    Foreground="{DynamicResource TextMuted}" />
                         <TextBlock Text="{Binding Project.Progress, StringFormat='{}{0}%'}"
                                    FontSize="13" FontWeight="Bold"
                                    Foreground="{DynamicResource StageAmountGreen}" />
                     </StackPanel>
-                </StackPanel>
-            </Border>
+                </Border>
+            </StackPanel>
 
             <!-- CENTER: Project Name pill (left-aligned, next to back button) -->
             <Border Background="{DynamicResource Surface}"
@@ -276,7 +291,8 @@
         <!-- SCROLLABLE CONTENT (fills entire area, scrolls under    -->
         <!-- nav bar and footer via spacers)                          -->
         <!-- ═══════════════════════════════════════════════════════ -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
+        <ScrollViewer Name="ContentScroller"
+                      VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
                 <!-- Top spacer: nav top margin (24) + nav height (44) + gap (24) = 92px -->
