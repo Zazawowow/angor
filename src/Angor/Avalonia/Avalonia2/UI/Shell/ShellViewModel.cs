@@ -80,7 +80,7 @@ public class SignatureStore
             Time = now.ToString("HH:mm"),
             Status = requiresApproval ? "waiting" : "approved",
             InvestorName = $"Investor {AllSignatures.Count(s => s.ProjectId == projectId) + 1}",
-            Npub = $"npub1{Guid.NewGuid():N}"[..64],
+            Npub = $"npub1{Guid.NewGuid():N}{Guid.NewGuid():N}"[..64],
             HasMessages = false
         };
 
