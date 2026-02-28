@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
         xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
         xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
@@ -23,20 +24,32 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel DataContext="{Binding $parent[controls:ErrorSummary]}">
-                        <EnhancedButton IsVisible="{Binding !!$parent[controls:ErrorSummary].Errors.Count}"
+                        <controls:IconButton IsVisible="{Binding !!$parent[controls:ErrorSummary].Errors.Count}"
                                 Foreground="{DynamicResource SystemChromeWhiteColor}"
                                 Content="{Binding $parent[controls:ErrorSummary].Errors.Count, StringFormat='{}{0} error(s) found'}" HorizontalAlignment="Left" Padding="10 5"
                                 Theme="{StaticResource ThinTransparentButton}">
-                            <EnhancedButton.Background>
+                            <controls:IconButton.Background>
                                 <SolidColorBrush Color="{StaticResource ErrorColor}" Opacity="0.7" />
-                            </EnhancedButton.Background>
+                            </controls:IconButton.Background>
                             <Button.Flyout>
                                 <Flyout Placement="BottomEdgeAlignedLeft">
-                                    <BulletList ItemsSource="{Binding $parent[controls:ErrorSummary].Errors}" />
+                                    <!-- Replaced Zafiro BulletList with ItemsControl + bullet DataTemplate -->
+                                    <ItemsControl ItemsSource="{Binding $parent[controls:ErrorSummary].Errors}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <DockPanel>
+                                                    <TextBlock xml:space="preserve" VerticalAlignment="Top"> &#x2022; </TextBlock>
+                                                    <ContentControl Content="{Binding}" />
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </Flyout>
                             </Button.Flyout>
-                        </EnhancedButton>
-                        <ContentControl Foreground="{DynamicResource SuccessColor}" IsVisible="{Binding !!!$parent[controls:ErrorSummary].Errors.Count}" Content="{Icon fa-check}" />
+                        </controls:IconButton>
+                        <ContentControl Foreground="{DynamicResource SuccessColor}" IsVisible="{Binding !!!$parent[controls:ErrorSummary].Errors.Count}">
+                            <i:Icon Value="fa-solid fa-check" />
+                        </ContentControl>
                     </Panel>
                 </ControlTemplate>
             </Setter>

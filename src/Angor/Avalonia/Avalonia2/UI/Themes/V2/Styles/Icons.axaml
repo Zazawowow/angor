@@ -1,59 +1,38 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
 
-    <!-- Defaults -->
-    <Style Selector=":is(UserControl)">
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource TextMuted}" />
+    <!-- Icon utility styles — replaces Zafiro IconOptions attached properties.
+         Projektanker icons use FontSize for sizing and Foreground for color. -->
+
+    <!-- Defaults: all i:Icon elements in UserControls get TextMuted color -->
+    <Style Selector=":is(UserControl) i|Icon">
+        <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
     </Style>
 
     <!-- Sizes -->
-    <Style Selector=":is(Control).Icon-S">
-        <Setter Property="IconOptions.Size" Value="14" />
-        <Setter Property="IconOptions.Padding" Value="7" />
+    <Style Selector="i|Icon.Icon-S">
+        <Setter Property="FontSize" Value="14" />
     </Style>
-    <Style Selector=":is(Control).Icon-M">
-        <Setter Property="IconOptions.Size" Value="24" />
-        <Setter Property="IconOptions.Padding" Value="10" />
+    <Style Selector="i|Icon.Icon-M">
+        <Setter Property="FontSize" Value="24" />
     </Style>
-    <Style Selector=":is(Control).Icon-L">
-        <Setter Property="IconOptions.Size" Value="32" />
-        <Setter Property="IconOptions.Padding" Value="16" />
+    <Style Selector="i|Icon.Icon-L">
+        <Setter Property="FontSize" Value="32" />
     </Style>
 
-    <!-- Shapes -->
-    <Style Selector=":is(Control).Icon-Round">
-        <Setter Property="IconOptions.CornerRadius" Value="1000" />
+    <!-- Fills (Foreground on i:Icon) -->
+    <Style Selector="i|Icon.Icon-Fill-White">
+        <Setter Property="Foreground" Value="White" />
     </Style>
-    <Style Selector=":is(Control).Icon-Square">
-        <Setter Property="IconOptions.CornerRadius" Value="12" />
+    <Style Selector="i|Icon.Icon-Fill-Muted">
+        <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
     </Style>
-
-    <!-- Fills -->
-    <Style Selector=":is(Control).Icon-Fill-White">
-        <Setter Property="IconOptions.Fill" Value="White" />
+    <Style Selector="i|Icon.Icon-Fill-Green">
+        <Setter Property="Foreground" Value="{DynamicResource Brand}" />
     </Style>
-    <Style Selector=":is(Control).Icon-Fill-Muted">
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource TextMuted}" />
-    </Style>
-    <Style Selector=":is(Control).Icon-Fill-Green">
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource Brand}" />
-    </Style>
-    <Style Selector=":is(Control).Icon-Fill-Orange">
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource BitcoinOrange}" />
-    </Style>
-
-    <!-- Backgrounds -->
-    <Style Selector=":is(Control).Icon-Bg-Green">
-        <Setter Property="IconOptions.Background" Value="{DynamicResource Brand}" />
-    </Style>
-    <Style Selector=":is(Control).Icon-Bg-Orange">
-        <Setter Property="IconOptions.Background" Value="{DynamicResource BitcoinOrange}" />
-    </Style>
-    <Style Selector=":is(Control).Icon-Bg-LightGray">
-        <Setter Property="IconOptions.Background" Value="{DynamicResource SurfaceLow}" />
-    </Style>
-    <Style Selector=":is(Control).Icon-Bg-None">
-        <Setter Property="IconOptions.Background" Value="Transparent" />
+    <Style Selector="i|Icon.Icon-Fill-Orange">
+        <Setter Property="Foreground" Value="{DynamicResource BitcoinOrange}" />
     </Style>
 
 </Styles>

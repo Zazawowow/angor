@@ -1,28 +1,19 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
         <Border Padding="20">
             <StackPanel Spacing="10">
-                <Card Header="Header">
-                    <Card Header="Nested header">
+                <controls:Card Header="Header">
+                    <controls:Card Header="Nested header">
                         CONTENT
-                    </Card>
-                </Card>
+                    </controls:Card>
+                </controls:Card>
             </StackPanel>
         </Border>
     </Design.PreviewWith>
 
     <Styles.Resources>
-        <!-- Spacing scale (prefer Gap-*) -->
-        <x:Double x:Key="Gap-XS">5</x:Double>
-        <x:Double x:Key="Gap-S">10</x:Double>
-        <x:Double x:Key="Gap-M">12</x:Double>
-        <x:Double x:Key="Gap-L">18</x:Double>
-        <x:Double x:Key="Gap-XL">24</x:Double>
-        <x:Double x:Key="Gap-XXL">40</x:Double>
-
-
-
         <Color x:Key="SuccessColor">Green</Color>
         <Color x:Key="WarningColor">Gold</Color>
         <Color x:Key="ErrorColor">Red</Color>
@@ -42,7 +33,7 @@
 
         <x:Double x:Key="FlyoutThemeMaxWidth">700</x:Double>
 
-        <ControlTheme x:Key="{x:Type EnhancedButton}" TargetType="EnhancedButton" BasedOn="{StaticResource {x:Type EnhancedButton}}">
+        <ControlTheme x:Key="{x:Type controls:IconButton}" TargetType="controls:IconButton" BasedOn="{StaticResource {x:Type controls:IconButton}}">
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="10" />
@@ -51,13 +42,12 @@
             <Setter Property="TextBlock.FontWeight" Value="Bold" />
         </ControlTheme>
 
-        <ControlTheme x:Key="DarkerButton" TargetType="EnhancedButton" BasedOn="{StaticResource {x:Type EnhancedButton}}">
+        <ControlTheme x:Key="DarkerButton" TargetType="controls:IconButton" BasedOn="{StaticResource {x:Type controls:IconButton}}">
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="10" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="TextBlock.FontWeight" Value="Bold" />
-            <!-- <Setter Property="Foreground" Value="{StaticResource Level5}}" /> -->
         </ControlTheme>
     </Styles.Resources>
 
@@ -80,12 +70,8 @@
         <Setter Property="Margin" Value="0,16" />
     </Style>
 
-    <Style Selector="EnhancedButton.HorizontalStretch">
+    <Style Selector="controls|IconButton.HorizontalStretch">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-    </Style>
-
-    <Style Selector=":is(UserControl)">
-        <Setter Property="IconOptions.Size" Value="{StaticResource IconSizeSmall}" />
     </Style>
 
     <Style Selector="ListBox.Rounded">
@@ -97,50 +83,13 @@
         <Setter Property="FontWeight" Value="Regular" />
     </Style>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         STACKPANEL SPACING - Atomic Classes (combinable, single responsibility)
-         Usage: <StackPanel Classes="Gap-M" />
-         ═══════════════════════════════════════════════════════════════════════ -->
-    <Style Selector="StackPanel.Gap-XS">
-        <Setter Property="Spacing" Value="{StaticResource Gap-XS}" />
-    </Style>
-    <Style Selector="StackPanel.Gap-S">
-        <Setter Property="Spacing" Value="{StaticResource Gap-S}" />
-    </Style>
-    <Style Selector="StackPanel.Gap-M">
-        <Setter Property="Spacing" Value="{StaticResource Gap-M}" />
-    </Style>
-    <Style Selector="StackPanel.Gap-L">
-        <Setter Property="Spacing" Value="{StaticResource Gap-L}" />
-    </Style>
-    <Style Selector="StackPanel.Gap-XL">
-        <Setter Property="Spacing" Value="{StaticResource Gap-XL}" />
-    </Style>
-    <Style Selector="StackPanel.Gap-XXL">
-        <Setter Property="Spacing" Value="{StaticResource Gap-XXL}" />
-    </Style>
-
-    <!-- Legacy aliases (prefer Gap-*) -->
-
-
-    <Style Selector="Card Card">
+    <Style Selector="controls|Card controls|Card">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="#31000000" />
-    </Style>
-
-    <Style Selector="BalancedWrapGrid">
-        <Setter Property="HorizontalSpacing" Value="10" />
-        <Setter Property="VerticalSpacing" Value="10" />
     </Style>
 
     <Style Selector=":is(TemplatedControl).NoPadding">
         <Setter Property="Padding" Value="0" />
     </Style>
-
-    <Style Selector="CardGrid.Listing">
-        <Setter Property="MinColumnWidth" Value="300" />
-        <Setter Property="MaxColumnWidth" Value="450" />
-    </Style>
-
 
 </Styles>

@@ -1,29 +1,29 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
-        xmlns:dialogs="clr-namespace:Zafiro.Avalonia.Dialogs;assembly=Zafiro.Avalonia.Dialogs">
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
-        <DialogControl Content="This is the content of the dialog">
-            <DialogControl.Options>
-                <generic:List x:TypeArguments="IOption">
-                    <OptionDesign Title="Primary" Role="Primary" />
-                    <OptionDesign Title="Secondary" Role="Secondary" />
-                    <!-- <OptionDesign Title="Cancel" Role="Cancel" /> -->
-                    <!-- <OptionDesign Title="Destructive" Role="Destructive" /> -->
+        <controls:DialogControl Content="This is the content of the dialog">
+            <controls:DialogControl.Options>
+                <generic:List x:TypeArguments="controls:IOption">
+                    <controls:OptionDesign Title="Primary" Role="Primary" />
+                    <controls:OptionDesign Title="Secondary" Role="Secondary" />
                 </generic:List>
-            </DialogControl.Options>
-        </DialogControl>
+            </controls:DialogControl.Options>
+        </controls:DialogControl>
     </Design.PreviewWith>
 
-    <Style Selector="DialogControl">
+    <Style Selector="controls|DialogControl">
         <Setter Property="MinWidth" Value="448" />
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel VerticalSpacing="24">
-                    <ItemsControl ItemsSource="{TemplateBinding Options}" DockPanel.Dock="Bottom" IsVisible="{TemplateBinding Options, Converter={x:Static Enumerable.NotEmpty}}">
+                <DockPanel>
+                    <ItemsControl ItemsSource="{TemplateBinding Options}" DockPanel.Dock="Bottom"
+                                  Margin="0,24,0,0"
+                                  IsVisible="{TemplateBinding Options, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <ItemsControl.ItemContainerTheme>
                             <ControlTheme TargetType="ContentPresenter">
-                                <Setter Property="IsVisible" Value="{Binding IsVisible^, DataType=IOption}" />
+                                <Setter Property="IsVisible" Value="{Binding IsVisible^, DataType=controls:IOption}" />
                             </ControlTheme>
                         </ItemsControl.ItemContainerTheme>
                         <ItemsControl.ItemsPanel>
@@ -32,27 +32,12 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="IOption">
-                                <EnhancedButton Height="52" HorizontalAlignment="Stretch"
+                            <DataTemplate DataType="controls:IOption">
+                                <controls:IconButton Height="52" HorizontalAlignment="Stretch"
                                                 IsCancel="{Binding IsCancel}"
                                                 IsDefault="{Binding IsDefault}"
-                                                Role="{Binding Role, Converter={x:Static dialogs:OptionRoleToButtonRoleConverter.Instance}}"
-                                                Content="{Binding Title^}" Command="{Binding Command}">
-                                    <Interaction.Behaviors>
-                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Primary">
-                                            <AddClassAction ClassName="Emphasized" />
-                                        </BindingTriggerBehavior>
-                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Secondary">
-                                            <AddClassAction ClassName="Secondary" />
-                                        </BindingTriggerBehavior>
-                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Cancel">
-                                            <AddClassAction ClassName="Outline" />
-                                        </BindingTriggerBehavior>
-                                        <BindingTriggerBehavior Binding="{Binding Role}" Value="Destructive">
-                                            <AddClassAction ClassName="Destructive" />
-                                        </BindingTriggerBehavior>
-                                    </Interaction.Behaviors>
-                                </EnhancedButton>
+                                                Content="{Binding Title^}" Command="{Binding Command}"
+                                                controls:ClassAssist.Classes="{Binding Role, Converter={x:Static controls:OptionRoleToClassNameConverter.Instance}}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

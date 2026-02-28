@@ -1,14 +1,15 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
-        <StackPanel Spacing="10" IconOptions.Size="{StaticResource IconSizeSmall}">
-            <EnhancedButton Content="Standard Button" />
-            <EnhancedButton HorizontalAlignment="Stretch" Content="Penalties"  />
-            <EnhancedButton Content="Reactive Button" />
+        <StackPanel Spacing="10">
+            <controls:IconButton Content="Standard Button" />
+            <controls:IconButton HorizontalAlignment="Stretch" Content="Penalties"  />
+            <controls:IconButton Content="Reactive Button" />
         </StackPanel>
     </Design.PreviewWith>
     
-    <Style Selector="EnhancedButton">
+    <Style Selector="controls|IconButton">
         <Setter Property="Cursor" Value="Hand" />
     </Style>
     
@@ -33,7 +34,14 @@
     </Style>
 
     <Styles.Resources>
-        <ControlTheme x:Key="ThinTransparentButton" TargetType="EnhancedButton" BasedOn="{StaticResource TransparentButton}">
+        <!-- TransparentButton: local replacement for Zafiro's TransparentButton ControlTheme -->
+        <ControlTheme x:Key="TransparentButton" TargetType="controls:IconButton" BasedOn="{StaticResource {x:Type controls:IconButton}}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </ControlTheme>
+
+        <ControlTheme x:Key="ThinTransparentButton" TargetType="controls:IconButton" BasedOn="{StaticResource TransparentButton}">
             <Setter Property="Padding" Value="2" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -41,7 +49,7 @@
         </ControlTheme>
     </Styles.Resources>
     
-    <Style Selector="EnhancedButton.Card">
+    <Style Selector="controls|IconButton.Card">
         <Setter Property="Theme" Value="{StaticResource TransparentButton}" />
         <Setter Property="Padding" Value="5" />
         <Setter Property="VerticalAlignment" Value="Stretch" />

@@ -1,7 +1,8 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia2.UI.Shell;
-using Zafiro.Avalonia.Icons;
+using Projektanker.Icons.Avalonia;
+using Projektanker.Icons.Avalonia.FontAwesome;
 
 namespace Avalonia2;
 
@@ -9,8 +10,7 @@ public partial class App : Application
 {
     public override void Initialize()
     {
-        IconControlProviderRegistry.Register(new ProjektankerIconControlProvider(), asDefault: true);
-        IconControlProviderRegistry.Register(new SvgIconControlProvider());
+        IconProvider.Current.Register<FontAwesomeIconProvider>();
 
         AvaloniaXamlLoader.Load(this);
     }

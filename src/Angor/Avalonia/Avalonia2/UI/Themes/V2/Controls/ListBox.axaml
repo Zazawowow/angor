@@ -113,7 +113,7 @@
             <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="Background" Value="{DynamicResource Surface}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                <!-- <Setter Property="Foreground" Value="{DynamicResource SurfaceHover}" /> -->
+
             </Style>
             <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />

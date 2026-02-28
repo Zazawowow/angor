@@ -129,7 +129,6 @@
         <Setter Property="Border.BorderBrush" Value="{DynamicResource Green.BorderBrush}" />
         <Setter Property="Border.Background" Value="{DynamicResource Green.Background}" />
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource SuccessText}" />
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource Brand}" />
     </Style>
     
     <!-- Red -->
@@ -137,14 +136,12 @@
         <Setter Property="Border.BorderBrush" Value="{DynamicResource ErrorSoft}" />
         <Setter Property="Border.Background" Value="{DynamicResource ErrorSoft}" />
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource ErrorText}" />
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource Error}" />
     </Style>
 
     <!-- Amber -->
     <Style Selector=":is(Control).Amber">
         <Setter Property="Border.BorderBrush" Value="{DynamicResource Amber.BorderBrush}" />
         <Setter Property="Border.Background" Value="{DynamicResource Amber.Background}" />
-        <Setter Property="IconOptions.Fill" Value="{DynamicResource Amber.IconFill}" />
     </Style>
 
     <!-- DarkGreen -->

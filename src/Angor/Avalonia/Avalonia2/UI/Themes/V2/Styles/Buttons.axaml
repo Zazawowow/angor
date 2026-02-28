@@ -1,21 +1,21 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:zc="clr-namespace:Zafiro.Avalonia.Controls;assembly=Zafiro.Avalonia">
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
         <StackPanel Spacing="10" HorizontalAlignment="Center">
             <ThemeVariantScope RequestedThemeVariant="Light">
                 <Border Padding="20" Background="{DynamicResource AppBackground}">
                     <StackPanel Spacing="10">
-                        <TextBlock FontWeight="Bold">EnhancedButton</TextBlock>
-                        <EnhancedButton Content="Default" />
-                        <EnhancedButton Classes="Primary" Content="Primary" />
-                        <EnhancedButton Classes="Emphasized" Content="Emphasized" />
-                        <EnhancedButton Classes="Secondary" Content="Secondary" />
-                        <EnhancedButton Classes="White" Content="White" />
-                        <EnhancedButton Classes="Outline" Content="Outline" />
-                        <EnhancedButton Classes="Outline Orange" Content="Outline Orange" />
-                        <EnhancedButton Classes="Widget" Content="Widget" />
-                        <EnhancedButton Classes="Destructive" Content="Destructive" />
+                        <TextBlock FontWeight="Bold">IconButton</TextBlock>
+                        <controls:IconButton Content="Default" />
+                        <controls:IconButton Classes="Primary" Content="Primary" />
+                        <controls:IconButton Classes="Emphasized" Content="Emphasized" />
+                        <controls:IconButton Classes="Secondary" Content="Secondary" />
+                        <controls:IconButton Classes="White" Content="White" />
+                        <controls:IconButton Classes="Outline" Content="Outline" />
+                        <controls:IconButton Classes="Outline Orange" Content="Outline Orange" />
+                        <controls:IconButton Classes="Widget" Content="Widget" />
+                        <controls:IconButton Classes="Destructive" Content="Destructive" />
                         <TextBlock FontWeight="Bold" Margin="0,12,0,0">Button</TextBlock>
                         <Button Content="Default" />
                         <Button Classes="Primary" Content="Primary" />
@@ -27,16 +27,16 @@
             <ThemeVariantScope RequestedThemeVariant="Dark">
                 <Border Padding="20" Background="{DynamicResource AppBackground}">
                     <StackPanel Spacing="10">
-                        <TextBlock FontWeight="Bold" Foreground="White">EnhancedButton</TextBlock>
-                        <EnhancedButton Content="Default" />
-                        <EnhancedButton Classes="Primary" Content="Primary" />
-                        <EnhancedButton Classes="Emphasized" Content="Emphasized" />
-                        <EnhancedButton Classes="Secondary" Content="Secondary" />
-                        <EnhancedButton Classes="White" Content="White" />
-                        <EnhancedButton Classes="Outline" Content="Outline" />
-                        <EnhancedButton Classes="Outline Orange" Content="Outline Orange" />
-                        <EnhancedButton Classes="Widget" Content="Widget" />
-                        <EnhancedButton Classes="Destructive" Content="Destructive" />
+                        <TextBlock FontWeight="Bold" Foreground="White">IconButton</TextBlock>
+                        <controls:IconButton Content="Default" />
+                        <controls:IconButton Classes="Primary" Content="Primary" />
+                        <controls:IconButton Classes="Emphasized" Content="Emphasized" />
+                        <controls:IconButton Classes="Secondary" Content="Secondary" />
+                        <controls:IconButton Classes="White" Content="White" />
+                        <controls:IconButton Classes="Outline" Content="Outline" />
+                        <controls:IconButton Classes="Outline Orange" Content="Outline Orange" />
+                        <controls:IconButton Classes="Widget" Content="Widget" />
+                        <controls:IconButton Classes="Destructive" Content="Destructive" />
                         <TextBlock FontWeight="Bold" Foreground="White" Margin="0,12,0,0">Button</TextBlock>
                         <Button Content="Default" />
                         <Button Classes="Primary" Content="Primary" />
@@ -49,22 +49,21 @@
     </Design.PreviewWith>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         EnhancedButton styles (Zafiro — requires a Command binding)
+         IconButton styles (replaces Zafiro EnhancedButton)
          ══════════════════════════════════════════════════════════════════════ -->
 
-    <!-- Base EnhancedButton Style -->
-    <Style Selector="EnhancedButton">
+    <!-- Base IconButton Style -->
+    <Style Selector="controls|IconButton">
         <Setter Property="Foreground" Value="{DynamicResource PrimaryButtonForeground}" />
         <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryButtonBorder}" />
-        <Setter Property="IconOptions.Fill" Value="{Binding $self.Foreground}" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <!-- Spec: .btn-primary — gradient, border #3a3a3a, radius 12px, shadow -->
-    <Style Selector="EnhancedButton.Primary">
+    <Style Selector="controls|IconButton.Primary">
         <Setter Property="Foreground" Value="{DynamicResource PrimaryButtonForeground}" />
         <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryButtonBorder}" />
@@ -72,21 +71,21 @@
         <Setter Property="BoxShadow" Value="{DynamicResource DefaultShadow}" />
     </Style>
 
-    <Style Selector="EnhancedButton.Emphasized">
+    <Style Selector="controls|IconButton.Emphasized">
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
         <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorder}" />
         <Setter Property="Padding" Value="24 12" />
     </Style>
 
-    <Style Selector="EnhancedButton.Secondary">
+    <Style Selector="controls|IconButton.Secondary">
         <Setter Property="Foreground" Value="{DynamicResource SecondaryButtonForeground}" />
         <Setter Property="Background" Value="{DynamicResource SecondaryButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SecondaryButtonBorder}" />
         <Setter Property="Padding" Value="24 12" />
     </Style>
 
-    <Style Selector="EnhancedButton.White">
+    <Style Selector="controls|IconButton.White">
         <Setter Property="Padding" Value="24 12" />
         <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
         <Setter Property="BorderThickness" Value="2" />
@@ -94,7 +93,7 @@
         <Setter Property="Background" Value="{DynamicResource Surface}" />
     </Style>
 
-    <Style Selector="EnhancedButton.Outline">
+    <Style Selector="controls|IconButton.Outline">
         <Setter Property="Padding" Value="24 12" />
         <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
         <Setter Property="BorderThickness" Value="2" />
@@ -102,7 +101,7 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
     
-    <Style Selector="EnhancedButton.Outline.Orange">
+    <Style Selector="controls|IconButton.Outline.Orange">
         <Setter Property="Padding" Value="24 12" />
         <Setter Property="BorderBrush" Value="{DynamicResource BitcoinOrange}" />
         <Setter Property="BorderThickness" Value="2" />
@@ -110,7 +109,7 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
-    <Style Selector="EnhancedButton.Widget">
+    <Style Selector="controls|IconButton.Widget">
         <Setter Property="Background" Value="{DynamicResource Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -118,7 +117,7 @@
         <Setter Property="Padding" Value="10" />
     </Style>
     
-    <Style Selector="EnhancedButton.Destructive">
+    <Style Selector="controls|IconButton.Destructive">
         <Setter Property="Foreground" Value="{DynamicResource PrimaryButtonForeground}" />
         <Setter Property="Background" Value="{DynamicResource Error}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Error}" />
@@ -128,7 +127,7 @@
     <!-- ══════════════════════════════════════════════════════════════════════
          Button styles (plain Avalonia Button — no Command required)
          
-         Mirrors EnhancedButton classes so visual-only / stub pages
+         Mirrors IconButton classes so visual-only / stub pages
          can use <Button Classes="Green" /> without crashing.
          ══════════════════════════════════════════════════════════════════════ -->
 

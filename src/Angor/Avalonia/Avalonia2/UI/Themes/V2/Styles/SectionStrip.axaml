@@ -1,6 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:shell="clr-namespace:Avalonia2.UI.Shell">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
         Sidebar navigation styles for ListBox.Nav.

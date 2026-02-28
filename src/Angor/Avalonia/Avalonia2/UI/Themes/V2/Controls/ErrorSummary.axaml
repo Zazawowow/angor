@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+                    xmlns:i="https://github.com/projektanker/icons.avalonia"
                     xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections">
 
     <Design.PreviewWith>
@@ -34,16 +35,17 @@
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="Template">
             <ControlTemplate>
-                <EdgePanel IsVisible="{Binding !!$parent[controls:ErrorSummary].Errors.Count}" IconOptions.Fill="{DynamicResource ErrorForeground}"
+                <controls:EdgePanel IsVisible="{Binding !!$parent[controls:ErrorSummary].Errors.Count}"
                            Spacing="16"
                            CornerRadius="10" BorderThickness="1"
                            Padding="16" BorderBrush="{DynamicResource ErrorHard}"
                            Background="{DynamicResource ErrorSoft}"
-                           Foreground="{DynamicResource TextMuted}"
-                           IconOptions.Size="15"
-                           StartContent="{Icon fa-circle-exclamation}">
+                           Foreground="{DynamicResource TextMuted}">
+                    <controls:EdgePanel.StartContent>
+                        <i:Icon Value="fa-solid fa-circle-exclamation" FontSize="15" Foreground="{DynamicResource ErrorForeground}" />
+                    </controls:EdgePanel.StartContent>
                     <ItemsControl ItemsSource="{TemplateBinding Errors}" />
-                </EdgePanel>
+                </controls:EdgePanel>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

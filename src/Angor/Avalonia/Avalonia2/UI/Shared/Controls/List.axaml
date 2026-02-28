@@ -1,15 +1,14 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:av="https://github.com/projektanker/icons.avalonia"
-        xmlns:avalonia="clr-namespace:Zafiro.Avalonia;assembly=Zafiro.Avalonia"
         xmlns:c="clr-namespace:Avalonia2"
         xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
         <controls:List>
             <controls:List.ItemsSource>
-                <avalonia:Strings>
+                <x:Array Type="x:String">
                     <x:String>hola</x:String>
-                </avalonia:Strings>
+                </x:Array>
             </controls:List.ItemsSource>
             <controls:List.Header>
                 <DockPanel>

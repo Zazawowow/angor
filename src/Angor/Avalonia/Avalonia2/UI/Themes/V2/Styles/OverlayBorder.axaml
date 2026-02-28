@@ -7,9 +7,9 @@
                 <Border Padding="20" Background="{DynamicResource AppBackground}">
                     <StackPanel Spacing="10">
                         <TextBlock FontWeight="Bold">Light Theme</TextBlock>
-                        <OverlayBorder Classes="Panel">
-                            <TextBlock>OverlayBorder.Panel</TextBlock>
-                        </OverlayBorder>
+                        <Border Classes="Panel">
+                            <TextBlock>Border.Panel</TextBlock>
+                        </Border>
                     </StackPanel>
                 </Border>
             </ThemeVariantScope>
@@ -17,16 +17,16 @@
                 <Border Padding="20" Background="{DynamicResource AppBackground}">
                     <StackPanel Spacing="10">
                         <TextBlock FontWeight="Bold" Foreground="White">Dark Theme</TextBlock>
-                        <OverlayBorder Classes="Panel">
-                            <TextBlock>OverlayBorder.Panel</TextBlock>
-                        </OverlayBorder>
+                        <Border Classes="Panel">
+                            <TextBlock>Border.Panel</TextBlock>
+                        </Border>
                     </StackPanel>
                 </Border>
             </ThemeVariantScope>
         </StackPanel>
     </Design.PreviewWith>
 
-    <Style Selector="OverlayBorder.Panel">
+    <Style Selector="Border.Panel">
         <Setter Property="CornerRadius" Value="20" />
         <!-- Main panel: 24px uniform spacing from edges (section content, header/footer bars) -->
         <Setter Property="Padding" Value="24" />

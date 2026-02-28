@@ -105,9 +105,9 @@
             </Border>
 
             <!-- Main content area -->
-            <OverlayBorder Grid.Row="1" Grid.Column="1" Classes="Panel" Padding="0" ClipToBounds="True">
+            <Border Grid.Row="1" Grid.Column="1" Classes="Panel" Padding="0" ClipToBounds="True">
                 <ContentControl Content="{Binding CurrentSectionContent}" />
-            </OverlayBorder>
+            </Border>
 
             <!-- App-wide crosshatch texture overlay -->
             <Border Grid.ColumnSpan="2" Grid.RowSpan="2"

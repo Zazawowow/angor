@@ -25,13 +25,11 @@
         <!-- ReactiveUI -->
         <PackageReference Include="ReactiveUI.Avalonia"/>
         <PackageReference Include="ReactiveUI.SourceGenerators"/>
-        <!-- Zafiro (UI controls used in shell and shared controls) -->
-        <PackageReference Include="Zafiro"/>
-        <PackageReference Include="Zafiro.Avalonia"/>
-        <PackageReference Include="Zafiro.Avalonia.Dialogs"/>
-        <PackageReference Include="Zafiro.Avalonia.Generators"/>
-        <PackageReference Include="Zafiro.Avalonia.Icons.Svg"/>
-        <PackageReference Include="Zafiro.Avalonia.Icons.Projektanker"/>
+        <!-- Projektanker Icons (FontAwesome) -->
+        <PackageReference Include="Projektanker.Icons.Avalonia"/>
+        <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome"/>
+        <!-- SVG rendering -->
+        <PackageReference Include="Svg.Controls.Skia.Avalonia"/>
         <!-- Async image loading -->
         <PackageReference Include="AsyncImageLoader.Avalonia"/>
         <!-- Utilities -->

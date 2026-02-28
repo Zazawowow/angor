@@ -1,7 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
-        xmlns:c="clr-namespace:Avalonia2.UI.Shared.Controls">
+        xmlns:c="clr-namespace:Avalonia2.UI.Shared.Controls"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
 
     <Styles.Resources>
         
@@ -92,11 +93,11 @@
             <c:Pane Margin="20" Title="Title" VerticalAlignment="Top">
                 <c:Pane.Content>
                     <DockPanel>
-                        <EnhancedButton DockPanel.Dock="Bottom" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Content="VIEW PROJECT">
-                            <EnhancedButton.Icon>
+                        <controls:IconButton DockPanel.Dock="Bottom" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Content="VIEW PROJECT">
+                            <controls:IconButton.Icon>
                                 <avalonia:Icon Value="fa-folder" />
-                            </EnhancedButton.Icon>
-                        </EnhancedButton>
+                            </controls:IconButton.Icon>
+                        </controls:IconButton>
                         <Separator Margin="0 10" DockPanel.Dock="Bottom" />
 
                         <StackPanel DockPanel.Dock="Top">
@@ -122,11 +123,11 @@
                     IsTitleVisible="True">
                 <c:Pane.Content>
                     <DockPanel>
-                        <EnhancedButton DockPanel.Dock="Bottom" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Content="VIEW PROJECT">
-                            <EnhancedButton.Icon>
+                        <controls:IconButton DockPanel.Dock="Bottom" HorizontalContentAlignment="Left" HorizontalAlignment="Stretch" Content="VIEW PROJECT">
+                            <controls:IconButton.Icon>
                                 <avalonia:Icon Value="fa-folder" />
-                            </EnhancedButton.Icon>
-                        </EnhancedButton>
+                            </controls:IconButton.Icon>
+                        </controls:IconButton>
                         <Separator Margin="0 10" DockPanel.Dock="Bottom" />
 
                         <StackPanel VerticalAlignment="Center">

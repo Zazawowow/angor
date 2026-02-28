@@ -1,4 +1,5 @@
-<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
 
     <Styles.Resources>
         <ControlTheme x:Key="ExpanderToggleButton" TargetType="ToggleButton">
@@ -38,7 +39,6 @@
 
     <Style Selector="Expander /template/ Border#Root">
         <Setter Property="BoxShadow" Value="{DynamicResource DefaultShadow}" />
-        <!-- <Setter Property="Margin" Value="10" /> -->
     </Style>
 
     <Style Selector="Expander">
@@ -48,7 +48,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border x:Name="Root" Background="{DynamicResource Surface}" CornerRadius="12">
-                    <SmartDockPanel>
+                    <DockPanel>
                         <ToggleButton Theme="{StaticResource ExpanderToggleButton}" x:Name="Header" Content="{TemplateBinding Header}" 
                                       Padding="{TemplateBinding Padding}"
                                       HorizontalAlignment="Stretch" DockPanel.Dock="Top" IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
@@ -56,14 +56,14 @@
                                           Padding="{TemplateBinding Padding}" 
                                           IsVisible="{TemplateBinding IsExpanded}" 
                                           Content="{TemplateBinding Content}" />
-                    </SmartDockPanel>
+                    </DockPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
     </Style>
 
     <!-- EdgePanel header styling -->
-    <Style Selector="Expander > EdgePanel">
+    <Style Selector="Expander > controls|EdgePanel">
         <Setter Property="Margin" Value="10" />
 
         <Setter Property="ContentTemplate">

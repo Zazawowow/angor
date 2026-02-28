@@ -1,29 +1,47 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
     <Design.PreviewWith>
         <Border Padding="20">
             <StackPanel Spacing="10">
-                <EnhancedButton Width="400"
+                <controls:IconButton Width="400"
                                 BorderBrush="Red"
                                 BorderThickness="5"
                                 Background="LightBlue"
-                                HorizontalContentAlignment="Left" Icon="{Icon fa-wallet}" Content="This is the new button">
-                </EnhancedButton>
-                <EnhancedButton Width="300"
+                                HorizontalContentAlignment="Left" Content="This is the new button">
+                    <controls:IconButton.Icon>
+                        <i:Icon Value="fa-wallet" />
+                    </controls:IconButton.Icon>
+                </controls:IconButton>
+                <controls:IconButton Width="300"
                                 BorderBrush="#FFB81C"
                                 BorderThickness="2"
                                 Background="LightBlue"
-                                HorizontalContentAlignment="Left" Icon="{Icon fa-wallet}">
-                </EnhancedButton>
-                <EnhancedButton Icon="{Icon fa-wallet}" />
-                <EnhancedButton Icon="{Icon mdi-close}" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch">Button with icon</EnhancedButton>
-                <EnhancedButton Content="Shadow Button" />
+                                HorizontalContentAlignment="Left">
+                    <controls:IconButton.Icon>
+                        <i:Icon Value="fa-wallet" />
+                    </controls:IconButton.Icon>
+                </controls:IconButton>
+                <controls:IconButton>
+                    <controls:IconButton.Icon>
+                        <i:Icon Value="fa-wallet" />
+                    </controls:IconButton.Icon>
+                </controls:IconButton>
+                <controls:IconButton HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Content="Button with icon">
+                    <controls:IconButton.Icon>
+                        <i:Icon Value="fa-times" />
+                    </controls:IconButton.Icon>
+                </controls:IconButton>
+                <controls:IconButton Content="Shadow Button" />
             </StackPanel>
         </Border>
     </Design.PreviewWith>
 
     <Styles.Resources>
-        <ControlTheme TargetType="EnhancedButton" x:Key="{x:Type EnhancedButton}">
+        <controls:DoubleToRightMarginConverter x:Key="DoubleToRightMargin" />
+        
+        <ControlTheme TargetType="controls:IconButton" x:Key="{x:Type controls:IconButton}">
             <Setter Property="Spacing" Value="8" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -35,30 +53,30 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel>
-                        <OverlayBorder x:Name="MainBorder" BorderThickness="{TemplateBinding BorderThickness}"
+                        <Border x:Name="MainBorder" BorderThickness="{TemplateBinding BorderThickness}"
                                                      Padding="{TemplateBinding Padding}"
                                                      Background="{TemplateBinding Background}"
                                                      BorderBrush="{TemplateBinding BorderBrush}"
                                                      CornerRadius="{TemplateBinding CornerRadius}"
                                                      BoxShadow="{TemplateBinding BoxShadow}">
-                            <SmartDockPanel HorizontalSpacing="{Binding $parent[EnhancedButton].Spacing}" 
-                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <DockPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <ContentPresenter IsVisible="{Binding !!$self.Content}"
                                                   VerticalAlignment="Center"
                                                   x:Name="IconPresenter"
+                                                  Margin="{Binding $parent[controls:IconButton].Spacing, Converter={StaticResource DoubleToRightMargin}}"
                                                   Content="{TemplateBinding Icon}" />
                                 <ContentPresenter x:Name="ContentPresenter"
                                                   IsVisible="{Binding !!$self.Content}"
                                                   VerticalAlignment="Center"
                                                   Content="{TemplateBinding Content}"
                                                   ContentTemplate="{TemplateBinding ContentTemplate}" />
-                            </SmartDockPanel>
-                        </OverlayBorder>
+                            </DockPanel>
+                        </Border>
                     </Panel>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^ /template/ OverlayBorder#MainBorder">
+            <Style Selector="^ /template/ Border#MainBorder">
                 <Setter Property="Transitions">
                     <Setter.Value>
                         <Transitions>
@@ -67,14 +85,14 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style Selector="^:pointerover /template/ OverlayBorder#MainBorder">
+            <Style Selector="^:pointerover /template/ Border#MainBorder">
                 <Setter Property="Opacity" Value="0.7" />
             </Style>
-            <Style Selector="^:pressed /template/ OverlayBorder#MainBorder">
+            <Style Selector="^:pressed /template/ Border#MainBorder">
                 <Setter Property="Opacity" Value="0.7" />
                 <Setter Property="RenderTransform" Value="scale(0.99)" />
             </Style>
-            <Style Selector="^:disabled /template/ OverlayBorder#MainBorder">
+            <Style Selector="^:disabled /template/ Border#MainBorder">
                 <Setter Property="Opacity" Value="0.5" />
             </Style>
         </ControlTheme>

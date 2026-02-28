@@ -2,9 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <FluentTheme />
-    <StyleInclude Source="avares://Zafiro.Avalonia/Styles.axaml" />
-    <StyleInclude Source="avares://Zafiro.Avalonia.Dialogs/Styles.axaml" />
     <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
+
+    <!-- EnhancedButton must come first: it defines the default IconButton ControlTheme
+         that Styles.axaml and Button.axaml reference via BasedOn="{StaticResource {x:Type IconButton}}" -->
+    <StyleInclude Source="Controls/EnhancedButton.axaml" />
 
     <StyleInclude Source="/UI/Shared/Styles/Styles.axaml" />
     <StyleInclude Source="/UI/Shared/Controls/Pane.axaml" />
@@ -23,10 +25,7 @@
     <StyleInclude Source="/UI/Shared/Styles/FlyoutPresenter.axaml" />
     <StyleInclude Source="/UI/Shared/Styles/Button.axaml" />
     <StyleInclude Source="/UI/Shared/Styles/Automation.axaml" />
-    <StyleInclude Source="/UI/Shared/Styles/SlimDataGrid.axaml" />
     
-    
-    <StyleInclude Source="Controls/EnhancedButton.axaml" />
     <StyleInclude Source="Styles/ToggleButtons.axaml" />
     <StyleInclude Source="Controls/ListBox.axaml" />
     <StyleInclude Source="Controls/Wizard.axaml" />
@@ -51,7 +50,6 @@
     <StyleInclude Source="Styles/CheckBox.axaml" />
     <StyleInclude Source="Styles/ComboBox.axaml" />
     <StyleInclude Source="Styles/ProgressBar.axaml" />
-    <StyleInclude Source="Styles/ProgressRing.axaml" />
     <StyleInclude Source="Styles/Expander.axaml" />
     <StyleInclude Source="Styles/DialogControl.axaml" />
     <StyleInclude Source="Styles/DialogViewContainer.axaml" />

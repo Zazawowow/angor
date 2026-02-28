@@ -1,27 +1,57 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
 
     <Styles.Resources>
-        <ControlTheme x:Key="StackingEdgePanel" TargetType="EdgePanel">
+        <!-- Default ControlTheme for controls:EdgePanel — DockPanel: Start left, End right, Content fills center -->
+        <ControlTheme x:Key="{x:Type controls:EdgePanel}" TargetType="controls:EdgePanel">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DockPanel Background="{TemplateBinding Background}">
+                        <ContentControl x:Name="StartContent"
+                                        DockPanel.Dock="Left"
+                                        VerticalAlignment="Center"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                        ContentTemplate="{TemplateBinding StartContentTemplate}"
+                                        Content="{TemplateBinding StartContent}" />
+                        <ContentControl x:Name="EndContent"
+                                        DockPanel.Dock="Right"
+                                        VerticalAlignment="Center"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                        ContentTemplate="{TemplateBinding EndContentTemplate}"
+                                        Content="{TemplateBinding EndContent}" />
+                        <ContentControl x:Name="MainContent"
+                                        VerticalAlignment="Center"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        Content="{TemplateBinding Content}" />
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
+
+        <ControlTheme x:Key="StackingEdgePanel" TargetType="controls:EdgePanel">
             <Setter Property="Spacing" Value="12" />
             <Setter Property="Template">
                 <ControlTemplate>
                     <StackPanel Background="{TemplateBinding Background}" Spacing="{TemplateBinding Spacing}">
                         <ContentPresenter x:Name="StartContent"
-                                        ClassAssist.ChildClasses="{TemplateBinding StartContentClasses}"
+                                        controls:ClassAssist.ChildClasses="{TemplateBinding StartContentClasses}"
                                         IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
                                         ContentTemplate="{TemplateBinding StartContentTemplate}"
                                         Content="{TemplateBinding StartContent}" />
                         <ContentPresenter x:Name="EndContent"
-                                          ClassAssist.ChildClasses="{TemplateBinding ContentClasses}"
+                                          controls:ClassAssist.ChildClasses="{TemplateBinding ContentClasses}"
                                           DockPanel.Dock="Right"
                                           VerticalAlignment="Center"
                                           ContentTemplate="{TemplateBinding EndContentTemplate}"
                                           IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
                                           Content="{TemplateBinding EndContent}" />
-                        <ContentPresenter x:Name="MainContent" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          ClassAssist.ChildClasses="{TemplateBinding EndContentClasses}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        <ContentPresenter x:Name="MainContent"
+                                          controls:ClassAssist.ChildClasses="{TemplateBinding EndContentClasses}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           VerticalAlignment="Center"
                                           IsVisible="{Binding $self.Content, Converter={x:Static ObjectConverters.IsNotNull}}"
@@ -34,22 +64,22 @@
 
     <Design.PreviewWith>
         <StackPanel Width="150" Spacing="20">
-            <EdgePanel Theme="{StaticResource StackingEdgePanel}" TextBlock.TextWrapping="Wrap">
-                <EdgePanel.StartContent>
+            <controls:EdgePanel Theme="{StaticResource StackingEdgePanel}" TextBlock.TextWrapping="Wrap">
+                <controls:EdgePanel.StartContent>
                     <TextBlock TextWrapping="Wrap" Background="Red">Hola</TextBlock>
-                </EdgePanel.StartContent>
-                <EdgePanel.EndContent>
+                </controls:EdgePanel.StartContent>
+                <controls:EdgePanel.EndContent>
                     <TextBlock TextWrapping="Wrap" Background="Green">Tío cómo estás</TextBlock>
-                </EdgePanel.EndContent>
-            </EdgePanel>
-            <EdgePanel Theme="{StaticResource StackingEdgePanel}" TextBlock.TextWrapping="Wrap">
-                <EdgePanel.StartContent>
+                </controls:EdgePanel.EndContent>
+            </controls:EdgePanel>
+            <controls:EdgePanel Theme="{StaticResource StackingEdgePanel}" TextBlock.TextWrapping="Wrap">
+                <controls:EdgePanel.StartContent>
                     <TextBlock Background="Red">Holafasdfasd</TextBlock>
-                </EdgePanel.StartContent>
-                <EdgePanel.EndContent>
+                </controls:EdgePanel.StartContent>
+                <controls:EdgePanel.EndContent>
                     <TextBlock Background="Green">Tío cómo andas</TextBlock>
-                </EdgePanel.EndContent>
-            </EdgePanel>
+                </controls:EdgePanel.EndContent>
+            </controls:EdgePanel>
         </StackPanel>
     </Design.PreviewWith>
 </Styles>

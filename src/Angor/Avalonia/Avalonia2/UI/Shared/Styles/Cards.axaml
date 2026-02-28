@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ui="clr-namespace:Zafiro.UI;assembly=Zafiro.UI">
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
 
     <Styles.Resources>
 
@@ -28,27 +29,83 @@
             <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}" />
         </ControlTheme>
 
-        <ControlTheme x:Key="{x:Type Card}"
-                      TargetType="Card"
-                      BasedOn="{StaticResource {x:Type Card}}">
+        <!-- BigIcon template for Card.HeaderStartContent — renders icon inside a Viewbox -->
+        <DataTemplate x:Key="BigIcon">
+            <Viewbox Width="{StaticResource IconSizeBig}" Height="{StaticResource IconSizeBig}">
+                <ContentPresenter Content="{Binding}" />
+            </Viewbox>
+        </DataTemplate>
+
+        <!-- Default ControlTheme for controls:Card -->
+        <ControlTheme x:Key="{x:Type controls:Card}" TargetType="controls:Card">
             <Setter Property="HeaderStartContentTemplate" Value="{StaticResource BigIcon}" />
             <Setter Property="Padding" Value="20" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BoxShadow="{TemplateBinding BoxShadow}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <DockPanel>
+                            <!-- Header row: StartContent | Header + Subheader | EndContent -->
+                            <DockPanel DockPanel.Dock="Top">
+                                <ContentControl x:Name="StartContent"
+                                                DockPanel.Dock="Left"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{Binding $parent[controls:Card].HeaderStartContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                ContentTemplate="{TemplateBinding HeaderStartContentTemplate}"
+                                                Content="{TemplateBinding HeaderStartContent}"
+                                                Margin="0,0,12,0" />
+                                <ContentControl x:Name="EndContent"
+                                                DockPanel.Dock="Right"
+                                                VerticalAlignment="Center"
+                                                IsVisible="{Binding $parent[controls:Card].HeaderEndContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                ContentTemplate="{TemplateBinding HeaderEndContentTemplate}"
+                                                Content="{TemplateBinding HeaderEndContent}" />
+                                <StackPanel VerticalAlignment="Center">
+                                    <ContentControl x:Name="Header"
+                                                    Theme="{TemplateBinding HeaderTheme}"
+                                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                    Content="{TemplateBinding Header}" />
+                                    <ContentControl x:Name="Subheader"
+                                                    Theme="{TemplateBinding SubheaderTheme}"
+                                                    IsVisible="{Binding $parent[controls:Card].Subheader, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    ContentTemplate="{TemplateBinding SubheaderTemplate}"
+                                                    Content="{TemplateBinding Subheader}" />
+                                </StackPanel>
+                            </DockPanel>
+                            <!-- Content -->
+                            <ContentControl x:Name="Content"
+                                            IsVisible="{Binding $parent[controls:Card].Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Content="{TemplateBinding Content}"
+                                            Margin="0,10,0,0" />
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </ControlTheme>
 
         <ControlTheme x:Key="AngorHighlightedContentCard"
-                      TargetType="Card"
-                      BasedOn="{StaticResource HighlightedContentCard}">
+                      TargetType="controls:Card"
+                      BasedOn="{StaticResource {x:Type controls:Card}}">
             <Setter Property="HeaderStartContentTemplate" Value="{StaticResource BigIcon}" />
+            <Setter Property="Background" Value="{DynamicResource Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Stroke}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
         </ControlTheme>
 
         <ControlTheme x:Key="WideCard"
-                      TargetType="Card"
-                      BasedOn="{StaticResource WrapGridCard}">
+                      TargetType="controls:Card"
+                      BasedOn="{StaticResource {x:Type controls:Card}}">
             <Setter Property="HeaderStartContentTemplate" Value="{StaticResource BigIcon}" />
             <Setter Property="Padding" Value="15" />
         </ControlTheme>
 
-        <ControlTheme x:Key="ItemCard" TargetType="Card" BasedOn="{StaticResource {x:Type Card}}">
+        <ControlTheme x:Key="ItemCard" TargetType="controls:Card" BasedOn="{StaticResource {x:Type controls:Card}}">
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="HeaderTheme">
                 <ControlTheme TargetType="ContentControl">
@@ -64,7 +121,7 @@
             </Setter>
         </ControlTheme>
 
-        <ControlTheme x:Key="LeftItemCard" TargetType="Card" BasedOn="{StaticResource {x:Type Card}}">
+        <ControlTheme x:Key="LeftItemCard" TargetType="controls:Card" BasedOn="{StaticResource {x:Type controls:Card}}">
             <Setter Property="HeaderTheme" Value="{StaticResource SmallFontContentControl}" />
             <Setter Property="SubheaderTheme" Value="{StaticResource BigFontContentControl}" />
             <Setter Property="Template">
@@ -84,7 +141,7 @@
             </Setter>
         </ControlTheme>
         
-        <ControlTheme x:Key="CompactLeftItemCard" TargetType="Card" BasedOn="{StaticResource {x:Type Card}}">
+        <ControlTheme x:Key="CompactLeftItemCard" TargetType="controls:Card" BasedOn="{StaticResource {x:Type controls:Card}}">
             <Setter Property="HeaderTheme" Value="{StaticResource SmallFontContentControl}" />
             <Setter Property="SubheaderTheme" Value="{StaticResource SmallFontContentControl}" />
             <Setter Property="Template">
@@ -104,7 +161,7 @@
             </Setter>
         </ControlTheme>
         
-        <ControlTheme x:Key="InfoCard" TargetType="Card" BasedOn="{StaticResource {x:Type Card}}">
+        <ControlTheme x:Key="InfoCard" TargetType="controls:Card" BasedOn="{StaticResource {x:Type controls:Card}}">
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Padding" Value="20" />
@@ -131,19 +188,12 @@
                             <ContentControl x:Name="Subheader" Content="{TemplateBinding Subheader}"
                                             ContentTemplate="{TemplateBinding SubheaderTemplate}" />
                             <ContentControl x:Name="Content" Content="{TemplateBinding Content}"
-                                            IsVisible="{Binding $parent[Card].Content, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                            ContentTemplate="{TemplateBinding ContentTemplate}">
-                                <ContentControl.Margin>
-                                    <Binding Path="$parent[Card].HeaderAndBodySpacing" Converter="{x:Static ThicknessConverters.DoubleToThicknessSides}">
-                                        <Binding.ConverterParameter>
-                                            <Sides>Top</Sides>
-                                        </Binding.ConverterParameter>
-                                    </Binding>
-                                </ContentControl.Margin>
-                            </ContentControl>
+                                            IsVisible="{Binding $parent[controls:Card].Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Margin="0,10,0,0" />
 
                             <ContentControl x:Name="EndContent" Content="{TemplateBinding HeaderEndContent}"
-                                            IsVisible="{Binding $parent[Card].HeaderEndContent, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            IsVisible="{Binding $parent[controls:Card].HeaderEndContent, Converter={x:Static ObjectConverters.IsNotNull}}"
                                             ContentTemplate="{TemplateBinding HeaderEndContentTemplate}" />
                         </StackPanel>
                     </Border>
@@ -152,8 +202,7 @@
 
         </ControlTheme>
 
-        <ControlTheme x:Key="BigCard" TargetType="Card" BasedOn="{StaticResource InfoCard}">
-            <Setter Property="IconOptions.Size" Value="{StaticResource IconSizeHuge}" />
+        <ControlTheme x:Key="BigCard" TargetType="controls:Card" BasedOn="{StaticResource InfoCard}">
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
                     <DataTemplate DataType="x:Object">
@@ -175,7 +224,7 @@
             </Setter>
         </ControlTheme>
 
-        <ControlTheme x:Key="SmallCard" TargetType="Card" BasedOn="{StaticResource InfoCard}">
+        <ControlTheme x:Key="SmallCard" TargetType="controls:Card" BasedOn="{StaticResource InfoCard}">
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
                     <DataTemplate DataType="x:Object">
@@ -196,112 +245,110 @@
             </Setter>
         </ControlTheme>
 
-        <ControlTheme TargetType="EdgePanel" x:Key="HeaderEdgePanel">
+        <!-- HeaderEdgePanel: wrapping layout with Start, Content, End zones -->
+        <ControlTheme TargetType="controls:EdgePanel" x:Key="HeaderEdgePanel">
             <Setter Property="Spacing" Value="12" />
             <Setter Property="Template">
                 <ControlTemplate>
-                    <FlexBox Background="{TemplateBinding Background}" Wrap="Wrap" Gap="20" JustifyContent="Center">
+                    <WrapPanel Background="{TemplateBinding Background}">
                         <ContentControl x:Name="StartContent"
-                                        FlexBox.Grow="0"
+                                        Margin="0,0,20,0"
                                         ContentTemplate="{TemplateBinding StartContentTemplate}"
                                         Content="{TemplateBinding StartContent}" />
-                        <ContentControl FlexBox.Grow="1" x:Name="MainContent"
-                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        <ContentControl x:Name="MainContent"
                                         HorizontalAlignment="Left"
+                                        Margin="0,0,20,0"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Content="{TemplateBinding Content}" />
-                        <ContentControl FlexBox.Grow="0" x:Name="EndContent"
+                        <ContentControl x:Name="EndContent"
                                         HorizontalAlignment="Right"
                                         ContentTemplate="{TemplateBinding EndContentTemplate}"
                                         Content="{TemplateBinding EndContent}" />
-                    </FlexBox>
+                    </WrapPanel>
                 </ControlTemplate>
             </Setter>
+        </ControlTheme>
+
+        <!-- TransparentCard theme -->
+        <ControlTheme x:Key="TransparentCard" TargetType="controls:Card" BasedOn="{StaticResource {x:Type controls:Card}}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
         </ControlTheme>
     </Styles.Resources>
 
 
-    <Style Selector="Card.Transparent">
+    <Style Selector="controls|Card.Transparent">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Padding" Value="0" />
     </Style>
 
     <Design.PreviewWith>
         <StackPanel Width="400" Spacing="20" Margin="20">
-            <Card HorizontalAlignment="Center" Theme="{StaticResource CompactLeftItemCard}" 
+            <controls:Card HorizontalAlignment="Center" Theme="{StaticResource CompactLeftItemCard}" 
                   Header="Funded Projects" Subheader="123">
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="svg:/Assets/portfolio.svg" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card HorizontalAlignment="Center" Theme="{StaticResource LeftItemCard}" 
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-chart-pie" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card HorizontalAlignment="Center" Theme="{StaticResource LeftItemCard}" 
                   Header="Funded Projects" Subheader="123">
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="svg:/Assets/portfolio.svg" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card HorizontalAlignment="Center" Theme="{StaticResource LeftItemCard}" 
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-chart-pie" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card HorizontalAlignment="Center" Theme="{StaticResource LeftItemCard}" 
                   Header="Total Invested" Subheader="123">
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="svg:/Assets/portfolio.svg" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card HorizontalAlignment="Center" Theme="{StaticResource LeftItemCard}" 
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-chart-pie" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card HorizontalAlignment="Center" Theme="{StaticResource LeftItemCard}" 
                   Header="Recovered to penalty" Subheader="123">
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="svg:/Assets/portfolio.svg" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Header="Card" Height="200" Subheader="Subheader">
-                <Card.DataContext>
-                    <MyViewModel Left="LEFT" />
-                </Card.DataContext>
-                <Card.HeaderEndContent>
-                    <TextBlock Text="{Binding Left, DataType=MyViewModel}" />
-                </Card.HeaderEndContent>
-                <Card.Content>
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-chart-pie" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card Header="Card" Height="200" Subheader="Subheader">
+                <controls:Card.HeaderEndContent>
+                    <TextBlock Text="End content" />
+                </controls:Card.HeaderEndContent>
+                <controls:Card.Content>
                     <TextBlock>This is the content</TextBlock>
-                </Card.Content>
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="fa-wallet" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Header="Card no content" Subheader="Subheader">
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="fa-wallet" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Theme="{StaticResource InfoCard}" Header="InfoCard" Subheader="Subheader">
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="fa-wallet" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Header="Big card" Theme="{StaticResource BigCard}" Subheader="Subheader">
-                <Card.Content>
+                </controls:Card.Content>
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-wallet" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card Header="Card no content" Subheader="Subheader">
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-wallet" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card Theme="{StaticResource InfoCard}" Header="InfoCard" Subheader="Subheader">
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-wallet" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card Header="Big card" Theme="{StaticResource BigCard}" Subheader="Subheader">
+                <controls:Card.Content>
                     <TextBlock>This is the content</TextBlock>
-                </Card.Content>
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="fa-wallet" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Header="Small card" Theme="{StaticResource SmallCard}" Subheader="Subheader">
-                <Card.Content>
+                </controls:Card.Content>
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-wallet" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card Header="Small card" Theme="{StaticResource SmallCard}" Subheader="Subheader">
+                <controls:Card.Content>
                     <TextBlock>This is the content</TextBlock>
-                </Card.Content>
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="fa-wallet" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Header="Small card" Theme="{StaticResource SmallCard}" Subheader="Subheader">
-                <Card.Content>
-                    <TextBlock TextWrapping="Wrap">Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.</TextBlock>
-                </Card.Content>
-                <Card.HeaderStartContent>
-                    <ui:Icon Source="fa-wallet" />
-                </Card.HeaderStartContent>
-            </Card>
-            <Card Theme="{StaticResource TransparentCard}" Header="TransparentCard" Subheader="Transparent" />
-            <Card Theme="{StaticResource WideCard}" HeaderStartContent="Left" HeaderEndContent="Right" Header="TITLE" Subheader="Subheader" Content="CONTENT" />
-            <Card Theme="{StaticResource ItemCard}" HeaderStartContent="Left" HeaderEndContent="Right" Header="TITLE" Subheader="Subheader" Content="CONTENT" />
+                </controls:Card.Content>
+                <controls:Card.HeaderStartContent>
+                    <i:Icon Value="fa-wallet" />
+                </controls:Card.HeaderStartContent>
+            </controls:Card>
+            <controls:Card Theme="{StaticResource TransparentCard}" Header="TransparentCard" Subheader="Transparent" />
+            <controls:Card Theme="{StaticResource WideCard}" HeaderStartContent="Left" HeaderEndContent="Right" Header="TITLE" Subheader="Subheader" Content="CONTENT" />
+            <controls:Card Theme="{StaticResource ItemCard}" HeaderStartContent="Left" HeaderEndContent="Right" Header="TITLE" Subheader="Subheader" Content="CONTENT" />
         </StackPanel>
     </Design.PreviewWith>
 </Styles>

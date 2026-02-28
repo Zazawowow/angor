@@ -1,18 +1,17 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ui="clr-namespace:Zafiro.UI;assembly=Zafiro.UI">
+        xmlns:i="https://github.com/projektanker/icons.avalonia">
 
     <Styles.Resources>
         <ControlTheme x:Key="ExpandingToggleButton" TargetType="ToggleButton" 
                       BasedOn="{StaticResource {x:Type ToggleButton}}">
-            <!-- <Setter Property="Background" Value="Red"></Setter> -->
             <Style Selector="^[IsChecked=True]">
                 <Setter Property="Content">
                     <Setter.Value>
                         <Template>
                             <StackPanel Spacing="10" Orientation="Horizontal">
                                 <ContentControl>
-                                    <ui:Icon Source="fa-angle-up" />
+                                    <i:Icon Value="fa-solid fa-angle-up" />
                                 </ContentControl>
                                 <TextBlock>Collapse</TextBlock>
                             </StackPanel>
@@ -26,7 +25,7 @@
                         <Template>
                             <StackPanel Spacing="10" Orientation="Horizontal">
                                 <ContentControl>
-                                    <ui:Icon Source="fa-angle-down" />
+                                    <i:Icon Value="fa-solid fa-angle-down" />
                                 </ContentControl>
                                 <TextBlock>Expand</TextBlock>
                             </StackPanel>
@@ -38,13 +37,12 @@
         </ControlTheme>
         <ControlTheme x:Key="ExpandingToggleButtonNoText" TargetType="ToggleButton" 
                       BasedOn="{StaticResource {x:Type ToggleButton}}">
-            <!-- <Setter Property="Background" Value="Red"></Setter> -->
             <Style Selector="^[IsChecked=True]">
                 <Setter Property="Content">
                     <Setter.Value>
                         <Template>
                             <ContentControl>
-                                <ui:Icon Source="fa-angle-up" />
+                                <i:Icon Value="fa-solid fa-angle-up" />
                             </ContentControl>
                         </Template>
                     </Setter.Value>
@@ -55,7 +53,7 @@
                     <Setter.Value>
                         <Template>
                             <ContentControl>
-                                <ui:Icon Source="fa-angle-down" />
+                                <i:Icon Value="fa-solid fa-angle-down" />
                             </ContentControl>
                         </Template>
                     </Setter.Value>

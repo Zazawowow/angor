@@ -1,20 +1,22 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
         xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections">
     <Design.PreviewWith>
-        <DialogViewContainer Width="500" Height="500" Title="Nice Dialog">
-            <DialogControl Content="Some This is some text that gives context to the user about the dialog. It can be multiple lines and contain important information that the user needs to know before taking an action.">
-                <DialogControl.Options>
-                    <generic:List x:TypeArguments="IOption">
-                        <OptionDesign Title="Primary" Role="Primary" />
-                        <OptionDesign Title="Secondary" Role="Secondary" />
+        <controls:DialogViewContainer Width="500" Height="500" Title="Nice Dialog">
+            <controls:DialogControl Content="Some This is some text that gives context to the user about the dialog. It can be multiple lines and contain important information that the user needs to know before taking an action.">
+                <controls:DialogControl.Options>
+                    <generic:List x:TypeArguments="controls:IOption">
+                        <controls:OptionDesign Title="Primary" Role="Primary" />
+                        <controls:OptionDesign Title="Secondary" Role="Secondary" />
                     </generic:List>
-                </DialogControl.Options>
-            </DialogControl>
-        </DialogViewContainer>
+                </controls:DialogControl.Options>
+            </controls:DialogControl>
+        </controls:DialogViewContainer>
     </Design.PreviewWith>
 
-    <Style Selector="DialogViewContainer">
+    <Style Selector="controls|DialogViewContainer">
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
@@ -39,15 +41,17 @@
                         <StackPanel Classes="Gap-XL">
                             <Panel>
                                 <TextBlock VerticalAlignment="Center" Classes="Size-XL Weight-Bold Center" Text="{TemplateBinding Title}" />
-                                <EnhancedButton Command="{TemplateBinding Close}"
+                                <controls:IconButton Command="{TemplateBinding Close}"
                                                 IsCancel="True"
                                                 Padding="0"
                                                 Background="Transparent" 
                                                 BorderBrush="Transparent"
-                                                IconOptions.Size="24"
                                                 Foreground="{DynamicResource Dimmed}"
-                                                HorizontalAlignment="Right" 
-                                                Icon="{Icon mdi-close}" />
+                                                HorizontalAlignment="Right">
+                                    <controls:IconButton.Icon>
+                                        <i:Icon Value="fa-solid fa-xmark" FontSize="24" />
+                                    </controls:IconButton.Icon>
+                                </controls:IconButton>
                             </Panel>
                             <ContentPresenter Content="{TemplateBinding Content}" />
                         </StackPanel>
