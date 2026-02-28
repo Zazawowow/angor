@@ -189,6 +189,138 @@ public class InvestmentViewModel : INotifyPropertyChanged
     public int SignatureId { get; set; }
     public ObservableCollection<InvestmentStageViewModel> Stages { get; set; } = new();
 
+    // ── Recovery / Penalty State (Vue: penaltyState in InvestmentDetail.vue) ──
+    // State machine: none → pending → canRelease → released
+
+    private string _penaltyState = "none";
+    /// <summary>Recovery penalty state: "none", "pending", "canRelease", "released"</summary>
+    public string PenaltyState
+    {
+        get => _penaltyState;
+        set
+        {
+            if (_penaltyState == value) return;
+            _penaltyState = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsPenaltyNone));
+            OnPropertyChanged(nameof(IsPenaltyPending));
+            OnPropertyChanged(nameof(IsPenaltyCanRelease));
+            OnPropertyChanged(nameof(PenaltyButtonText));
+            OnPropertyChanged(nameof(PenaltyButtonIcon));
+            OnPropertyChanged(nameof(ShowRecoverButton));
+        }
+    }
+
+    // Penalty state visibility helpers
+    public bool IsPenaltyNone => PenaltyState == "none";
+    public bool IsPenaltyPending => PenaltyState == "pending";
+    public bool IsPenaltyCanRelease => PenaltyState == "canRelease";
+
+    /// <summary>Whether the recovery button should be shown (Vue: isApproved && (investmentCompleted || currentStep === 3))</summary>
+    public bool ShowRecoverButton => ApprovalStatus == "Approved" && Step == 3 && PenaltyState != "released";
+
+    /// <summary>Dynamic button text per penalty state (Vue: computed penaltyButtonText)</summary>
+    public string PenaltyButtonText => PenaltyState switch
+    {
+        "pending" => "Claim Penalties",
+        "canRelease" => "Release Funds",
+        _ => "Recover Funds"
+    };
+
+    /// <summary>Dynamic button icon per penalty state (Vue: refresh for none, check-circle for others)</summary>
+    public string PenaltyButtonIcon => PenaltyState switch
+    {
+        "none" => "fa-solid fa-arrows-rotate",
+        _ => "fa-solid fa-circle-check"
+    };
+
+    /// <summary>Number of unreleased stages (Vue: stagesToRecover computed)</summary>
+    public int StagesToRecover => Stages.Count(s => s.Status != "Released");
+
+    /// <summary>Sum of unreleased stage amounts (Vue: amountToRecover computed)</summary>
+    public string AmountToRecover
+    {
+        get
+        {
+            var total = Stages.Where(s => s.Status != "Released")
+                .Sum(s => double.TryParse(s.Amount, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture, out var v) ? v : 0);
+            return total.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
+        }
+    }
+
+    // ── Recovery Modal Visibility State ──
+
+    private bool _showRecoveryModal;
+    public bool ShowRecoveryModal
+    {
+        get => _showRecoveryModal;
+        set { if (_showRecoveryModal == value) return; _showRecoveryModal = value; OnPropertyChanged(); }
+    }
+
+    private bool _showClaimModal;
+    public bool ShowClaimModal
+    {
+        get => _showClaimModal;
+        set { if (_showClaimModal == value) return; _showClaimModal = value; OnPropertyChanged(); }
+    }
+
+    private bool _showReleaseModal;
+    public bool ShowReleaseModal
+    {
+        get => _showReleaseModal;
+        set { if (_showReleaseModal == value) return; _showReleaseModal = value; OnPropertyChanged(); }
+    }
+
+    private bool _showSuccessModal;
+    public bool ShowSuccessModal
+    {
+        get => _showSuccessModal;
+        set { if (_showSuccessModal == value) return; _showSuccessModal = value; OnPropertyChanged(); }
+    }
+
+    private string _selectedFeePriority = "standard";
+    /// <summary>Fee priority: "priority", "standard", "economy"</summary>
+    public string SelectedFeePriority
+    {
+        get => _selectedFeePriority;
+        set
+        {
+            if (_selectedFeePriority == value) return;
+            _selectedFeePriority = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFeePriority));
+            OnPropertyChanged(nameof(IsFeeStandard));
+            OnPropertyChanged(nameof(IsFeeEconomy));
+        }
+    }
+
+    public bool IsFeePriority => SelectedFeePriority == "priority";
+    public bool IsFeeStandard => SelectedFeePriority == "standard";
+    public bool IsFeeEconomy => SelectedFeePriority == "economy";
+
+    private bool _isCustomFeeRate;
+    public bool IsCustomFeeRate
+    {
+        get => _isCustomFeeRate;
+        set { if (_isCustomFeeRate == value) return; _isCustomFeeRate = value; OnPropertyChanged(); }
+    }
+
+    private bool _isProcessing;
+    public bool IsProcessing
+    {
+        get => _isProcessing;
+        set { if (_isProcessing == value) return; _isProcessing = value; OnPropertyChanged(); }
+    }
+
+    // ── Recovery stub data (Vue: computed/static values) ──
+    public string PenaltyDuration => "90 days";
+    public string MinerFee => "0.00000645";
+    public string DestinationAddress => "tb1q7fxzwjc97ft53sugz8v7szj5ul02er7wtykjwp";
+    public string RecoveryProjectId => "angor1q3pthkftzh3ym4emg0ctcxhmz5u5m7lt5tk69je";
+    public string PenaltyAmount => AmountToRecover;
+    public int PenaltyDaysRemaining => 67;
+
     // ── Step visibility helpers (for XAML binding without converters) ──
     public bool IsStep1 => Step == 1;
     public bool IsStep2 => Step == 2;

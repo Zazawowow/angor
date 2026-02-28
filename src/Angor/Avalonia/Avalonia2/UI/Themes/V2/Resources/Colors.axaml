@@ -422,6 +422,31 @@
             <!-- Vue: action button hover bg: light rgba(75,124,90,0.1) -->
             <SolidColorBrush x:Key="BrandGreenTint" Color="#1A4B7C5A" />
 
+            <!-- ── Recovery Modals (light) ── -->
+            <!-- Vue: modal container bg-white border-gray-200 -->
+            <SolidColorBrush x:Key="RecoveryModalBg" Color="White" />
+            <SolidColorBrush x:Key="RecoveryModalBorder" Color="#E5E7EB" />
+            <!-- Vue: info card / warning box bg-gray-50, border-gray-200 -->
+            <SolidColorBrush x:Key="RecoveryInfoCardBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="RecoveryInfoCardBorder" Color="#E5E7EB" />
+            <!-- Vue: warning box (neutral gray, NOT orange) bg-gray-50 border-gray-200 -->
+            <SolidColorBrush x:Key="RecoveryWarningBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="RecoveryWarningBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="RecoveryWarningText" Color="#374151" />
+            <!-- Vue: fee info badge bg-blue-50 text-blue-700 -->
+            <SolidColorBrush x:Key="RecoveryFeeBadgeBg" Color="#EFF6FF" />
+            <SolidColorBrush x:Key="RecoveryFeeBadgeText" Color="#1D4ED8" />
+            <!-- Vue: fee priority unselected border-gray-300 text-gray-700 -->
+            <SolidColorBrush x:Key="RecoveryFeeUnselectedBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="RecoveryFeeUnselectedText" Color="#374151" />
+            <!-- Vue: fee priority selected border/bg #4B7C5A text white (same both themes) -->
+            <SolidColorBrush x:Key="RecoveryFeeSelectedBg" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="RecoveryFeeSelectedBorder" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="RecoveryFeeSelectedText" Color="White" />
+            <!-- Vue: claim table header border-gray-200, row border-gray-100 -->
+            <SolidColorBrush x:Key="RecoveryTableHeaderBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="RecoveryTableRowBorder" Color="#F3F4F6" />
+
             <!-- ── Pill Colors (light) ── -->
             <!-- Green pill: status "Open", "Active", generic success -->
             <SolidColorBrush x:Key="PillGreenBorder" Color="#4B7C5A" />
@@ -838,6 +863,31 @@
 
             <!-- Vue: action button hover bg: dark rgba(75,124,90,0.2) -->
             <SolidColorBrush x:Key="BrandGreenTint" Color="#334B7C5A" />
+
+            <!-- ── Recovery Modals (dark) ── -->
+            <!-- Vue: modal container bg-[#1a1a1a] border-[#404040] -->
+            <SolidColorBrush x:Key="RecoveryModalBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="RecoveryModalBorder" Color="#404040" />
+            <!-- Vue: info card bg-[#0A0A0A] border-gray-700 -->
+            <SolidColorBrush x:Key="RecoveryInfoCardBg" Color="#0A0A0A" />
+            <SolidColorBrush x:Key="RecoveryInfoCardBorder" Color="#374151" />
+            <!-- Vue: warning box bg-gray-800 border-gray-700 -->
+            <SolidColorBrush x:Key="RecoveryWarningBg" Color="#1F2937" />
+            <SolidColorBrush x:Key="RecoveryWarningBorder" Color="#374151" />
+            <SolidColorBrush x:Key="RecoveryWarningText" Color="#D1D5DB" />
+            <!-- Vue: fee info badge dark bg-gray-800 text-gray-300 -->
+            <SolidColorBrush x:Key="RecoveryFeeBadgeBg" Color="#1F2937" />
+            <SolidColorBrush x:Key="RecoveryFeeBadgeText" Color="#D1D5DB" />
+            <!-- Vue: fee priority unselected dark border-gray-700 text-gray-300 -->
+            <SolidColorBrush x:Key="RecoveryFeeUnselectedBorder" Color="#374151" />
+            <SolidColorBrush x:Key="RecoveryFeeUnselectedText" Color="#D1D5DB" />
+            <!-- Vue: fee priority selected (same both themes) -->
+            <SolidColorBrush x:Key="RecoveryFeeSelectedBg" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="RecoveryFeeSelectedBorder" Color="#4B7C5A" />
+            <SolidColorBrush x:Key="RecoveryFeeSelectedText" Color="White" />
+            <!-- Vue: claim table header border-[#404040], row border-[#2a2a2a] -->
+            <SolidColorBrush x:Key="RecoveryTableHeaderBorder" Color="#404040" />
+            <SolidColorBrush x:Key="RecoveryTableRowBorder" Color="#2A2A2A" />
 
             <!-- ── Pill Colors (dark — 20% opacity bg, lighter text for readability) ── -->
             <!-- Green pill -->

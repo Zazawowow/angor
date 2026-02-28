@@ -284,6 +284,19 @@ public partial class ShellViewModel : ReactiveObject
     }
 
     /// <summary>
+    /// Navigate to "Funds" section.
+    /// Called from the Recovery flow success modal ("Go to Funds Tab").
+    /// </summary>
+    public void NavigateToFunds()
+    {
+        var fundsItem = NavEntries.OfType<NavItem>().FirstOrDefault(n => n.Label == "Funds");
+        if (fundsItem != null)
+        {
+            SelectedNavItem = fundsItem;
+        }
+    }
+
+    /// <summary>
     /// Show a modal overlay above the entire app window.
     /// The content control will be displayed centered over a backdrop scrim.
     /// </summary>
