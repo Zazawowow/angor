@@ -107,6 +107,29 @@ public partial class CreateProjectView : UserControl
         ApplyTypeCardStyles();
     }
 
+    protected override void OnAttachedToLogicalTree(Avalonia.LogicalTree.LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+
+        // Re-subscribe after view is re-attached from cache (subscriptions are
+        // disposed in OnDetachedFromLogicalTree when the user navigates away).
+        if (_deploySubscription == null && DataContext is CreateProjectViewModel vm)
+        {
+            _stepSubscription = vm.WhenAnyValue(x => x.CurrentStep)
+                .Subscribe(_ => UpdateStepper());
+
+            _typeSubscription = vm.WhenAnyValue(x => x.ProjectType)
+                .Subscribe(_ => UpdateStepperLabels());
+
+            _deploySubscription = vm.DeployFlow.WhenAnyValue(x => x.IsVisible)
+                .Subscribe(isVisible =>
+                {
+                    if (isVisible)
+                        ShowDeployShellModal(vm);
+                });
+        }
+    }
+
     protected override void OnDetachedFromLogicalTree(Avalonia.LogicalTree.LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
