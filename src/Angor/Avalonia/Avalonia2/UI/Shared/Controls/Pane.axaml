@@ -109,8 +109,8 @@
                 <c:Pane.TitleIcon>
                     <avalonia:Icon Value="fa-wallet" />
                 </c:Pane.TitleIcon>
-                <c:Pane.HeaderBackground>/Assets/community.png</c:Pane.HeaderBackground>
-                <c:Pane.HeaderIcon>/Assets/community.png</c:Pane.HeaderIcon>
+                <c:Pane.HeaderBackground></c:Pane.HeaderBackground>
+                <c:Pane.HeaderIcon></c:Pane.HeaderIcon>
                 <c:Pane.Icon>
                     <avalonia:Icon Value="fa-wallet" />
                 </c:Pane.Icon>
@@ -140,10 +140,8 @@
                     <avalonia:Icon Value="fa-wallet" />
                 </c:Pane.TitleIcon>
                 <c:Pane.HeaderBackground>
-                    /Assets/community.png
                 </c:Pane.HeaderBackground>
                 <c:Pane.HeaderIcon>
-                    /Assets/community.png
                 </c:Pane.HeaderIcon>
                 <c:Pane.Icon>
                     <avalonia:Icon Value="fa-wallet" />

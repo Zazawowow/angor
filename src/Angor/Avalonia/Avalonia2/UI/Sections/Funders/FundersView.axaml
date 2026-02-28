@@ -495,10 +495,8 @@
                                                             CornerRadius="4"
                                                             VerticalAlignment="Top"
                                                             Margin="8,0,0,0">
-                                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                                            <Border.OpacityMask>
-                                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                                            </Border.OpacityMask>
+                                                        <Border Width="16" Height="16">
+                                                            <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
                                                         </Border>
                                                     </Button>
                                                     <!-- Vue: flex-1 text-sm break-all font-mono -->

@@ -3,7 +3,7 @@
                     xmlns:a="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
                     xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls">
     <Design.PreviewWith>
-        <controls:Header Width="400" Height="300" BackgroundImageUri="/Assets/community.png" IconUri="/Assets/community.png" />
+        <controls:Header Width="400" Height="300" />
     </Design.PreviewWith>
 
     <ControlTheme TargetType="controls:Header" x:Key="{x:Type controls:Header}">

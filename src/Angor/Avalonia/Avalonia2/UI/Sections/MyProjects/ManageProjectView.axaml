@@ -100,11 +100,7 @@
                         </Transitions>
                     </Border.Transitions>
                     <Button Classes="NavBtn" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Cursor="Hand">
-                        <Border Width="16" Height="16" Background="{DynamicResource TextStrong}">
-                            <Border.OpacityMask>
-                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                            </Border.OpacityMask>
-                        </Border>
+                        <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="14" Foreground="{DynamicResource TextStrong}" />
                     </Button>
                 </Border>
 
@@ -127,13 +123,8 @@
                         </Transitions>
                     </Border.Transitions>
                     <Button Classes="NavBtn" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Cursor="Hand">
-                        <!-- Share icon: PNG tinted via OpacityMask -->
-                        <Border Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Background="{DynamicResource TextStrong}">
-                            <Border.OpacityMask>
-                                <ImageBrush Source="/Assets/share-forward.png" Stretch="Uniform" />
-                            </Border.OpacityMask>
-                        </Border>
+                        <i:Icon Value="fa-solid fa-share" FontSize="14" Foreground="{DynamicResource TextStrong}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Button>
                 </Border>
             </StackPanel>
@@ -289,11 +280,7 @@
                                         BorderThickness="0"
                                         CornerRadius="6"
                                         Padding="8">
-                                    <Border Width="18" Height="18" Background="{DynamicResource ProjectIdLabel}">
-                                        <Border.OpacityMask>
-                                            <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                        </Border.OpacityMask>
-                                    </Border>
+                                    <i:Icon Value="fa-solid fa-copy" FontSize="16" Foreground="{DynamicResource ProjectIdLabel}" />
                                 </Button>
                             </StackPanel>
                         </Grid>
@@ -1027,14 +1014,9 @@
                                 </Button.Background>
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                                     <!-- Spinner (visible when claiming) -->
-                                    <Viewbox Width="16" Height="16"
-                                             IsVisible="{Binding IsClaiming}">
-                                        <Border Width="16" Height="16" Background="White">
-                                            <Border.OpacityMask>
-                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                            </Border.OpacityMask>
-                                        </Border>
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="14"
+                                            Foreground="White"
+                                            IsVisible="{Binding IsClaiming}" />
                                     <TextBlock Name="ConfirmClaimText"
                                                Text="Confirm"
                                                FontWeight="SemiBold" />
@@ -1062,20 +1044,15 @@
                     BoxShadow="0 8 32 0 #40000000"
                     Padding="32">
                 <StackPanel Spacing="24">
-                    <!-- Success Icon: 80x80 green circle with checkmark -->
+                    <!-- Success Icon: 80x80 green circle with checkmark (matches deploy flow) -->
                     <!-- Vue: w-20 h-20, bg rgba(75,124,90,0.1/0.2), checkmark #4B7C5A -->
                     <Border Width="80" Height="80" CornerRadius="40"
-                            Background="{DynamicResource SuccessIconCircleBg}"
+                            Background="{DynamicResource DeploySuccessIconBg}"
                             HorizontalAlignment="Center">
-                        <Viewbox Width="48" Height="48"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center">
-                            <Path Data="{StaticResource Checkmark}"
-                                  Stroke="#4B7C5A"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round" StrokeJoin="Round"
-                                  Width="24" Height="24" Stretch="Uniform" />
-                        </Viewbox>
+                        <i:Icon Value="fa-solid fa-check" FontSize="36"
+                                Foreground="{DynamicResource DeploySuccessCheck}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
                     </Border>
 
                     <!-- Title: "Funds Claimed!" -->
@@ -1345,14 +1322,9 @@
                                     </LinearGradientBrush>
                                 </Button.Background>
                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                                    <Viewbox Width="16" Height="16"
-                                             IsVisible="{Binding IsReleasingFunds}">
-                                        <Border Width="16" Height="16" Background="White">
-                                            <Border.OpacityMask>
-                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                            </Border.OpacityMask>
-                                        </Border>
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="14"
+                                            Foreground="White"
+                                            IsVisible="{Binding IsReleasingFunds}" />
                                     <TextBlock Name="ConfirmReleaseText"
                                                Text="Confirm"
                                                FontWeight="SemiBold" />

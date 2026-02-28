@@ -120,13 +120,13 @@
                                     Padding="16"
                                     Margin="8,0,0,0">
                                 <Grid RowDefinitions="28,Auto,Auto" HorizontalAlignment="Left">
-                                    <!-- Row 0: Icon -->
+                                    <!-- Row 0: Icon (muted style, matching neighboring stat cards) -->
                                     <Border Grid.Row="0" Width="28" Height="28" CornerRadius="14"
-                                            Background="#F7931A" HorizontalAlignment="Left"
+                                            Background="#1A4B7C5A" HorizontalAlignment="Left"
                                             VerticalAlignment="Top">
                                         <i:Icon Value="fa-brands fa-bitcoin"
                                                FontSize="14"
-                                               Foreground="White" />
+                                               Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <!-- Row 1: Value -->
                                     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="4"

@@ -138,13 +138,9 @@
                     </Transitions>
                 </Border.Transitions>
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <!-- Share icon: PNG tinted via OpacityMask -->
-                    <Border Width="16" Height="16" VerticalAlignment="Center"
-                            Background="{DynamicResource TextStrong}">
-                        <Border.OpacityMask>
-                            <ImageBrush Source="/Assets/share-forward.png" Stretch="Uniform" />
-                        </Border.OpacityMask>
-                    </Border>
+                    <i:Icon Value="fa-solid fa-share" FontSize="14"
+                           Foreground="{DynamicResource TextStrong}"
+                           VerticalAlignment="Center" />
                     <TextBlock Text="Share"
                                FontSize="14"
                                FontWeight="SemiBold"
@@ -819,11 +815,7 @@
                                     <Border Name="CopyProjectIdBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
-                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                            <Border.OpacityMask>
-                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                            </Border.OpacityMask>
-                                        </Border>
+                                        <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <TextBlock Text="{Binding ProjectId}"
                                                FontSize="13"
@@ -851,11 +843,7 @@
                                     <Border Name="CopyFounderKeyBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
-                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                            <Border.OpacityMask>
-                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                            </Border.OpacityMask>
-                                        </Border>
+                                        <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <TextBlock Text="{Binding FounderKey}"
                                                FontSize="13"
@@ -923,11 +911,7 @@
                                     <Border Name="CopyNpubBtn" Cursor="Hand"
                                             DockPanel.Dock="Right" HorizontalAlignment="Right"
                                             Margin="8,0,0,0">
-                                        <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                            <Border.OpacityMask>
-                                                <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                            </Border.OpacityMask>
-                                        </Border>
+                                        <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
                                     </Border>
                                     <TextBlock Text="{Binding NostrNpub}"
                                                FontSize="13"

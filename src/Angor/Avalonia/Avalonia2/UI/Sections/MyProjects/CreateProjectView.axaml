@@ -695,13 +695,9 @@
                                         <Border Grid.Column="0" Name="IconBgSubscription" Classes="TypeCardIconBg"
                                                 Width="48" Height="48" CornerRadius="10"
                                                 VerticalAlignment="Center">
-                                            <Viewbox Width="22" Height="22">
-                                                <Border Width="22" Height="22" Name="IconBorderSubscription" Classes="TypeCardIconStroke IconSub">
-                                                    <Border.OpacityMask>
-                                                        <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                                    </Border.OpacityMask>
-                                                </Border>
-                                            </Viewbox>
+                                            <i:Icon Name="IconBorderSubscription" Classes="TypeCardIconStroke IconSub"
+                                                    Value="fa-solid fa-arrows-rotate" FontSize="20"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Border>
                                         <!-- Title + description -->
                                         <StackPanel Grid.Column="1" Spacing="6" Margin="20,0,20,0"

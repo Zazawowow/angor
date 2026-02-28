@@ -904,13 +904,8 @@
                                 Background="#F7931A"
                                 CornerRadius="8">
                             <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Viewbox Width="16" Height="16" VerticalAlignment="Center">
-                                    <Border Width="16" Height="16" Background="White">
-                                        <Border.OpacityMask>
-                                            <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                        </Border.OpacityMask>
-                                    </Border>
-                                </Viewbox>
+                                <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="14"
+                                        Foreground="White" VerticalAlignment="Center" />
                                 <TextBlock Text="Recover Funds"
                                            FontSize="14"
                                            FontWeight="SemiBold"

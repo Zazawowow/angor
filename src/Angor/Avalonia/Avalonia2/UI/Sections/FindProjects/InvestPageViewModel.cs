@@ -94,13 +94,13 @@ public partial class InvestPageViewModel : ReactiveObject
         : "Choose Wallet";
 
     // ── Quick Amounts (investment type only) ──
-    // Vue ref: quickAmounts grid — 4 items
+    // Vue ref: quickAmounts grid — 4 items, label is "BTC"
     public ObservableCollection<QuickAmountOption> QuickAmounts { get; } = new()
     {
-        new() { Amount = 0.001, AmountText = "0.001", Label = "100K sats" },
-        new() { Amount = 0.01, AmountText = "0.01", Label = "1M sats" },
-        new() { Amount = 0.1, AmountText = "0.1", Label = "10M sats" },
-        new() { Amount = 0.5, AmountText = "0.5", Label = "50M sats" }
+        new() { Amount = 0.001, AmountText = "0.001", Label = "BTC" },
+        new() { Amount = 0.01, AmountText = "0.01", Label = "BTC" },
+        new() { Amount = 0.1, AmountText = "0.1", Label = "BTC" },
+        new() { Amount = 0.5, AmountText = "0.5", Label = "BTC" }
     };
 
     // ── Subscription Plans (subscription type only) ──

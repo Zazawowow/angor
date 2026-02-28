@@ -271,14 +271,9 @@
                                Foreground="White"
                                VerticalAlignment="Center"
                                IsVisible="{Binding IsNotSubscription}" />
-                        <Viewbox Width="20" Height="20" VerticalAlignment="Center"
-                                 IsVisible="{Binding IsSubscription}">
-                            <Border Width="20" Height="20" Background="White">
-                                <Border.OpacityMask>
-                                    <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                </Border.OpacityMask>
-                            </Border>
-                        </Viewbox>
+                        <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="18"
+                               Foreground="White" VerticalAlignment="Center"
+                               IsVisible="{Binding IsSubscription}" />
                         <TextBlock Text="{Binding Project.ActionButtonText}"
                                    FontSize="16" FontWeight="SemiBold"
                                    Foreground="White" VerticalAlignment="Center" />
@@ -414,14 +409,9 @@
                             <StackPanel Orientation="Horizontal" Spacing="12">
                                 <Border Width="40" Height="40" CornerRadius="8"
                                         Background="#F97316">
-                                    <Viewbox Width="20" Height="20"
-                                             HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Border Width="20" Height="20" Background="White">
-                                            <Border.OpacityMask>
-                                                <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                            </Border.OpacityMask>
-                                        </Border>
-                                    </Viewbox>
+                                    <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="18"
+                                            Foreground="White"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <!-- Vue: .subscription-card-title { color: #7c2d12 } / dark { color: #fb923c } -->
                                 <TextBlock Text="Subscription Plan"
@@ -588,11 +578,7 @@
                                         <Border Grid.Column="1" Name="CopyProjectIdButton"
                                                 Cursor="Hand" Padding="4" Margin="8,0,0,0"
                                                 Background="Transparent">
-                                            <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                                <Border.OpacityMask>
-                                                    <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                                </Border.OpacityMask>
-                                            </Border>
+                                            <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
                                         </Border>
                                     </Grid>
                                 </Border>

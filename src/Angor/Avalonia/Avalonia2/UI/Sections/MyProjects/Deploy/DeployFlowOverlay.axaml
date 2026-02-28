@@ -108,6 +108,7 @@
                 <!-- Footer buttons: payment-wallet-mobile-footer -->
                 <Border DockPanel.Dock="Bottom" Padding="24,16"
                         BorderThickness="0,1,0,0"
+                        CornerRadius="0,0,15,15"
                         BorderBrush="{DynamicResource DeployModalBorder}"
                         Background="{DynamicResource DeployModalBackground}">
                     <StackPanel Spacing="12">
@@ -360,11 +361,7 @@
                                     Background="Transparent" Padding="6"
                                     BorderThickness="0" Cursor="Hand" Margin="8,0,0,0"
                                     CornerRadius="4">
-                                <Border Width="16" Height="16" Background="{DynamicResource TextMuted}">
-                                    <Border.OpacityMask>
-                                        <ImageBrush Source="/Assets/copy.png" Stretch="Uniform" />
-                                    </Border.OpacityMask>
-                                </Border>
+                                <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
                             </Button>
                         </Grid>
                     </StackPanel>
@@ -393,13 +390,9 @@
                                 BorderBrush="{DynamicResource DeployFeePillBorder}"
                                 Background="{DynamicResource DeployFeePillBg}">
                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                <Viewbox Width="12" Height="12" VerticalAlignment="Center">
-                                    <Border Width="12" Height="12" Background="{DynamicResource DeployFeePillText}">
-                                        <Border.OpacityMask>
-                                            <ImageBrush Source="/Assets/refresh.png" Stretch="Uniform" />
-                                        </Border.OpacityMask>
-                                    </Border>
-                                </Viewbox>
+                                <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="11"
+                                        Foreground="{DynamicResource DeployFeePillText}"
+                                        VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding DeployStatusText}"
                                            FontSize="12" FontWeight="Medium"
                                            Foreground="{DynamicResource DeployFeePillText}"
