@@ -335,14 +335,32 @@ public partial class ShellViewModel : ReactiveObject
             {
                 "Home" => GetOrCreateView("Home", () => new HomeView()),
                 "Funds" => GetOrCreateView("Funds", () => new FundsView()),
-                "Find Projects" => GetOrCreateView("Find Projects", () => new FindProjectsView()),
+                "Find Projects" => GetOrCreateView("Find Projects", () => new FindProjectsView(),
+                    onReuse: v =>
+                    {
+                        // Reset sub-nav state when re-selecting Find Projects from sidebar
+                        if (v is FindProjectsView { DataContext: FindProjectsViewModel fpVm })
+                        {
+                            fpVm.CloseInvestPage();
+                            fpVm.CloseProjectDetail();
+                        }
+                    }),
                 "Funded" => GetOrCreateView("Funded", () =>
                 {
                     // PortfolioView constructor calls CloseInvestmentDetail(),
                     // so on first creation the reset happens automatically.
                     return new PortfolioView();
                 }, onReuse: _ => SharedViewModels.Portfolio.CloseInvestmentDetail()),
-                "My Projects" => GetOrCreateView("My Projects", () => new MyProjectsView()),
+                "My Projects" => GetOrCreateView("My Projects", () => new MyProjectsView(),
+                    onReuse: v =>
+                    {
+                        // Reset sub-nav state when re-selecting My Projects from sidebar
+                        if (v is MyProjectsView { DataContext: MyProjectsViewModel mpVm })
+                        {
+                            mpVm.CloseCreateWizard();
+                            mpVm.CloseManageProject();
+                        }
+                    }),
                 "Funders" => GetOrCreateView("Funders", () => new FundersView()),
                 _ => null,
             };

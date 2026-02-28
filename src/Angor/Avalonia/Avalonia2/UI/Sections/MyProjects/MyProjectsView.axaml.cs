@@ -104,6 +104,19 @@ public partial class MyProjectsView : UserControl
             .DisposeWith(_subscriptions!);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+
+        // Re-subscribe if subscriptions were disposed (view re-attached from cache)
+        if (_subscriptions == null && DataContext is MyProjectsViewModel vm)
+        {
+            _subscriptions = new CompositeDisposable();
+            SubscribeToVisibility(vm);
+            UpdateListVisibility(vm);
+        }
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         _subscriptions?.Dispose();
@@ -169,16 +182,22 @@ public partial class MyProjectsView : UserControl
 
     private void OpenCreateWizard(MyProjectsViewModel vm)
     {
+        // Reset wizard VM + visual state so it starts fresh every time
+        if (CreateWizardView?.DataContext is CreateProjectViewModel wizardVm)
+            wizardVm.ResetWizard();
+        if (CreateWizardView is CreateProjectView wizardView)
+            wizardView.ResetVisualState();
+
         vm.LaunchCreateWizard();
 
         // Wire the wizard's deploy callback
         // Vue ref: goToMyProjects() creates project, adds to list, closes wizard, navigates to my-projects.
         // Both "Go to My Projects" button AND backdrop click on success modal trigger this.
-        if (CreateWizardView?.DataContext is CreateProjectViewModel wizardVm)
+        if (CreateWizardView?.DataContext is CreateProjectViewModel wvm)
         {
-            wizardVm.OnProjectDeployed = () =>
+            wvm.OnProjectDeployed = () =>
             {
-                vm.OnProjectDeployed(wizardVm);
+                vm.OnProjectDeployed(wvm);
                 vm.CloseCreateWizard(); // Close wizard -> shows my-projects list with new project at top
             };
         }

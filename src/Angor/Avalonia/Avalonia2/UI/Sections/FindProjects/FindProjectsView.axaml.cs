@@ -60,6 +60,15 @@ public partial class FindProjectsView : UserControl
         }
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+
+        // Re-subscribe if subscriptions were disposed (view re-attached from cache)
+        if (_visibilitySubscription == null)
+            SubscribeToVisibility();
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         _visibilitySubscription?.Dispose();

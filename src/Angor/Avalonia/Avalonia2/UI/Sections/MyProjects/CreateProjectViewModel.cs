@@ -634,6 +634,76 @@ public partial class CreateProjectViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(ScheduleSummary));
     }
 
+    /// <summary>
+    /// Reset all wizard state to initial values so the wizard can be re-opened fresh.
+    /// Called by MyProjectsView.OpenCreateWizard() before wiring callbacks.
+    /// </summary>
+    public void ResetWizard()
+    {
+        // Navigation state
+        CurrentStep = 1;
+        MaxStepReached = 1;
+        ShowWelcome = true;
+        ShowStep5Welcome = true;
+
+        // Step 1: Project Type
+        ProjectType = "";
+        this.RaisePropertyChanged(nameof(IsInvestment));
+        this.RaisePropertyChanged(nameof(IsFund));
+        this.RaisePropertyChanged(nameof(IsSubscription));
+        this.RaisePropertyChanged(nameof(IsTypeSelected));
+        this.RaisePropertyChanged(nameof(StepNames));
+
+        // Step 2: Project Profile
+        ProjectName = "";
+        ProjectAbout = "";
+        ProjectWebsite = "";
+
+        // Step 3: Project Images
+        BannerUrl = "";
+        ProfileUrl = "";
+
+        // Step 4: Funding Config
+        TargetAmount = "";
+        StartDate = DateTime.UtcNow.ToString("yyyy-MM-dd");
+        EndDate = "";
+        PenaltyDays = 90;
+        ApprovalThreshold = "0.001";
+        SubscriptionPrice = "";
+        InvestStartDate = DateTime.Now;
+        InvestEndDate = null;
+
+        // Step 5: Stages/Payouts
+        DurationValue = "0";
+        DurationUnit = "Months";
+        DurationPreset = null;
+        ReleaseFrequency = "";
+        PayoutFrequency = "";
+        MonthlyPayoutDate = null;
+        WeeklyPayoutDay = "";
+        SelectedInstallmentCounts.Clear();
+        IsAdvancedEditor = false;
+        ShowGenerateForm = true;
+        SelectedPayoutPattern = "";
+        PayoutDay = "1";
+
+        // Step 5: Clear generated stages
+        Stages.Clear();
+        this.RaisePropertyChanged(nameof(HasStages));
+        this.RaisePropertyChanged(nameof(ScheduleSummary));
+
+        // Step 6: Deploy
+        IsDeploying = false;
+        IsDeployed = false;
+        this.RaisePropertyChanged(nameof(DeployButtonText));
+
+        // Clear callback
+        OnProjectDeployed = null;
+
+        // Notify all step visibility properties
+        RaiseAllStepProperties();
+    }
+
     private void RaiseAllStepProperties()
     {
         this.RaisePropertyChanged(nameof(IsWelcome));

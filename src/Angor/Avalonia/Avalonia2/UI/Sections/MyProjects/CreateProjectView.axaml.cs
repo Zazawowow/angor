@@ -671,6 +671,56 @@ public partial class CreateProjectView : UserControl
         shellVm.ShowModal(overlay);
     }
 
+    /// <summary>
+    /// Reset all visual state (stepper, type cards, ListBox selections, image previews,
+    /// payout frequency, installment checkboxes) so the wizard appears fresh.
+    /// Called by MyProjectsView.OpenCreateWizard() after VM.ResetWizard().
+    /// </summary>
+    public void ResetVisualState()
+    {
+        // Reset type card visuals
+        _selectedType = null;
+        ApplyTypeCardStyles();
+
+        // Reset stepper
+        UpdateStepper();
+
+        // Clear ListBox selections (Step 4)
+        if (_investAmountPresets != null) _investAmountPresets.SelectedIndex = -1;
+        if (_fundAmountPresets != null) _fundAmountPresets.SelectedIndex = -1;
+        if (_subPricePresets != null) _subPricePresets.SelectedIndex = -1;
+        if (_durationPresets != null) _durationPresets.SelectedIndex = -1;
+
+        // Clear ListBox selections (Step 5 - Investment)
+        if (_investFrequencyPresets != null) _investFrequencyPresets.SelectedIndex = -1;
+
+        // Clear ListBox selections (Step 5 - Fund/Sub)
+        if (_monthlyDateGrid != null) _monthlyDateGrid.SelectedIndex = -1;
+        if (_weeklyDayList != null) _weeklyDayList.SelectedIndex = -1;
+
+        // Reset payout frequency visuals
+        UpdatePayoutFreqVisuals();
+
+        // Reset installment visuals
+        UpdateInstallmentVisuals();
+
+        // Reset image previews
+        var bannerImage = this.FindControl<Image>("BannerPreviewImage");
+        if (bannerImage != null)
+        {
+            bannerImage.Source = null;
+            bannerImage.IsVisible = false;
+        }
+        var avatarImage = this.FindControl<Image>("AvatarPreviewImage");
+        if (avatarImage != null)
+        {
+            avatarImage.Source = null;
+            avatarImage.IsVisible = false;
+        }
+        var avatarIcon = this.FindControl<Control>("AvatarUploadIcon");
+        if (avatarIcon != null) avatarIcon.IsVisible = true;
+    }
+
     private void NavigateBackToMyProjects()
     {
         var myProjectsView = this.FindAncestorOfType<MyProjectsView>();
