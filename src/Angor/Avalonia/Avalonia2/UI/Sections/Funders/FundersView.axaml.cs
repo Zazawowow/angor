@@ -65,6 +65,14 @@ public partial class FundersView : UserControl
         _subscriptions.Add(tabSub);
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        // Re-subscribe when the cached view is re-added to the tree
+        // (the subscriptions were disposed in OnDetachedFromLogicalTree).
+        SubscribeToVisibility();
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         _subscriptions?.Dispose();

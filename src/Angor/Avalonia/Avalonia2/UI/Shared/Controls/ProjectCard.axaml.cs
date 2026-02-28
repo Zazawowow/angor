@@ -1,5 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media.Imaging;
+using Avalonia2.UI.Shared.Helpers;
 
 namespace Avalonia2.UI.Shared.Controls;
 
@@ -16,6 +18,22 @@ public class ProjectCard : TemplatedControl
 
     public static readonly StyledProperty<string?> AvatarProperty =
         AvaloniaProperty.Register<ProjectCard, string?>(nameof(Avatar));
+
+    /// <summary>Decoded bitmap for the banner image, loaded from <see cref="Banner"/> URL via ImageCacheService.</summary>
+    public static readonly StyledProperty<Bitmap?> BannerBitmapProperty =
+        AvaloniaProperty.Register<ProjectCard, Bitmap?>(nameof(BannerBitmap));
+
+    /// <summary>Decoded bitmap for the avatar image, loaded from <see cref="Avatar"/> URL via ImageCacheService.</summary>
+    public static readonly StyledProperty<Bitmap?> AvatarBitmapProperty =
+        AvaloniaProperty.Register<ProjectCard, Bitmap?>(nameof(AvatarBitmap));
+
+    static ProjectCard()
+    {
+        BannerProperty.Changed.AddClassHandler<ProjectCard>((card, _) =>
+            ImageCacheService.LoadBitmapAsync(card.Banner, bmp => card.BannerBitmap = bmp));
+        AvatarProperty.Changed.AddClassHandler<ProjectCard>((card, _) =>
+            ImageCacheService.LoadBitmapAsync(card.Avatar, bmp => card.AvatarBitmap = bmp));
+    }
 
     public static readonly StyledProperty<string?> ProjectNameProperty =
         AvaloniaProperty.Register<ProjectCard, string?>(nameof(ProjectName));
@@ -78,6 +96,18 @@ public class ProjectCard : TemplatedControl
     {
         get => GetValue(AvatarProperty);
         set => SetValue(AvatarProperty, value);
+    }
+
+    public Bitmap? BannerBitmap
+    {
+        get => GetValue(BannerBitmapProperty);
+        set => SetValue(BannerBitmapProperty, value);
+    }
+
+    public Bitmap? AvatarBitmap
+    {
+        get => GetValue(AvatarBitmapProperty);
+        set => SetValue(AvatarBitmapProperty, value);
     }
 
     public string? ProjectName

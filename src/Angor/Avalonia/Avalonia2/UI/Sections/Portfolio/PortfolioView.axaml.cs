@@ -48,6 +48,14 @@ public partial class PortfolioView : UserControl
         }
     }
 
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        // Re-subscribe when the cached view is re-added to the tree
+        // (the subscription was disposed in OnDetachedFromLogicalTree).
+        SubscribeToVisibility();
+    }
+
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         _visibilitySubscription?.Dispose();

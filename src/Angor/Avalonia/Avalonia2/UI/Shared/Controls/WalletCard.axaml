@@ -8,102 +8,140 @@
             <ThemeVariantScope RequestedThemeVariant="Dark">
                 <Border Background="{DynamicResource AppBackground}" Padding="16">
                     <StackPanel Spacing="0">
-                        <controls:WalletCard WalletName="Main Wallet" Balance="5.2340 BTC" WalletType="Hot Wallet" />
+                        <controls:WalletCard WalletName="Main Wallet" Balance="5.2340 BTC" WalletType="Hot Wallet" Label="Investments" />
                         <controls:WalletCard WalletName="Savings" Balance="4.7660 BTC" WalletType="Cold Storage" />
                     </StackPanel>
                 </Border>
             </ThemeVariantScope>
             <ThemeVariantScope RequestedThemeVariant="Light">
                 <Border Background="{DynamicResource AppBackground}" Padding="16">
-                    <controls:WalletCard WalletName="Main Wallet" Balance="5.2340 BTC" WalletType="Hot Wallet" />
+                    <controls:WalletCard WalletName="Main Wallet" Balance="5.2340 BTC" WalletType="Hot Wallet" Label="Trading" />
                 </Border>
             </ThemeVariantScope>
         </StackPanel>
     </Design.PreviewWith>
 
     <!--
-        Vue wallet card row:
-        Card row: padding 20px 24px, border-bottom 1px solid #e8e8e8
-        Icon container: 40x40, border-radius 8px, type-specific colors (bitcoin: bg #fef3c7, color #f59e0b)
-        Action buttons: 32x32, background linear-gradient(135deg, #4b7c5a, #3d6448), border-radius 6px
+        Vue wallet card row (Funds.vue):
+        Card row: padding 20px 24px, border-bottom 1px solid
+        Title row: name (16px semibold left) + balance (16px semibold right)
+        Bottom row: type (13px muted left) + label pill (right, optional)
+        Right side: 3 action buttons (Send filled, Receive outlined, UTXO outlined) gap 8, each 32x32
     -->
     <Style Selector="controls|WalletCard">
         <Setter Property="Template">
             <ControlTemplate TargetType="controls:WalletCard">
-                <Border Background="Transparent"
+                <Border Name="CardRoot"
+                        Background="Transparent"
                         BorderBrush="{DynamicResource Stroke}"
                         BorderThickness="0,0,0,1"
-                        Padding="20,20,24,20">
-                    <DockPanel>
-                        <!-- Right side: green gradient icon action buttons (32x32 each) -->
-                        <StackPanel DockPanel.Dock="Right"
-                                    Orientation="Horizontal"
-                                    Spacing="8"
-                                    VerticalAlignment="Center">
-                            <!-- Send button — 32x32 green gradient -->
-                            <Border Width="32" Height="32"
-                                    CornerRadius="6"
-                                    Background="{DynamicResource GreenGradient}"
-                                    Cursor="Hand">
-                                <Path Data="{StaticResource ArrowUpRight}"
-                                      Stroke="White"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="16" Height="16"
-                                      Stretch="Uniform"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                            </Border>
-                            <!-- Receive button — 32x32 green gradient -->
-                            <Border Width="32" Height="32"
-                                    CornerRadius="6"
-                                    Background="{DynamicResource GreenGradient}"
-                                    Cursor="Hand">
-                                <Path Data="{StaticResource ArrowDownLeft}"
-                                      Stroke="White"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Width="16" Height="16"
-                                      Stretch="Uniform"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                            </Border>
+                        Padding="20,16,24,16">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <!-- Left: Bitcoin icon 40x40 -->
+                        <Border Grid.Column="0"
+                                Width="40" Height="40"
+                                CornerRadius="8"
+                                Background="#fef3c7"
+                                Padding="8"
+                                VerticalAlignment="Center"
+                                Margin="0,0,12,0">
+                            <i:Icon Value="fa-brands fa-bitcoin"
+                                   FontSize="20"
+                                   Foreground="#f59e0b" />
+                        </Border>
+
+                        <!-- Center: Name+Balance row, Type+Label row -->
+                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                            <!-- Top row: name left, balance right -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{TemplateBinding WalletName}"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Balance}"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextStrong}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                            <!-- Bottom row: type left, label pill right -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{TemplateBinding WalletType}"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextMuted}" />
+                                <!-- Optional label pill -->
+                                <Border Grid.Column="1"
+                                        IsVisible="{TemplateBinding Label, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Background="{DynamicResource PillGreenBg}"
+                                        BorderBrush="{DynamicResource PillGreenBorder}"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="6,1">
+                                    <TextBlock Text="{TemplateBinding Label}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource PillGreenText}" />
+                                </Border>
+                            </Grid>
                         </StackPanel>
 
-                        <!-- Left side: wallet icon + info -->
-                        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                            <!-- Wallet icon — Vue: 40x40, rounded-lg, bitcoin warm tint -->
-                            <Border Width="40" Height="40"
-                                    CornerRadius="8"
-                                    Background="#fef3c7"
-                                    Padding="8">
-                                <i:Icon Value="fa-brands fa-bitcoin"
-                                       FontSize="20"
-                                       Foreground="#f59e0b" />
-                            </Border>
-                            <!-- Name + type/balance column -->
-                            <StackPanel Spacing="2" VerticalAlignment="Center">
-                                <TextBlock Text="{TemplateBinding WalletName}"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextStrong}" />
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="{TemplateBinding WalletType}"
-                                               FontSize="12"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                    <TextBlock Text="·"
-                                               FontSize="12"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                    <TextBlock Text="{TemplateBinding Balance}"
-                                               FontSize="12"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource TextMuted}" />
-                                </StackPanel>
-                            </StackPanel>
+                        <!-- Right: 3 action buttons -->
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center"
+                                    Margin="16,0,0,0">
+                            <!-- Send button — 32x32 FILLED green gradient -->
+                            <Button Name="BtnSend"
+                                    Width="32" Height="32"
+                                    Padding="0"
+                                    CornerRadius="6"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    ToolTip.Tip="Send">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                        <GradientStop Color="#4B7C5A" Offset="0" />
+                                        <GradientStop Color="#3D6448" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <i:Icon Value="fa-solid fa-arrow-up"
+                                       FontSize="14"
+                                       Foreground="White" />
+                            </Button>
+                            <!-- Receive button — 32x32 OUTLINED green -->
+                            <Button Name="BtnReceive"
+                                    Width="32" Height="32"
+                                    Padding="0"
+                                    CornerRadius="6"
+                                    Background="Transparent"
+                                    BorderBrush="#4B7C5A"
+                                    BorderThickness="2"
+                                    Cursor="Hand"
+                                    ToolTip.Tip="Receive">
+                                <i:Icon Value="fa-solid fa-arrow-down"
+                                       FontSize="14"
+                                       Foreground="#4B7C5A" />
+                            </Button>
+                            <!-- UTXO / Details button — 32x32 OUTLINED green -->
+                            <Button Name="BtnUtxo"
+                                    Width="32" Height="32"
+                                    Padding="0"
+                                    CornerRadius="6"
+                                    Background="Transparent"
+                                    BorderBrush="#4B7C5A"
+                                    BorderThickness="2"
+                                    Cursor="Hand"
+                                    ToolTip.Tip="UTXOs">
+                                <i:Icon Value="fa-solid fa-coins"
+                                       FontSize="14"
+                                       Foreground="#4B7C5A" />
+                            </Button>
                         </StackPanel>
-                    </DockPanel>
+                    </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>

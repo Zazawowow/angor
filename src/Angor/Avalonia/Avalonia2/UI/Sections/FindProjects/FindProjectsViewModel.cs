@@ -1,6 +1,10 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Avalonia.Media.Imaging;
 using Avalonia2.UI.Sections.Portfolio;
 using Avalonia2.UI.Shared;
+using Avalonia2.UI.Shared.Helpers;
 
 namespace Avalonia2.UI.Sections.FindProjects;
 
@@ -9,8 +13,12 @@ namespace Avalonia2.UI.Sections.FindProjects;
 /// this with real project data from Nostr via the SDK.
 /// All data below is extracted from the Vue reference at angor.tx1138.com/app.html.
 /// </summary>
-public class ProjectItemViewModel
+public class ProjectItemViewModel : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
     public string ProjectName { get; set; } = "";
     public string ShortDescription { get; set; } = "";
     /// <summary>Full/longer description for the detail page</summary>
@@ -25,8 +33,33 @@ public class ProjectItemViewModel
     public double Progress { get; set; }
     public string ProjectType { get; set; } = "Invest";
     public string Status { get; set; } = "Open";
-    public string? BannerUrl { get; set; }
-    public string? AvatarUrl { get; set; }
+
+    private string? _bannerUrl;
+    public string? BannerUrl
+    {
+        get => _bannerUrl;
+        set
+        {
+            _bannerUrl = value;
+            ImageCacheService.LoadBitmapAsync(value, bmp => { BannerBitmap = bmp; OnPropertyChanged(nameof(BannerBitmap)); });
+        }
+    }
+
+    private string? _avatarUrl;
+    public string? AvatarUrl
+    {
+        get => _avatarUrl;
+        set
+        {
+            _avatarUrl = value;
+            ImageCacheService.LoadBitmapAsync(value, bmp => { AvatarBitmap = bmp; OnPropertyChanged(nameof(AvatarBitmap)); });
+        }
+    }
+
+    /// <summary>Decoded banner bitmap, loaded from <see cref="BannerUrl"/> via ImageCacheService.</summary>
+    public Bitmap? BannerBitmap { get; private set; }
+    /// <summary>Decoded avatar bitmap, loaded from <see cref="AvatarUrl"/> via ImageCacheService.</summary>
+    public Bitmap? AvatarBitmap { get; private set; }
     /// <summary>Stubbed project identifier for the detail page</summary>
     public string ProjectId { get; set; } = "angor1qlcnq2eywn05j205nv5sz6dsdzef2c6wx24h87l";
     /// <summary>Stubbed founder key for the detail page</summary>

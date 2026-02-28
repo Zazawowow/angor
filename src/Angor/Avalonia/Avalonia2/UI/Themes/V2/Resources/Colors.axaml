@@ -282,6 +282,10 @@
             <SolidColorBrush x:Key="WaitingCardTitle" Color="#92400E" />
             <SolidColorBrush x:Key="WaitingCardSubtext" Color="#B45309" />
             <SolidColorBrush x:Key="WaitingCardIconCircle" Color="#33F59E0B" />
+            <!-- Waiting card action buttons: Vue .waiting-button-secondary -->
+            <SolidColorBrush x:Key="WaitingBtnBg" Color="#E6FFFFFF" />
+            <SolidColorBrush x:Key="WaitingBtnFg" Color="#92400E" />
+            <SolidColorBrush x:Key="WaitingBtnBorder" Color="#FBBF24" />
 
             <!-- Preview card (Step 2): Vue warm orange gradient -->
             <LinearGradientBrush x:Key="PreviewCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
@@ -333,6 +337,51 @@
             <SolidColorBrush x:Key="DeployQrIconFill" Color="#9CA3AF" />
             <!-- Modal backdrop: light mode, 50% black (Vue: bg-black bg-opacity-50) -->
             <SolidColorBrush x:Key="ModalBackdrop" Color="#80000000" />
+
+            <!-- ── Wallet Switcher Header Button (light) ── -->
+            <!-- Vue: .wallet-selector-header — bg white, border gray-300, color #808080, hover bg gray-50 -->
+            <SolidColorBrush x:Key="WalletSwitcherBg" Color="White" />
+            <SolidColorBrush x:Key="WalletSwitcherBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="WalletSwitcherFg" Color="#808080" />
+            <SolidColorBrush x:Key="WalletSwitcherHoverBg" Color="#F9FAFB" />
+
+            <!-- ── Create Wallet Modal (light) ── -->
+            <!-- Vue: Generate Wallet backup step — amber warning circle bg-amber-100 -->
+            <SolidColorBrush x:Key="CreateWalletAmberCircleBg" Color="#FEF3C7" />
+            <!-- Vue: amber-600 icon color -->
+            <SolidColorBrush x:Key="CreateWalletAmberIcon" Color="#D97706" />
+            <!-- Vue: Download Seed button — bg-amber-500 -->
+            <SolidColorBrush x:Key="CreateWalletAmberBtnBg" Color="#F59E0B" />
+            <SolidColorBrush x:Key="CreateWalletAmberBtnHoverBg" Color="#D97706" />
+            <!-- Vue: Generate success — green circle bg-green-100 -->
+            <SolidColorBrush x:Key="CreateWalletGreenCircleBg" Color="#DCFCE7" />
+            <SolidColorBrush x:Key="CreateWalletGreenIcon" Color="#16A34A" />
+            <!-- Vue: Import/Generate outlined button — border-gray-300, text-gray-600 -->
+            <SolidColorBrush x:Key="CreateWalletOutlinedBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="CreateWalletOutlinedFg" Color="#4B5563" />
+            <SolidColorBrush x:Key="CreateWalletOutlinedHoverBg" Color="#F3F4F6" />
+            <!-- Vue: Seed phrase display area — bg-gray-50, border-gray-200 -->
+            <SolidColorBrush x:Key="CreateWalletSeedBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="CreateWalletSeedBorder" Color="#E5E7EB" />
+            <SolidColorBrush x:Key="CreateWalletSeedText" Color="#374151" />
+            <!-- Vue: Textarea — bg-gray-50, border-gray-200 -->
+            <SolidColorBrush x:Key="CreateWalletInputBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="CreateWalletInputBorder" Color="#E5E7EB" />
+            <!-- Vue: Continue button disabled — border-gray-300, text-gray-400 -->
+            <SolidColorBrush x:Key="CreateWalletDisabledBorder" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="CreateWalletDisabledFg" Color="#9CA3AF" />
+
+            <!-- ── Wallet Detail / UTXO Management Modal (light) ── -->
+            <!-- Vue: UTXO card unselected: bg-gray-50 border-gray-200 -->
+            <SolidColorBrush x:Key="UtxoCardUnselectedBg" Color="#F9FAFB" />
+            <SolidColorBrush x:Key="UtxoCardUnselectedBorder" Color="#E5E7EB" />
+            <!-- Vue: UTXO card selected: bg-green-50 border-[#4B7C5A] -->
+            <SolidColorBrush x:Key="UtxoCardSelectedBg" Color="#F0FDF4" />
+            <!-- Vue: UTXO section icon container: bg-gray-100 -->
+            <SolidColorBrush x:Key="UtxoSectionIconBg" Color="#F3F4F6" />
+            <!-- Vue: UTXO checkbox unselected: bg:white, border:#e5e7eb -->
+            <SolidColorBrush x:Key="UtxoCheckboxBg" Color="White" />
+            <SolidColorBrush x:Key="UtxoCheckboxBorder" Color="#E5E7EB" />
 
             <!-- ── Settings: Danger Zone (light) ── -->
             <!-- Vue: .danger-zone-card border 2px solid #fee2e2; .danger-header-bar bg rgba(254,242,242,0.8), border-bottom #fee2e2 -->
@@ -728,6 +777,10 @@
             <SolidColorBrush x:Key="WaitingCardTitle" Color="#FDE68A" />
             <SolidColorBrush x:Key="WaitingCardSubtext" Color="#FCD34D" />
             <SolidColorBrush x:Key="WaitingCardIconCircle" Color="#33FBBF24" />
+            <!-- Waiting card action buttons: Vue .dark-mode .waiting-button-secondary -->
+            <SolidColorBrush x:Key="WaitingBtnBg" Color="#992A2A2A" />
+            <SolidColorBrush x:Key="WaitingBtnFg" Color="#FDBA74" />
+            <SolidColorBrush x:Key="WaitingBtnBorder" Color="#4DEA580C" />
 
             <!-- Preview card (Step 2) dark: orange-tinted dark bg -->
             <LinearGradientBrush x:Key="PreviewCardBackground" StartPoint="0%,0%" EndPoint="100%,100%">
@@ -778,6 +831,50 @@
             <SolidColorBrush x:Key="DeployQrIconFill" Color="#555555" />
             <!-- Modal backdrop: dark mode uses standard black at 50% -->
             <SolidColorBrush x:Key="ModalBackdrop" Color="#80000000" />
+
+            <!-- ── Wallet Switcher Header Button (dark) ── -->
+            <!-- Vue: .ultra-modern .wallet-selector-header — bg #1a1a1a, border #404040, color #808080, hover bg #2a2a2a -->
+            <SolidColorBrush x:Key="WalletSwitcherBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="WalletSwitcherBorder" Color="#404040" />
+            <SolidColorBrush x:Key="WalletSwitcherFg" Color="#808080" />
+            <SolidColorBrush x:Key="WalletSwitcherHoverBg" Color="#2A2A2A" />
+
+            <!-- ── Create Wallet Modal (dark) ── -->
+            <!-- Vue: .dark-mode Generate Wallet backup step — bg-amber-900 -->
+            <SolidColorBrush x:Key="CreateWalletAmberCircleBg" Color="#78350F" />
+            <SolidColorBrush x:Key="CreateWalletAmberIcon" Color="#D97706" />
+            <!-- Vue: .dark-mode Download Seed — bg-amber-800 -->
+            <SolidColorBrush x:Key="CreateWalletAmberBtnBg" Color="#92400E" />
+            <SolidColorBrush x:Key="CreateWalletAmberBtnHoverBg" Color="#78350F" />
+            <!-- Vue: .dark-mode success — bg-green-900 -->
+            <SolidColorBrush x:Key="CreateWalletGreenCircleBg" Color="#14532D" />
+            <SolidColorBrush x:Key="CreateWalletGreenIcon" Color="#16A34A" />
+            <!-- Vue: .dark-mode outlined button — border-[#404040], text-gray-300 -->
+            <SolidColorBrush x:Key="CreateWalletOutlinedBorder" Color="#404040" />
+            <SolidColorBrush x:Key="CreateWalletOutlinedFg" Color="#D1D5DB" />
+            <SolidColorBrush x:Key="CreateWalletOutlinedHoverBg" Color="#2A2A2A" />
+            <!-- Vue: .dark-mode seed display — bg-[#1a1a1a], border-[#333] -->
+            <SolidColorBrush x:Key="CreateWalletSeedBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="CreateWalletSeedBorder" Color="#333333" />
+            <SolidColorBrush x:Key="CreateWalletSeedText" Color="#D1D5DB" />
+            <!-- Vue: .dark-mode textarea — bg-[#111], border-[#333] -->
+            <SolidColorBrush x:Key="CreateWalletInputBg" Color="#111111" />
+            <SolidColorBrush x:Key="CreateWalletInputBorder" Color="#333333" />
+            <!-- Vue: .dark-mode disabled — border-[#404040], text-gray-500 -->
+            <SolidColorBrush x:Key="CreateWalletDisabledBorder" Color="#404040" />
+            <SolidColorBrush x:Key="CreateWalletDisabledFg" Color="#6B7280" />
+
+            <!-- ── Wallet Detail / UTXO Management Modal (dark) ── -->
+            <!-- Vue: UTXO card unselected: bg-[#1a1a1a] border-[#404040] -->
+            <SolidColorBrush x:Key="UtxoCardUnselectedBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="UtxoCardUnselectedBorder" Color="#404040" />
+            <!-- Vue: UTXO card selected: bg-[#2a2a2a] border-[#4B7C5A] -->
+            <SolidColorBrush x:Key="UtxoCardSelectedBg" Color="#2A2A2A" />
+            <!-- Vue: UTXO section icon container: bg-[#1a1a1a] -->
+            <SolidColorBrush x:Key="UtxoSectionIconBg" Color="#1A1A1A" />
+            <!-- Vue: UTXO checkbox unselected: bg:#1a1a1a, border:#404040 -->
+            <SolidColorBrush x:Key="UtxoCheckboxBg" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="UtxoCheckboxBorder" Color="#404040" />
 
             <!-- ── Settings: Danger Zone (dark) ── -->
             <!-- Vue: .dark-mode .danger-zone-card border-color #7f1d1d; .danger-header-bar bg #1a0a0a, border-bottom #7f1d1d -->
@@ -871,13 +968,13 @@
             <!-- Vue: info card bg-[#0A0A0A] border-gray-700 -->
             <SolidColorBrush x:Key="RecoveryInfoCardBg" Color="#0A0A0A" />
             <SolidColorBrush x:Key="RecoveryInfoCardBorder" Color="#374151" />
-            <!-- Vue: warning box bg-gray-800 border-gray-700 -->
-            <SolidColorBrush x:Key="RecoveryWarningBg" Color="#1F2937" />
-            <SolidColorBrush x:Key="RecoveryWarningBorder" Color="#374151" />
+            <!-- Vue: warning box bg-gray-800 border-gray-700 — using pure dark gray, no blue tint -->
+            <SolidColorBrush x:Key="RecoveryWarningBg" Color="#222222" />
+            <SolidColorBrush x:Key="RecoveryWarningBorder" Color="#404040" />
             <SolidColorBrush x:Key="RecoveryWarningText" Color="#D1D5DB" />
-            <!-- Vue: fee info badge dark bg-gray-800 text-gray-300 -->
-            <SolidColorBrush x:Key="RecoveryFeeBadgeBg" Color="#1F2937" />
-            <SolidColorBrush x:Key="RecoveryFeeBadgeText" Color="#D1D5DB" />
+            <!-- Vue: fee info badge dark — using pure dark gray, no blue tint -->
+            <SolidColorBrush x:Key="RecoveryFeeBadgeBg" Color="#222222" />
+            <SolidColorBrush x:Key="RecoveryFeeBadgeText" Color="#A0A0A0" />
             <!-- Vue: fee priority unselected dark border-gray-700 text-gray-300 -->
             <SolidColorBrush x:Key="RecoveryFeeUnselectedBorder" Color="#374151" />
             <SolidColorBrush x:Key="RecoveryFeeUnselectedText" Color="#D1D5DB" />

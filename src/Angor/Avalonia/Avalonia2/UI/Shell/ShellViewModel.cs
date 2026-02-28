@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using Avalonia2.UI.Sections.FindProjects;
 using Avalonia2.UI.Sections.Funders;
 using Avalonia2.UI.Sections.Funds;
@@ -9,6 +10,26 @@ using Avalonia2.UI.Sections.Settings;
 using Avalonia2.UI.Shared;
 
 namespace Avalonia2.UI.Shell;
+
+/// <summary>
+/// A wallet item for the header wallet-switcher modal.
+/// Vue: walletGroups[].wallets[] in App.vue — each wallet has id, name, type, balance, label, network.
+/// Reuses the same CSS-class selection pattern as deploy/invest wallet selectors (Rule #9 compliant).
+/// </summary>
+public partial class WalletSwitcherItem : ReactiveObject
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    /// <summary>Type: "bitcoin", "lightning", or "liquid".</summary>
+    public string WalletType { get; set; } = "bitcoin";
+    public double Balance { get; set; }
+    /// <summary>Subtitle: "{TypeLabel} • {SeedGroupName}".</summary>
+    public string Subtitle { get; set; } = "";
+
+    [Reactive] private bool isSelected;
+
+    public string FormattedBalance => Balance.ToString("F4", CultureInfo.InvariantCulture) + " BTC";
+}
 
 /// <summary>
 /// A shared signature/funding request that lives in the SignatureStore.
@@ -191,6 +212,30 @@ public partial class ShellViewModel : ReactiveObject
     [Reactive] private bool isModalOpen;
     [Reactive] private object? modalContent;
 
+    /// <summary>
+    /// Currently selected wallet for the header wallet switcher.
+    /// Vue: selectedWalletId + selectedWalletName computed in App.vue.
+    /// </summary>
+    [Reactive] private WalletSwitcherItem? selectedWallet;
+
+    /// <summary>
+    /// All wallets available for switching (mainnet).
+    /// Vue: filteredWalletsForModal computed from walletGroups.
+    /// </summary>
+    public ObservableCollection<WalletSwitcherItem> SwitcherWallets { get; } = new();
+
+    /// <summary>Display name for the header button. Shows "Select Wallet" if none selected.</summary>
+    public string SelectedWalletName => SelectedWallet?.Name ?? "Select Wallet";
+
+    /// <summary>Invested balance display string for the header.</summary>
+    public string InvestedBalanceDisplay => "0.0000 BTC";
+
+    /// <summary>Available balance display string for the header. Uses selected wallet balance.</summary>
+    public string AvailableBalanceDisplay =>
+        SelectedWallet != null
+            ? SelectedWallet.Balance.ToString("F4", CultureInfo.InvariantCulture) + " BTC"
+            : "10.0000 BTC";
+
     public ShellViewModel()
     {
         NavEntries = new ObservableCollection<NavEntry>
@@ -231,6 +276,17 @@ public partial class ShellViewModel : ReactiveObject
 
         this.WhenAnyValue(x => x.SectionTitleOverride)
             .Subscribe(_ => this.RaisePropertyChanged(nameof(SelectedSectionName)));
+
+        // ── Initialize wallet switcher data (Vue: walletGroups defaults in App.vue) ──
+        InitializeSwitcherWallets();
+
+        // When selected wallet changes, update header display properties
+        this.WhenAnyValue(x => x.SelectedWallet)
+            .Subscribe(_ =>
+            {
+                this.RaisePropertyChanged(nameof(SelectedWalletName));
+                this.RaisePropertyChanged(nameof(AvailableBalanceDisplay));
+            });
     }
 
     public ObservableCollection<NavEntry> NavEntries { get; }
@@ -294,6 +350,53 @@ public partial class ShellViewModel : ReactiveObject
         {
             SelectedNavItem = fundsItem;
         }
+    }
+
+    /// <summary>
+    /// Select a wallet from the switcher modal.
+    /// Deselects previous, selects new, updates header display.
+    /// Vue: selectWallet(walletId) in App.vue.
+    /// </summary>
+    public void SelectSwitcherWallet(WalletSwitcherItem wallet)
+    {
+        // Deselect all
+        foreach (var w in SwitcherWallets)
+            w.IsSelected = false;
+
+        wallet.IsSelected = true;
+        SelectedWallet = wallet;
+    }
+
+    /// <summary>
+    /// Initialize the switcher wallets with stubbed data matching Vue prototype defaults.
+    /// Vue: walletGroups in App.vue with hardcoded mainnet wallets.
+    /// </summary>
+    private void InitializeSwitcherWallets()
+    {
+        var wallets = new[]
+        {
+            new WalletSwitcherItem
+            {
+                Id = "wallet-1", Name = "Bitcoin Wallet", WalletType = "bitcoin",
+                Balance = 2.5432, Subtitle = "Bitcoin • Angor Account"
+            },
+            new WalletSwitcherItem
+            {
+                Id = "wallet-3", Name = "Liquid Wallet", WalletType = "liquid",
+                Balance = 1.5678, Subtitle = "Liquid • Angor Account"
+            },
+            new WalletSwitcherItem
+            {
+                Id = "wallet-4", Name = "Bitcoin Wallet 2", WalletType = "bitcoin",
+                Balance = 0.9876, Subtitle = "Bitcoin • Imported Account"
+            },
+        };
+
+        foreach (var w in wallets)
+            SwitcherWallets.Add(w);
+
+        // Auto-select the first wallet (Vue: default selectedWalletId = first mainnet wallet)
+        SelectSwitcherWallet(SwitcherWallets[0]);
     }
 
     /// <summary>

@@ -2,8 +2,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
+using Avalonia.Media.Imaging;
 using Avalonia2.UI.Sections.FindProjects;
 using Avalonia2.UI.Shared;
+using Avalonia2.UI.Shared.Helpers;
 using Avalonia2.UI.Shell;
 
 namespace Avalonia2.UI.Sections.Portfolio;
@@ -66,9 +68,31 @@ public class InvestmentViewModel : INotifyPropertyChanged
     /// <summary>Whether segment 3 is completed</summary>
     public bool IsSegment3Complete => PaymentSegmentsCompleted >= 3;
     /// <summary>Banner image URL</summary>
-    public string? BannerUrl { get; set; }
+    private string? _bannerUrl;
+    public string? BannerUrl
+    {
+        get => _bannerUrl;
+        set
+        {
+            _bannerUrl = value;
+            ImageCacheService.LoadBitmapAsync(value, bmp => { BannerBitmap = bmp; OnPropertyChanged(nameof(BannerBitmap)); });
+        }
+    }
     /// <summary>Avatar/logo image URL</summary>
-    public string? AvatarUrl { get; set; }
+    private string? _avatarUrl;
+    public string? AvatarUrl
+    {
+        get => _avatarUrl;
+        set
+        {
+            _avatarUrl = value;
+            ImageCacheService.LoadBitmapAsync(value, bmp => { AvatarBitmap = bmp; OnPropertyChanged(nameof(AvatarBitmap)); });
+        }
+    }
+    /// <summary>Decoded banner bitmap, loaded from <see cref="BannerUrl"/> via ImageCacheService.</summary>
+    public Bitmap? BannerBitmap { get; private set; }
+    /// <summary>Decoded avatar bitmap, loaded from <see cref="AvatarUrl"/> via ImageCacheService.</summary>
+    public Bitmap? AvatarBitmap { get; private set; }
 
     // ── Type and Status pills (Vue: .investment-pills, .investment-type-pill, .stage-status) ──
     /// <summary>Type pill label: Investment, Funding, Subscription</summary>

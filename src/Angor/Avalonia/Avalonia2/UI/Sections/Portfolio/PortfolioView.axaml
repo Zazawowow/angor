@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:portfolio="clr-namespace:Avalonia2.UI.Sections.Portfolio"
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="800"
              x:Class="Avalonia2.UI.Sections.Portfolio.PortfolioView"
@@ -281,8 +280,8 @@
                                         <!-- Banner + Avatar — Vue: .investment-card-header h:120px, .investment-logo bottom:-32px left:20px -->
                                         <Panel Height="120">
                                             <Border Background="{DynamicResource SurfaceLow}" />
-                                            <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                                            Source="{Binding BannerUrl}" />
+                                            <Image Stretch="UniformToFill"
+                                                   Source="{Binding BannerBitmap}" />
                                             <!-- Avatar -->
                                             <Panel VerticalAlignment="Bottom" HorizontalAlignment="Left"
                                                    Margin="20,0,0,-32">
@@ -290,8 +289,8 @@
                                                         Background="{DynamicResource Surface}"
                                                         BoxShadow="0 4 12 0 #26000000"
                                                         ClipToBounds="True">
-                                                    <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                                                    Source="{Binding AvatarUrl}" />
+                                                    <Image Stretch="UniformToFill"
+                                                           Source="{Binding AvatarBitmap}" />
                                                 </Border>
                                             </Panel>
                                         </Panel>

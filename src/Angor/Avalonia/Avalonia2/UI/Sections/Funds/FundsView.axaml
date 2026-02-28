@@ -240,7 +240,8 @@
                                                         <controls:WalletCard
                                                             WalletName="{Binding Name}"
                                                             Balance="{Binding Balance}"
-                                                            WalletType="{Binding WalletType}" />
+                                                            WalletType="{Binding WalletType}"
+                                                            Label="{Binding Label}" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>

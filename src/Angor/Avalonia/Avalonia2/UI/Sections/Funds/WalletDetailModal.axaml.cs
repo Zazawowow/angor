@@ -1,0 +1,358 @@
+using System.Collections.Generic;
+using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.VisualTree;
+using Avalonia2.UI.Shell;
+using Projektanker.Icons.Avalonia;
+
+namespace Avalonia2.UI.Sections.Funds;
+
+/// <summary>
+/// Wallet Detail / UTXO Management Modal — Vue Funds.vue wallet detail:
+///   Sticky header: wallet icon + name/type, balance + Send/Receive buttons
+///   Body: UTXO list with selectable cards (txid, amount, confirmations, checkbox)
+///   Selected UTXOs update Send button text: "Send" / "Send 1 UTXO" / "Send N UTXOs"
+///
+/// DataContext = FundsViewModel (set by FundsView when opening).
+/// Wallet info set via SetWallet() before showing.
+///
+/// UTXO card and checkbox colors use XAML styles with DynamicResource (Rule #9).
+/// Code-behind only toggles CSS classes — zero color logic.
+/// </summary>
+public partial class WalletDetailModal : UserControl, IBackdropCloseable
+{
+    private string _walletName = "";
+    private string _walletType = "";
+    private string _walletBalance = "";
+    private readonly HashSet<string> _selectedUtxos = new();
+
+    /// <summary>Mock UTXO data matching Vue getWalletUTXOs().</summary>
+    private static readonly List<UtxoData> MockUtxos = new()
+    {
+        new("a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", 0.5432, 6),
+        new("f6e5d4c3b2a1098765432109876543210987654321fedcba0987654321fedcba", 1.2345, 12),
+        new("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef", 0.7654, 24),
+    };
+
+    public WalletDetailModal()
+    {
+        InitializeComponent();
+        AddHandler(Button.ClickEvent, OnButtonClick);
+    }
+
+    private ShellViewModel? ShellVm =>
+        this.FindAncestorOfType<ShellView>()?.DataContext as ShellViewModel;
+
+    public void OnBackdropCloseRequested() { }
+
+    /// <summary>
+    /// Set the wallet info and populate UTXOs.
+    /// Called by FundsView before showing the modal.
+    /// </summary>
+    public void SetWallet(string name, string type, string balance)
+    {
+        _walletName = name;
+        _walletType = type;
+        _walletBalance = balance;
+
+        HeaderWalletName.Text = name;
+        HeaderWalletType.Text = type;
+        HeaderBalance.Text = balance;
+        _selectedUtxos.Clear();
+        UpdateSendButtonText();
+        BuildUtxoList();
+    }
+
+    private void OnButtonClick(object? sender, RoutedEventArgs e)
+    {
+        if (e.Source is not Button btn) return;
+
+        switch (btn.Name)
+        {
+            case "CloseBtn":
+                ShellVm?.HideModal();
+                break;
+
+            case "BtnHeaderSend":
+                OpenSendModal();
+                break;
+
+            case "BtnHeaderReceive":
+                OpenReceiveModal();
+                break;
+        }
+
+        // Check for UTXO copy buttons (named "BtnCopyTxid_N")
+        if (btn.Name?.StartsWith("BtnCopyTxid_") == true)
+        {
+            // Stub: copy txid to clipboard
+            e.Handled = true;
+        }
+    }
+
+    /// <summary>
+    /// Build the UTXO card list in code-behind.
+    /// Vue: space-y-3 (12px gap). Each card: p-4 rounded-lg border, clickable.
+    /// </summary>
+    private void BuildUtxoList()
+    {
+        UtxoList.Children.Clear();
+
+        if (MockUtxos.Count == 0)
+        {
+            EmptyUtxoState.IsVisible = true;
+            return;
+        }
+
+        EmptyUtxoState.IsVisible = false;
+
+        for (var i = 0; i < MockUtxos.Count; i++)
+        {
+            var utxo = MockUtxos[i];
+            var card = CreateUtxoCard(utxo, i);
+            UtxoList.Children.Add(card);
+        }
+    }
+
+    /// <summary>
+    /// Create a single UTXO card matching Vue design:
+    /// p-4 rounded-lg border, clickable, shows txid + amount + confirmations + checkbox.
+    /// Colors come from XAML styles via "UtxoCard" / "UtxoSelected" CSS classes (Rule #9).
+    /// </summary>
+    private Border CreateUtxoCard(UtxoData utxo, int index)
+    {
+        var card = new Border
+        {
+            Name = $"UtxoCard_{index}",
+            CornerRadius = new CornerRadius(8),
+            Padding = new Thickness(16),
+            Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand),
+            Tag = utxo.Txid,
+        };
+
+        // Apply CSS class for DynamicResource styling (Rule #9: class toggle only)
+        card.Classes.Add("UtxoCard");
+
+        // Click to toggle selection
+        card.PointerPressed += (_, _) =>
+        {
+            ToggleUtxoSelection(utxo.Txid, card, index);
+        };
+
+        // Card content: DockPanel with checkbox on right, info on left
+        var dock = new DockPanel();
+
+        // Right: checkbox 24x24
+        var checkbox = CreateCheckbox(utxo.Txid, index);
+        DockPanel.SetDock(checkbox, Dock.Right);
+        dock.Children.Add(checkbox);
+
+        // Left: info stack
+        var infoStack = new StackPanel { Spacing = 8 };
+
+        // Transaction ID row
+        var txidSection = new StackPanel { Spacing = 2 };
+        var txidLabel = new TextBlock
+        {
+            Text = "Transaction ID",
+            FontSize = 12,
+        };
+        txidLabel.Classes.Add("TextMuted");
+        txidSection.Children.Add(txidLabel);
+
+        var txidRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+
+        // Truncated green txid (clickable link style) — brand green is same in both themes
+        var truncated = utxo.Txid.Length > 16
+            ? utxo.Txid[..16] + "..."
+            : utxo.Txid;
+
+        txidRow.Children.Add(new TextBlock
+        {
+            Text = truncated,
+            FontSize = 14,
+            FontFamily = new FontFamily("Cascadia Mono, Consolas, monospace"),
+            Foreground = new SolidColorBrush(Color.Parse("#4B7C5A")),
+            VerticalAlignment = VerticalAlignment.Center,
+            Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand),
+        });
+
+        // Copy button — use ModalBtn class for transparent chrome
+        var copyBtn = new Button
+        {
+            Name = $"BtnCopyTxid_{index}",
+            Padding = new Thickness(6),
+            Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        copyBtn.Classes.Add("ModalBtn");
+        var iconControl = new Icon
+        {
+            Value = "fa-regular fa-copy",
+            FontSize = 14,
+        };
+        iconControl.Classes.Add("TextMuted");
+        copyBtn.Content = iconControl;
+        txidRow.Children.Add(copyBtn);
+
+        txidSection.Children.Add(txidRow);
+        infoStack.Children.Add(txidSection);
+
+        // Amount + Confirmations row
+        // Vue: flex gap-4 text-sm
+        var statsRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 16 };
+
+        // Amount
+        var amountPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
+        var amountLabel = new TextBlock { Text = "Amount:", FontSize = 13 };
+        amountLabel.Classes.Add("TextMuted");
+        amountPanel.Children.Add(amountLabel);
+        var amountValue = new TextBlock
+        {
+            Text = $"{utxo.Amount:F4} BTC",
+            FontSize = 13,
+            FontWeight = FontWeight.SemiBold,
+        };
+        amountValue.Classes.Add("TextStrong");
+        amountPanel.Children.Add(amountValue);
+        statsRow.Children.Add(amountPanel);
+
+        // Confirmations
+        var confPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
+        var confLabel = new TextBlock { Text = "Confirmations:", FontSize = 13 };
+        confLabel.Classes.Add("TextMuted");
+        confPanel.Children.Add(confLabel);
+        var confValue = new TextBlock
+        {
+            Text = utxo.Confirmations.ToString(),
+            FontSize = 13,
+            FontWeight = FontWeight.SemiBold,
+        };
+        confValue.Classes.Add("TextStrong");
+        confPanel.Children.Add(confValue);
+        statsRow.Children.Add(confPanel);
+
+        infoStack.Children.Add(statsRow);
+        dock.Children.Add(infoStack);
+        card.Child = dock;
+
+        return card;
+    }
+
+    /// <summary>
+    /// Create the 24x24 checkbox for UTXO selection.
+    /// Vue: settings-toggle-button, 24x24, border-radius 4px
+    /// Colors come from XAML styles via "UtxoCheckbox" / "UtxoChecked" CSS classes (Rule #9).
+    /// </summary>
+    private Border CreateCheckbox(string txid, int index)
+    {
+        var container = new Border
+        {
+            Name = $"Checkbox_{index}",
+            Width = 24,
+            Height = 24,
+            CornerRadius = new CornerRadius(4),
+            VerticalAlignment = VerticalAlignment.Center,
+            Tag = txid,
+        };
+        container.Classes.Add("UtxoCheckbox");
+        return container;
+    }
+
+    private void ToggleUtxoSelection(string txid, Border card, int index)
+    {
+        var isNowSelected = !_selectedUtxos.Contains(txid);
+        if (isNowSelected)
+            _selectedUtxos.Add(txid);
+        else
+            _selectedUtxos.Remove(txid);
+
+        // Rule #9: ONLY toggle CSS classes — zero color logic
+        card.Classes.Set("UtxoSelected", isNowSelected);
+
+        // Update checkbox via CSS class toggle
+        var checkbox = card.GetVisualDescendants().OfType<Border>()
+            .FirstOrDefault(b => b.Name == $"Checkbox_{index}");
+        if (checkbox != null)
+        {
+            checkbox.Classes.Set("UtxoChecked", isNowSelected);
+
+            if (isNowSelected)
+            {
+                // Add checkmark — simple geometric shape, ok as Path per Rule #10
+                var checkPath = new Avalonia.Controls.Shapes.Path
+                {
+                    Data = StreamGeometry.Parse("M5 13l4 4L19 7"),
+                    Stroke = Brushes.White,
+                    StrokeThickness = 2,
+                    StrokeLineCap = PenLineCap.Round,
+                    StrokeJoin = PenLineJoin.Round,
+                    Width = 14,
+                    Height = 14,
+                    Stretch = Stretch.Uniform,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                checkbox.Child = checkPath;
+            }
+            else
+            {
+                checkbox.Child = null;
+            }
+        }
+
+        UpdateSendButtonText();
+    }
+
+    /// <summary>
+    /// Update Send button text based on selected UTXOs count.
+    /// Vue: "Send" / "Send 1 UTXO" / "Send N UTXOs"
+    /// </summary>
+    private void UpdateSendButtonText()
+    {
+        var count = _selectedUtxos.Count;
+        SendBtnText.Text = count switch
+        {
+            0 => "Send",
+            1 => "Send 1 UTXO",
+            _ => $"Send {count} UTXOs"
+        };
+    }
+
+    private void OpenSendModal()
+    {
+        if (ShellVm is not { } shellVm) return;
+        shellVm.HideModal();
+
+        var sendModal = new SendFundsModal { DataContext = DataContext };
+        sendModal.SetWallet(_walletName, _walletType, _walletBalance);
+
+        // Pre-fill amount if UTXOs selected
+        if (_selectedUtxos.Count > 0)
+        {
+            var totalAmount = MockUtxos
+                .Where(u => _selectedUtxos.Contains(u.Txid))
+                .Sum(u => u.Amount);
+            sendModal.PrefillAmount(totalAmount);
+        }
+
+        shellVm.ShowModal(sendModal);
+    }
+
+    private void OpenReceiveModal()
+    {
+        if (ShellVm is not { } shellVm) return;
+        shellVm.HideModal();
+
+        var receiveModal = new ReceiveFundsModal { DataContext = DataContext };
+        receiveModal.SetWallet(_walletName, _walletType);
+        shellVm.ShowModal(receiveModal);
+    }
+
+    /// <summary>Simple record for mock UTXO data.</summary>
+    private record UtxoData(string Txid, double Amount, int Confirmations);
+}

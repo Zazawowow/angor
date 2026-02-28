@@ -1,6 +1,5 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
         xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
         xmlns:i="https://github.com/projektanker/icons.avalonia">
 
@@ -78,8 +77,8 @@
                         <Panel Height="150">
                             <!-- Fallback gradient when no banner (below image) -->
                             <Border Background="{DynamicResource SurfaceLow}" />
-                            <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                            Source="{Binding Banner, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Image Stretch="UniformToFill"
+                                   Source="{Binding BannerBitmap, RelativeSource={RelativeSource TemplatedParent}}" />
                             <!-- Avatar — Vue: 64x64, bottom -32px, left 20px, shadow -->
                             <Panel VerticalAlignment="Bottom" HorizontalAlignment="Left"
                                    Margin="20,0,0,-32">
@@ -87,8 +86,8 @@
                                         Background="{DynamicResource Surface}"
                                         BoxShadow="0 4 12 0 #26000000"
                                         ClipToBounds="True">
-                                    <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                                    Source="{Binding Avatar, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    <Image Stretch="UniformToFill"
+                                           Source="{Binding AvatarBitmap, RelativeSource={RelativeSource TemplatedParent}}" />
                                 </Border>
                             </Panel>
                         </Panel>

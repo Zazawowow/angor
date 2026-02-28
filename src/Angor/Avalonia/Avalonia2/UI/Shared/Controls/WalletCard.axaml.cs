@@ -5,7 +5,10 @@ namespace Avalonia2.UI.Shared.Controls;
 
 /// <summary>
 /// A wallet card row showing wallet name, balance, type label, and action buttons.
-/// Vue: Wallet list items in Funds section — icon, name/type on left, balance + actions on right.
+/// Vue: Wallet list items in Funds section — icon, name/balance on left, 3 action buttons on right.
+/// 
+/// Buttons: Send (filled green gradient), Receive (outlined green), UTXO (outlined green).
+/// Buttons are named "BtnSend", "BtnReceive", "BtnUtxo" for click handling in FundsView code-behind.
 /// </summary>
 public class WalletCard : TemplatedControl
 {
@@ -17,6 +20,9 @@ public class WalletCard : TemplatedControl
 
     public static readonly StyledProperty<string?> WalletTypeProperty =
         AvaloniaProperty.Register<WalletCard, string?>(nameof(WalletType));
+
+    public static readonly StyledProperty<string?> LabelProperty =
+        AvaloniaProperty.Register<WalletCard, string?>(nameof(Label));
 
     public string? WalletName
     {
@@ -34,5 +40,11 @@ public class WalletCard : TemplatedControl
     {
         get => GetValue(WalletTypeProperty);
         set => SetValue(WalletTypeProperty, value);
+    }
+
+    public string? Label
+    {
+        get => GetValue(LabelProperty);
+        set => SetValue(LabelProperty, value);
     }
 }

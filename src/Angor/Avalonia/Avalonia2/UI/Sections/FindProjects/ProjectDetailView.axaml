@@ -6,7 +6,6 @@
 
 
              xmlns:controls="clr-namespace:Avalonia2.UI.Shared.Controls"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="1600"
              x:Class="Avalonia2.UI.Sections.FindProjects.ProjectDetailView"
@@ -241,8 +240,8 @@
                         <!-- Banner — Vue: height 180px -->
                         <Panel Height="180">
                             <Border Background="{DynamicResource SurfaceLow}" CornerRadius="15,15,0,0" />
-                            <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                            Source="{Binding BannerUrl}" />
+                            <Image Stretch="UniformToFill"
+                                   Source="{Binding BannerBitmap}" />
                             <!-- Logo — Vue: 64x64, circle, absolute bottom -32px left 24px -->
                             <Panel VerticalAlignment="Bottom" HorizontalAlignment="Left"
                                    Margin="24,0,0,-32">
@@ -250,8 +249,8 @@
                                         Background="{DynamicResource Surface}"
                                         BoxShadow="0 4 12 0 #26000000"
                                         ClipToBounds="True">
-                                    <asyncImageLoader:AdvancedImage Stretch="UniformToFill"
-                                                                    Source="{Binding AvatarUrl}" />
+                                    <Image Stretch="UniformToFill"
+                                           Source="{Binding AvatarBitmap}" />
                                 </Border>
                             </Panel>
                         </Panel>

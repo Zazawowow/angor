@@ -154,14 +154,14 @@
                                 Background="{DynamicResource RecoveryWarningBg}"
                                 BorderBrush="{DynamicResource RecoveryWarningBorder}"
                                 BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Spacing="12">
+                            <DockPanel>
                                 <i:Icon Value="fa-solid fa-triangle-exclamation" FontSize="18"
                                         Foreground="#F59E0B" VerticalAlignment="Top"
-                                        Margin="0,2,0,0" />
+                                        Margin="0,2,12,0" DockPanel.Dock="Left" />
                                 <TextBlock Text="When you recover funds, they will be locked in a penalty period. During this time, you will not be able to access them until the penalty period expires."
                                            FontSize="14" TextWrapping="Wrap"
                                            Foreground="{DynamicResource RecoveryWarningText}" />
-                            </StackPanel>
+                            </DockPanel>
                         </Border>
 
                         <!-- Info cards 2x2 grid -->
@@ -355,23 +355,48 @@
                     </Panel>
                 </Border>
 
+                <!-- ── Project ID field container ── -->
+                <StackPanel Margin="24,24,24,0" Spacing="6">
+                    <TextBlock Text="Project ID" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextMuted}" />
+                    <Border Background="{DynamicResource SurfaceMedium}"
+                            BorderBrush="{DynamicResource Stroke}"
+                            BorderThickness="1"
+                            CornerRadius="8" Padding="12,10">
+                        <DockPanel>
+                            <i:Icon Value="fa-solid fa-cloud"
+                                   FontSize="18"
+                                   Foreground="{DynamicResource TextMuted}"
+                                   DockPanel.Dock="Left" Margin="0,0,8,0" />
+                            <Border Name="CopyClaimProjectIdBtn" Cursor="Hand"
+                                    DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                    Margin="8,0,0,0">
+                                <i:Icon Value="fa-solid fa-copy" FontSize="14" Foreground="{DynamicResource TextMuted}" />
+                            </Border>
+                            <TextBlock Text="{Binding RecoveryProjectId}"
+                                       FontSize="13"
+                                       FontFamily="Cascadia Code,Consolas,monospace"
+                                       Foreground="{DynamicResource TextStrong}"
+                                       TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                    </Border>
+                </StackPanel>
+
                 <!-- ── Table ── -->
                 <StackPanel Margin="24">
                     <!-- Table header row -->
                     <Border Padding="16,12"
                             BorderThickness="0,0,0,1"
                             BorderBrush="{DynamicResource RecoveryTableHeaderBorder}">
-                        <Grid ColumnDefinitions="*,*,*,Auto">
-                            <TextBlock Grid.Column="0" Text="PROJECT ID" FontSize="12"
+                        <Grid ColumnDefinitions="*,*,Auto">
+                            <TextBlock Grid.Column="0" Text="AMOUNT IN PENALTY" FontSize="12"
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="1" Text="AMOUNT IN PENALTY" FontSize="12"
+                            <TextBlock Grid.Column="1" Text="DAYS REMAINING" FontSize="12"
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="2" Text="DAYS REMAINING" FontSize="12"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Grid.Column="3" Text="" Width="130" />
+                            <TextBlock Grid.Column="2" Text="" Width="130" />
                         </Grid>
                     </Border>
 
@@ -379,27 +404,20 @@
                     <Border Padding="16,16"
                             BorderThickness="0,0,0,1"
                             BorderBrush="{DynamicResource RecoveryTableRowBorder}">
-                        <Grid ColumnDefinitions="*,*,*,Auto">
-                            <!-- Project ID (truncated) -->
-                            <TextBlock Grid.Column="0"
-                                       Text="{Binding RecoveryProjectId}"
-                                       FontSize="13" FontFamily="Consolas,Menlo,monospace"
-                                       Foreground="{DynamicResource TextStrong}"
-                                       TextTrimming="CharacterEllipsis"
-                                       VerticalAlignment="Center" />
+                        <Grid ColumnDefinitions="*,*,Auto">
                             <!-- Amount in penalty -->
-                            <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold"
+                            <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold"
                                        Foreground="#4B7C5A" VerticalAlignment="Center">
                                 <Run Text="{Binding PenaltyAmount, Mode=OneWay}" /><Run Text=" BTC" />
                             </TextBlock>
                             <!-- Days remaining -->
-                            <TextBlock Grid.Column="2" FontSize="14"
+                            <TextBlock Grid.Column="1" FontSize="14"
                                        Foreground="{DynamicResource TextStrong}"
                                        VerticalAlignment="Center">
                                 <Run Text="{Binding PenaltyDaysRemaining, Mode=OneWay}" /><Run Text=" days" />
                             </TextBlock>
                             <!-- Claim Penalty button (green gradient, inline) -->
-                            <Button Name="ClaimPenaltyButton" Grid.Column="3" Classes="ModalBtn"
+                            <Button Name="ClaimPenaltyButton" Grid.Column="2" Classes="ModalBtn"
                                     Cursor="Hand" VerticalAlignment="Center">
                                 <Border CornerRadius="8" Padding="16,8"
                                         Background="{DynamicResource GreenGradient}">
@@ -549,14 +567,14 @@
                                 Background="{DynamicResource RecoveryWarningBg}"
                                 BorderBrush="{DynamicResource RecoveryWarningBorder}"
                                 BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Spacing="12">
+                            <DockPanel>
                                 <i:Icon Value="fa-solid fa-circle-info" FontSize="18"
                                         Foreground="#4B7C5A" VerticalAlignment="Top"
-                                        Margin="0,2,0,0" />
+                                        Margin="0,2,12,0" DockPanel.Dock="Left" />
                                 <TextBlock Text="The penalty period has ended and your funds are now available for release. Please confirm the details below to release your recovered funds."
                                            FontSize="14" TextWrapping="Wrap"
                                            Foreground="{DynamicResource RecoveryWarningText}" />
-                            </StackPanel>
+                            </DockPanel>
                         </Border>
 
                         <!-- Amount to Release -->

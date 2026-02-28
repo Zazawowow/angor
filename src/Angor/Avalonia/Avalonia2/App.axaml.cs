@@ -1,3 +1,5 @@
+using AsyncImageLoader;
+using AsyncImageLoader.Loaders;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia2.UI.Shell;
@@ -11,6 +13,13 @@ public partial class App : Application
     public override void Initialize()
     {
         IconProvider.Current.Register<FontAwesomeIconProvider>();
+
+        // Use disk-cached image loader so AdvancedImage (Header control) doesn't re-download
+        // on every attach. Main project/investment images use ImageCacheService instead.
+        ImageLoader.AsyncImageLoader = new DiskCachedWebImageLoader(
+            System.IO.Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+                "Avalonia2", "ImageCache"));
 
         AvaloniaXamlLoader.Load(this);
     }
