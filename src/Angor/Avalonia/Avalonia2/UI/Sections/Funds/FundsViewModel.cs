@@ -65,6 +65,9 @@ public partial class FundsViewModel : ReactiveObject
     /// <summary>Cached AccountBalanceInfo per wallet for UTXO access.</summary>
     private readonly Dictionary<string, AccountBalanceInfo> _walletBalanceInfos = new();
 
+    /// <summary>Guard against concurrent LoadWalletsFromSdkAsync calls.</summary>
+    private bool _isLoadingWallets;
+
     public FundsViewModel(
         IWalletAppService walletAppService,
         IWalletAccountBalanceService balanceService,
@@ -92,6 +95,8 @@ public partial class FundsViewModel : ReactiveObject
     /// </summary>
     public async Task LoadWalletsFromSdkAsync()
     {
+        if (_isLoadingWallets) return;
+        _isLoadingWallets = true;
         IsLoading = true;
 
         try
@@ -171,6 +176,7 @@ public partial class FundsViewModel : ReactiveObject
         finally
         {
             IsLoading = false;
+            _isLoadingWallets = false;
         }
     }
 
