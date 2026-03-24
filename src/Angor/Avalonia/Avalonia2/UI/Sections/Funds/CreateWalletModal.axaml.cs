@@ -174,16 +174,33 @@ public partial class CreateWalletModal : UserControl, IBackdropCloseable
     }
 
     /// <summary>
-    /// Simulate downloading the seed phrase.
+    /// Save seed phrase to a text file via file save dialog.
     /// Vue: downloadGeneratedSeed() — sets seedDownloaded = true.
-    /// In a real app this would trigger a file save dialog.
     /// </summary>
-    private void DownloadSeed()
+    private async void DownloadSeed()
     {
-        _seedDownloaded = true;
+        if (string.IsNullOrEmpty(_generatedSeedWords)) return;
 
-        // Enable and re-style the Continue button
-        // Vue: enabled state = border-[#4B7C5A] text-[#4B7C5A]
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel?.StorageProvider != null)
+        {
+            var file = await topLevel.StorageProvider.SaveFilePickerAsync(
+                new Avalonia.Platform.Storage.FilePickerSaveOptions
+                {
+                    Title = "Save Seed Phrase",
+                    SuggestedFileName = "seed-backup.txt",
+                    DefaultExtension = "txt"
+                });
+
+            if (file != null)
+            {
+                await using var stream = await file.OpenWriteAsync();
+                await using var writer = new System.IO.StreamWriter(stream);
+                await writer.WriteAsync(_generatedSeedWords);
+            }
+        }
+
+        _seedDownloaded = true;
         BtnContinueBackup.IsEnabled = true;
         BtnContinueBackup.BorderBrush = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#4B7C5A"));
         BtnContinueBackup.Foreground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#4B7C5A"));

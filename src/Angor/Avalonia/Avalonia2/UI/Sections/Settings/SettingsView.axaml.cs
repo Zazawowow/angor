@@ -101,6 +101,12 @@ public partial class SettingsView : UserControl
             Vm?.RemoveRelayLink(item);
     }
 
+    // ── Refresh Buttons ──
+    private void OnRefreshIndexer(object? sender, RoutedEventArgs e)
+    {
+        if (Vm != null) _ = Vm.RefreshIndexerStatusAsync();
+    }
+
     // ── Wipe Data Modal ──
     private void OnWipeDataClick(object? sender, RoutedEventArgs e) =>
         Vm?.OpenWipeDataModal();

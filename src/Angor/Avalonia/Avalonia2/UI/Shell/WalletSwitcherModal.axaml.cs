@@ -29,7 +29,7 @@ public partial class WalletSwitcherModal : UserControl, IBackdropCloseable
     /// </summary>
     public void OnBackdropCloseRequested()
     {
-        // No special cleanup needed — just let the shell close the modal.
+        Vm?.HideModal();
     }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)

@@ -90,7 +90,7 @@
 
                         <!-- Buttons Row: Refresh + Penalties -->
                         <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-                            <Button Classes="Primary" Padding="20,8">
+                            <Button Name="RefreshButton" Classes="Primary" Padding="20,8">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <i:Icon Value="fa-solid fa-arrows-rotate" FontSize="13"
                                             Foreground="White" VerticalAlignment="Center" />

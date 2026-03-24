@@ -72,11 +72,20 @@ public partial class PortfolioView : UserControl
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
     {
-        if (e.Source is Button btn && btn.Name == "ManageButton" &&
-            btn.Tag is InvestmentViewModel investment &&
-            DataContext is PortfolioViewModel vm)
+        if (e.Source is not Button btn) return;
+
+        switch (btn.Name)
         {
-            vm.OpenInvestmentDetail(investment);
+            case "RefreshButton":
+                if (DataContext is PortfolioViewModel refreshVm)
+                    _ = refreshVm.LoadInvestmentsFromSdkAsync();
+                e.Handled = true;
+                break;
+
+            case "ManageButton" when btn.Tag is InvestmentViewModel investment:
+                if (DataContext is PortfolioViewModel vm)
+                    vm.OpenInvestmentDetail(investment);
+                break;
         }
     }
 
