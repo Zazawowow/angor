@@ -1,4 +1,3 @@
-using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -22,15 +21,8 @@ public partial class FundsView : UserControl
         // and WalletCard action buttons (BtnSend, BtnReceive, BtnUtxo)
         AddHandler(Button.ClickEvent, OnButtonClick, RoutingStrategies.Bubble);
 
-        // Show/hide panels based on loading + wallet state
-        vm.WhenAnyValue(x => x.IsLoading, x => x.HasWallets)
-            .ObserveOn(ReactiveUI.RxApp.MainThreadScheduler)
-            .Subscribe(tuple =>
-            {
-                var (loading, hasWallets) = tuple;
-                EmptyStatePanel.IsVisible = !loading && !hasWallets;
-                PopulatedPanel.IsVisible = !loading && hasWallets;
-            });
+        // Panel visibility is handled by AXAML bindings on HasWallets.
+        // The loading spinner panel binds to IsLoading directly.
     }
 
     /// <summary>
