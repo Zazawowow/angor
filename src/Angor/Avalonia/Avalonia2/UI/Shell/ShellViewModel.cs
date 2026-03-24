@@ -391,8 +391,11 @@ public partial class ShellViewModel : ReactiveObject
             SwitcherWallets.Clear();
             foreach (var meta in metadatasResult.Value)
             {
-                var balanceResult = await _walletAppService.GetBalance(meta.Id);
-                var balanceBtc = balanceResult.IsSuccess ? balanceResult.Value.Sats / 100_000_000.0 : 0;
+                long balanceSats = 0;
+                var balanceInfoResult = await _walletAppService.GetAccountBalanceInfo(meta.Id);
+                if (balanceInfoResult.IsSuccess)
+                    balanceSats = balanceInfoResult.Value.TotalBalance + balanceInfoResult.Value.TotalUnconfirmedBalance + balanceInfoResult.Value.TotalBalanceReserved;
+                var balanceBtc = balanceSats / 100_000_000.0;
 
                 SwitcherWallets.Add(new WalletSwitcherItem
                 {
