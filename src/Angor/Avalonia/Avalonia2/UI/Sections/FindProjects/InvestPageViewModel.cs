@@ -513,6 +513,9 @@ public partial class InvestPageViewModel : ReactiveObject
         IsProcessing = true;
         PaymentStatusText = "Building investment transaction...";
 
+        // Yield to let the UI render the spinner before blocking on SDK calls
+        await Task.Yield();
+
         try
         {
             var walletId = new WalletId(SelectedWallet.WalletId);

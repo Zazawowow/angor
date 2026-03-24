@@ -30,8 +30,10 @@ public partial class FundsView : UserControl
     {
         base.OnAttachedToLogicalTree(e);
 
-        // Force layout invalidation so bindings re-evaluate when the cached view re-enters.
-        // Previous approach used DataContext = null / DataContext = vm which breaks DynamicResource bindings.
+        // Reload wallet data when the view re-enters the tree (e.g. after wipe or navigation)
+        if (DataContext is FundsViewModel vm)
+            _ = vm.LoadWalletsFromSdkAsync();
+
         InvalidateVisual();
     }
 
