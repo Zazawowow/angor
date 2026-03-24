@@ -238,7 +238,7 @@
                             CornerRadius="8"
                             Padding="16">
                         <TextBlock Name="SeedPhraseDisplay"
-                                   Text="abandon ability able about above absent absorb abstract absurd abuse access accident"
+                                   Text=""
                                    FontSize="14"
                                    FontFamily="Cascadia Mono, Consolas, monospace"
                                    Foreground="{DynamicResource CreateWalletSeedText}"

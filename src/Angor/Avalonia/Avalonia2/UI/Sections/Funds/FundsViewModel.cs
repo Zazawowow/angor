@@ -246,6 +246,11 @@ public partial class FundsViewModel : ReactiveObject
     }
 
     /// <summary>
+    /// Generate random BIP-39 seed words via the SDK.
+    /// </summary>
+    public string GenerateSeedWords() => _walletAppService.GenerateRandomSeedwords();
+
+    /// <summary>
     /// Get a receive address for the specified wallet.
     /// </summary>
     public async Task<string?> GetReceiveAddressAsync(string walletId)

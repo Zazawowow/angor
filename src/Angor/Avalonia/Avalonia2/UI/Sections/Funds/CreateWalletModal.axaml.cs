@@ -28,6 +28,9 @@ public partial class CreateWalletModal : UserControl, IBackdropCloseable
 
     private FundsViewModel? Vm => DataContext as FundsViewModel;
 
+    /// <summary>Generated seed words stored for wallet creation after backup confirmation.</summary>
+    private string? _generatedSeedWords;
+
     private ShellViewModel? ShellVm =>
         this.FindAncestorOfType<ShellView>()?.DataContext as ShellViewModel;
 
@@ -56,6 +59,7 @@ public partial class CreateWalletModal : UserControl, IBackdropCloseable
 
             case "BtnGenerate":
                 _seedDownloaded = false;
+                GenerateAndDisplaySeed();
                 ShowStep("backup");
                 break;
 
@@ -143,13 +147,26 @@ public partial class CreateWalletModal : UserControl, IBackdropCloseable
     }
 
     /// <summary>
-    /// Create a new wallet via the SDK (generate flow) and show success step.
+    /// Generate real seed words from the SDK and display them in the backup panel.
+    /// </summary>
+    private void GenerateAndDisplaySeed()
+    {
+        if (Vm == null) return;
+        _generatedSeedWords = Vm.GenerateSeedWords();
+        if (!string.IsNullOrEmpty(_generatedSeedWords))
+        {
+            SeedPhraseDisplay.Text = _generatedSeedWords;
+        }
+    }
+
+    /// <summary>
+    /// Create a new wallet via the SDK (generate flow) using pre-generated seed words.
     /// </summary>
     private async Task CreateWalletViaSdkAsync(string walletName)
     {
-        if (Vm == null) return;
+        if (Vm == null || string.IsNullOrEmpty(_generatedSeedWords)) return;
 
-        var (success, _) = await Vm.CreateWalletAsync(walletName, "default-key");
+        var success = await Vm.ImportWalletAsync(walletName, _generatedSeedWords, "default-key");
         if (success)
         {
             ShowStep("success");
