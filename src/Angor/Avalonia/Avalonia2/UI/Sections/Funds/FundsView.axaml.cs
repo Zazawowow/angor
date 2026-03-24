@@ -24,6 +24,7 @@ public partial class FundsView : UserControl
 
         // Show/hide panels based on loading + wallet state
         vm.WhenAnyValue(x => x.IsLoading, x => x.HasWallets)
+            .ObserveOn(ReactiveUI.RxApp.MainThreadScheduler)
             .Subscribe(tuple =>
             {
                 var (loading, hasWallets) = tuple;
