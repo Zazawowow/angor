@@ -59,11 +59,8 @@ public partial class FundsViewModel : ReactiveObject
     public string LiquidBalance { get; private set; } = "0.0000";
 
     [Reactive] private bool isLoading;
-
-    /// <summary>Show empty state only when not loading and no wallets.</summary>
-    public bool ShowEmptyState => !IsLoading && !HasWallets;
-    /// <summary>Show populated state only when not loading and has wallets.</summary>
-    public bool ShowPopulatedState => !IsLoading && HasWallets;
+    [Reactive] private bool showEmptyState;
+    [Reactive] private bool showPopulatedState;
 
     public ObservableCollection<SeedGroupViewModel> SeedGroups { get; } = new();
 
@@ -82,16 +79,9 @@ public partial class FundsViewModel : ReactiveObject
         _balanceService = balanceService;
         _getNetwork = getNetwork;
 
-        // Raise computed visibility properties when IsLoading or HasWallets changes
-        this.WhenAnyValue(x => x.IsLoading, x => x.HasWallets)
-            .Subscribe(_ =>
-            {
-                this.RaisePropertyChanged(nameof(ShowEmptyState));
-                this.RaisePropertyChanged(nameof(ShowPopulatedState));
-            });
-
         // Start in loading state to prevent empty state flash
         IsLoading = true;
+        UpdatePanelVisibility();
         _ = LoadWalletsFromSdkAsync();
     }
 
@@ -191,7 +181,14 @@ public partial class FundsViewModel : ReactiveObject
         {
             IsLoading = false;
             _isLoadingWallets = false;
+            UpdatePanelVisibility();
         }
+    }
+
+    private void UpdatePanelVisibility()
+    {
+        ShowEmptyState = !IsLoading && !HasWallets;
+        ShowPopulatedState = !IsLoading && HasWallets;
     }
 
     /// <summary>
@@ -316,6 +313,7 @@ public partial class FundsViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(TotalInvested));
         this.RaisePropertyChanged(nameof(BitcoinBalance));
         this.RaisePropertyChanged(nameof(LiquidBalance));
+        UpdatePanelVisibility();
     }
 
 }
