@@ -1,6 +1,6 @@
 # HIGH-17: Constants — Stubbed miner fee
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED — Marked as estimate with ~ prefix; dynamic fee estimation deferred to SDK
 
 ## Section: Shared
 

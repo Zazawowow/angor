@@ -1,6 +1,6 @@
 # HIGH-15: ShellViewModel — Wallet type and subtitle hardcoded
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED — Subtitle now uses wallet name from SDK metadata
 
 ## Section: Shell
 

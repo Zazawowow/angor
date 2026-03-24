@@ -1,6 +1,6 @@
 # HIGH-12: Portfolio InvestmentViewModel — All recovery/penalty data hardcoded
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED — PenaltyDuration, PenaltyDaysRemaining from SDK; RecoveryProjectId uses ProjectIdentifier; MinerFee/DestinationAddress now settable (empty default)
 
 ## Section: Portfolio
 

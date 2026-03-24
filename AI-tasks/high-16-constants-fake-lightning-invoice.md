@@ -1,6 +1,6 @@
 # HIGH-16: Constants — Fake Lightning invoice string
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED — Replaced fake invoice with "Lightning invoices coming soon" placeholder
 
 ## Section: Shared
 

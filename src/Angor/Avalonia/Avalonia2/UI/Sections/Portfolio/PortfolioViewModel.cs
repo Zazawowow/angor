@@ -348,13 +348,13 @@ public class InvestmentViewModel : INotifyPropertyChanged
         set { if (_isProcessing == value) return; _isProcessing = value; OnPropertyChanged(); }
     }
 
-    // ── Recovery stub data (Vue: computed/static values) ──
-    public string PenaltyDuration => "90 days";
-    public string MinerFee => "0.00000645";
-    public string DestinationAddress => "tb1q7fxzwjc97ft53sugz8v7szj5ul02er7wtykjwp";
-    public string RecoveryProjectId => "angor1q3pthkftzh3ym4emg0ctcxhmz5u5m7lt5tk69je";
+    // ── Recovery data (populated from SDK when available) ──
+    public string PenaltyDuration { get; set; } = "";
+    public string MinerFee { get; set; } = "";
+    public string DestinationAddress { get; set; } = "";
+    public string RecoveryProjectId => ProjectIdentifier;
     public string PenaltyAmount => AmountToRecover;
-    public int PenaltyDaysRemaining => 67;
+    public int PenaltyDaysRemaining { get; set; }
 
     // ── Step visibility helpers (for XAML binding without converters) ──
     public bool IsStep1 => Step == 1;
@@ -596,6 +596,11 @@ public partial class PortfolioViewModel : ReactiveObject
                     Status = item.IsSpent ? "Released" : (recovery.HasItemsInPenalty ? "Pending" : "Not Spent")
                 });
             }
+
+            // Populate recovery details from SDK data
+            investment.PenaltyDuration = recovery.PenaltyDays > 0 ? $"{recovery.PenaltyDays} days" : "";
+            var daysLeft = (recovery.ExpiryDate - DateTime.UtcNow).Days;
+            investment.PenaltyDaysRemaining = Math.Max(0, daysLeft);
 
             // Update penalty state
             if (recovery.HasItemsInPenalty)

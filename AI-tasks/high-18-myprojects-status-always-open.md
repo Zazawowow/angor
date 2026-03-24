@@ -1,6 +1,6 @@
 # HIGH-18: MyProjectsViewModel — Project status always hardcoded "Open"
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED — Derives status from FundingStartDate/FundingEndDate (Upcoming/Open/Closed)
 
 ## Section: MyProjects
 

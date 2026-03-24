@@ -27,7 +27,7 @@ public partial class SignatureRequestViewModel : ReactiveObject
     /// <summary>Status: waiting, approved, rejected</summary>
     [Reactive] private string status = SignatureStatus.Waiting.ToLowerString();
     /// <summary>Investor npub key (shown in expanded details)</summary>
-    public string Npub { get; set; } = "npub1aunjpz36t2vwtqxyph2jc30c4feng4gv5yhhw6yckgzxa0rn52tq7tsnm7";
+    public string Npub { get; set; } = "";
     /// <summary>Whether the chat has messages</summary>
     public bool HasMessages { get; set; }
     /// <summary>SDK event ID for the investment request</summary>

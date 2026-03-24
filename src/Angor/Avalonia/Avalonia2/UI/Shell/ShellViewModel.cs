@@ -395,7 +395,7 @@ public partial class ShellViewModel : ReactiveObject
                     Name = meta.Name,
                     WalletType = "bitcoin",
                     Balance = balanceBtc,
-                    Subtitle = "Bitcoin • Angor Account"
+                    Subtitle = $"Bitcoin • {meta.Name}"
                 });
             }
 

@@ -1,6 +1,6 @@
 # HIGH-20: FundersViewModel — Hardcoded sample npub fallback
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED — Default changed from fake npub to empty string; real value populated from SDK
 
 ## Section: Funders
 

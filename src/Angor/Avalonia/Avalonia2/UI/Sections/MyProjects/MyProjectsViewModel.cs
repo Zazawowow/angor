@@ -128,7 +128,9 @@ public partial class MyProjectsViewModel : ReactiveObject
                         Description = dto.ShortDescription ?? "",
                         ProjectType = projectType,
                         TargetAmount = targetBtc.ToString("F5", CultureInfo.InvariantCulture),
-                        Status = "Open",
+                        Status = DateTime.UtcNow < dto.FundingStartDate ? "Upcoming"
+                            : DateTime.UtcNow < dto.FundingEndDate ? "Open"
+                            : "Closed",
                         StartDate = dto.FundingStartDate.ToString("yyyy-MM-dd"),
                         BannerUrl = dto.Banner?.ToString(),
                         LogoUrl = dto.Avatar?.ToString(),
