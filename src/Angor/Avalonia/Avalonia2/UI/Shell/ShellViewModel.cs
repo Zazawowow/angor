@@ -376,8 +376,13 @@ public partial class ShellViewModel : ReactiveObject
     /// Load wallets from SDK for the wallet switcher.
     /// Replaces hardcoded wallet data with real SDK wallet metadatas and balances.
     /// </summary>
+    private bool _isLoadingSwitcherWallets;
+
     public async Task LoadSwitcherWalletsAsync()
     {
+        if (_isLoadingSwitcherWallets) return;
+        _isLoadingSwitcherWallets = true;
+
         try
         {
             var metadatasResult = await _walletAppService.GetMetadatas();
@@ -386,11 +391,8 @@ public partial class ShellViewModel : ReactiveObject
             SwitcherWallets.Clear();
             foreach (var meta in metadatasResult.Value)
             {
-                long balanceSats = 0;
-                var balanceInfoResult = await _walletAppService.RefreshAndGetAccountBalanceInfo(meta.Id);
-                if (balanceInfoResult.IsSuccess)
-                    balanceSats = balanceInfoResult.Value.TotalBalance + balanceInfoResult.Value.TotalUnconfirmedBalance + balanceInfoResult.Value.TotalBalanceReserved;
-                var balanceBtc = balanceSats / 100_000_000.0;
+                var balanceResult = await _walletAppService.GetBalance(meta.Id);
+                var balanceBtc = balanceResult.IsSuccess ? balanceResult.Value.Sats / 100_000_000.0 : 0;
 
                 SwitcherWallets.Add(new WalletSwitcherItem
                 {
@@ -408,6 +410,10 @@ public partial class ShellViewModel : ReactiveObject
         catch
         {
             // Wallet loading failed — switcher stays empty
+        }
+        finally
+        {
+            _isLoadingSwitcherWallets = false;
         }
     }
 
