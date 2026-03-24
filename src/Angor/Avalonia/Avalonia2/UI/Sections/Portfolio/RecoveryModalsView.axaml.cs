@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia2.UI.Shared.Helpers;
 using Avalonia2.UI.Shell;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Avalonia2.UI.Sections.Portfolio;
 
@@ -90,40 +91,90 @@ public partial class RecoveryModalsView : UserControl, IBackdropCloseable
         }
     }
 
-    // ── State transitions with simulated 2s processing delays ──
+    // ── State transitions via real SDK calls ──
+
+    private static long GetFeeRate(string priority) => priority switch
+    {
+        "priority" => 50,
+        "economy" => 5,
+        _ => 20 // "standard"
+    };
+
+    private PortfolioViewModel? GetPortfolioVm() =>
+        App.Services.GetService<PortfolioViewModel>();
 
     private async Task ProcessRecoveryConfirmAsync()
     {
         if (Vm == null || Vm.IsProcessing) return;
         Vm.IsProcessing = true;
-        await Task.Delay(2000);
-        Vm.IsProcessing = false;
-        Vm.PenaltyState = "pending";
-        Vm.ShowRecoveryModal = false;
-        GetShellVm()?.HideModal();
+
+        var portfolioVm = GetPortfolioVm();
+        if (portfolioVm != null)
+        {
+            var feeRate = GetFeeRate(Vm.SelectedFeePriority);
+            var success = await portfolioVm.RecoverFundsAsync(Vm, feeRate);
+            Vm.IsProcessing = false;
+
+            if (success)
+            {
+                Vm.ShowRecoveryModal = false;
+                GetShellVm()?.HideModal();
+            }
+        }
+        else
+        {
+            Vm.IsProcessing = false;
+        }
     }
 
     private async Task ProcessClaimPenaltyAsync()
     {
         if (Vm == null || Vm.IsProcessing) return;
         Vm.IsProcessing = true;
-        await Task.Delay(2000);
-        Vm.IsProcessing = false;
-        Vm.PenaltyState = "canRelease";
-        Vm.ShowClaimModal = false;
-        GetShellVm()?.HideModal();
+
+        var portfolioVm = GetPortfolioVm();
+        if (portfolioVm != null)
+        {
+            var feeRate = GetFeeRate(Vm.SelectedFeePriority);
+            var success = await portfolioVm.ClaimEndOfProjectAsync(Vm, feeRate);
+            Vm.IsProcessing = false;
+
+            if (success)
+            {
+                Vm.PenaltyState = "canRelease";
+                Vm.ShowClaimModal = false;
+                GetShellVm()?.HideModal();
+            }
+        }
+        else
+        {
+            Vm.IsProcessing = false;
+        }
     }
 
     private async Task ProcessReleaseConfirmAsync()
     {
         if (Vm == null || Vm.IsProcessing) return;
         Vm.IsProcessing = true;
-        await Task.Delay(2000);
-        Vm.IsProcessing = false;
-        Vm.PenaltyState = "released";
-        Vm.ShowReleaseModal = false;
-        Vm.ShowSuccessModal = true;
-        // Don't HideModal — stay in modal overlay showing success
+
+        var portfolioVm = GetPortfolioVm();
+        if (portfolioVm != null)
+        {
+            var feeRate = GetFeeRate(Vm.SelectedFeePriority);
+            var success = await portfolioVm.ReleaseFundsAsync(Vm, feeRate);
+            Vm.IsProcessing = false;
+
+            if (success)
+            {
+                Vm.ShowReleaseModal = false;
+                Vm.ShowSuccessModal = true;
+                // Don't HideModal — stay in modal overlay showing success
+            }
+        }
+        else
+        {
+            Vm.IsProcessing = false;
+        }
     }
 
     // ── Fee priority border selection handling ──
