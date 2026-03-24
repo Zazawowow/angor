@@ -89,7 +89,8 @@ public partial class FundsView : UserControl
             modal.SetWallet(
                 card.WalletName ?? "Wallet",
                 card.WalletType ?? "On-Chain",
-                card.Balance ?? "0.0000 BTC");
+                card.Balance ?? "0.0000 BTC",
+                card.WalletId);
             shellVm.ShowModal(modal);
         }
     }

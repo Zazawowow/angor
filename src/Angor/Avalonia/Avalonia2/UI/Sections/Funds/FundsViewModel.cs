@@ -220,6 +220,32 @@ public partial class FundsViewModel : ReactiveObject
     }
 
     /// <summary>
+    /// Send funds from a wallet to a destination address.
+    /// Returns the transaction ID on success.
+    /// </summary>
+    public async Task<(bool Success, string? TxId)> SendAsync(string walletId, string destinationAddress, double amountBtc, long feeRateSatsPerVByte)
+    {
+        try
+        {
+            var sats = (long)(amountBtc * 100_000_000);
+            var result = await _walletAppService.SendAmount(
+                new WalletId(walletId),
+                new Amount(sats),
+                new Address(destinationAddress),
+                new DomainFeeRate(feeRateSatsPerVByte));
+
+            if (result.IsSuccess)
+            {
+                await LoadWalletsFromSdkAsync();
+                return (true, result.Value.Value);
+            }
+        }
+        catch { }
+
+        return (false, null);
+    }
+
+    /// <summary>
     /// Get a receive address for the specified wallet.
     /// </summary>
     public async Task<string?> GetReceiveAddressAsync(string walletId)

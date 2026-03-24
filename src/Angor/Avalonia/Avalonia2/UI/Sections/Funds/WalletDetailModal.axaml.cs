@@ -349,7 +349,7 @@ public partial class WalletDetailModal : UserControl, IBackdropCloseable
         shellVm.HideModal();
 
         var sendModal = new SendFundsModal { DataContext = DataContext };
-        sendModal.SetWallet(_walletName, _walletType, _walletBalance);
+        sendModal.SetWallet(_walletName, _walletType, _walletBalance, _walletId);
 
         // Pre-fill amount if UTXOs selected
         if (_selectedUtxos.Count > 0)

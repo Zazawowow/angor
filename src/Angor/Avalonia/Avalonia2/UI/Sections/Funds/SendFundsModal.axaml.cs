@@ -17,9 +17,8 @@ namespace Avalonia2.UI.Sections.Funds;
 public partial class SendFundsModal : UserControl, IBackdropCloseable
 {
     private string _walletBalance = "0.00000000";
-
-    /// <summary>Stub txid for the success view — matches the truncated XAML text.</summary>
-    private const string StubTxid = "a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef7890abcd";
+    private string _walletId = "";
+    private string _lastTxId = "";
 
     public SendFundsModal()
     {
@@ -40,12 +39,13 @@ public partial class SendFundsModal : UserControl, IBackdropCloseable
     /// Set the source wallet info shown in the "From" box.
     /// Called by FundsView before showing the modal.
     /// </summary>
-    public void SetWallet(string name, string type, string balance)
+    public void SetWallet(string name, string type, string balance, string? walletId = null)
     {
         FromWalletName.Text = name;
         FromWalletType.Text = type;
         FromBalance.Text = balance;
         _walletBalance = balance.Replace(" BTC", "").Trim();
+        _walletId = walletId ?? "";
     }
 
     /// <summary>
@@ -87,23 +87,57 @@ public partial class SendFundsModal : UserControl, IBackdropCloseable
                 break;
 
             case "BtnSend":
-                // Validate before sending
                 if (!ValidateSendForm()) return;
-                // Simulate sending — show success
-                SummaryAmount.Text = string.IsNullOrEmpty(AmountInput.Text)
-                    ? "0.00000000 BTC"
-                    : $"{AmountInput.Text} BTC";
-                ShowStep("success");
+                _ = SendAsync();
                 break;
 
             case "BtnCopyTxid":
-                // Vue: copyToClipboard(txid) — copy stub txid to clipboard
-                ClipboardHelper.CopyToClipboard(this, StubTxid);
+                ClipboardHelper.CopyToClipboard(this, _lastTxId);
                 break;
 
             case "BtnDone":
                 ShellVm?.HideModal();
                 break;
+        }
+    }
+
+    private long GetSelectedFeeRate()
+    {
+        if (BtnFeeHigh.Classes.Contains("FeeSelected")) return 50;
+        if (BtnFeeLow.Classes.Contains("FeeSelected")) return 5;
+        return 20; // medium/default
+    }
+
+    private async Task SendAsync()
+    {
+        if (DataContext is not FundsViewModel fundsVm) return;
+        if (string.IsNullOrEmpty(_walletId)) return;
+
+        var address = AddressInput.Text?.Trim() ?? "";
+        if (!double.TryParse(AmountInput.Text, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var amount)) return;
+
+        var feeRate = GetSelectedFeeRate();
+
+        // Disable send button during operation
+        var sendBtn = this.FindControl<Button>("BtnSend");
+        if (sendBtn != null) sendBtn.IsEnabled = false;
+
+        var (success, txId) = await fundsVm.SendAsync(_walletId, address, amount, feeRate);
+
+        if (sendBtn != null) sendBtn.IsEnabled = true;
+
+        if (success && txId != null)
+        {
+            _lastTxId = txId;
+            SummaryAmount.Text = $"{amount:F8} BTC";
+            SummaryTxid.Text = txId;
+            ShowStep("success");
+        }
+        else
+        {
+            AmountError.Text = "Transaction failed. Please try again.";
+            AmountError.IsVisible = true;
         }
     }
 
