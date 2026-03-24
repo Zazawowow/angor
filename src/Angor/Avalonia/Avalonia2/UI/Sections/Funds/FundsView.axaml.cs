@@ -108,7 +108,8 @@ public partial class FundsView : UserControl
             var modal = new ReceiveFundsModal { DataContext = DataContext };
             modal.SetWallet(
                 card.WalletName ?? "Wallet",
-                card.WalletType ?? "On-Chain");
+                card.WalletType ?? "On-Chain",
+                card.WalletId);
             shellVm.ShowModal(modal);
         }
     }

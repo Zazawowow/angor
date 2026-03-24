@@ -30,11 +30,25 @@ public partial class ReceiveFundsModal : UserControl, IBackdropCloseable
     /// Set the destination wallet info shown in the "To" box.
     /// Called by FundsView before showing the modal.
     /// </summary>
-    public void SetWallet(string name, string type)
+    public void SetWallet(string name, string type, string? walletId = null)
     {
         ToWalletName.Text = name;
         ToWalletType.Text = type;
         AddressTypeLabel.Text = $"{type} Address";
+
+        if (!string.IsNullOrEmpty(walletId) && DataContext is FundsViewModel fundsVm)
+        {
+            _ = LoadReceiveAddressAsync(fundsVm, walletId);
+        }
+    }
+
+    private async Task LoadReceiveAddressAsync(FundsViewModel fundsVm, string walletId)
+    {
+        var address = await fundsVm.GetReceiveAddressAsync(walletId);
+        if (!string.IsNullOrEmpty(address))
+        {
+            AddressText.Text = address;
+        }
     }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
@@ -49,7 +63,6 @@ public partial class ReceiveFundsModal : UserControl, IBackdropCloseable
                 break;
 
             case "BtnCopyAddress":
-                // Vue: copyAddress() — copies displayed address to clipboard
                 ClipboardHelper.CopyToClipboard(this, AddressText.Text);
                 break;
         }

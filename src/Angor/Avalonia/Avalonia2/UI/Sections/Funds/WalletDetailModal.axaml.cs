@@ -369,7 +369,7 @@ public partial class WalletDetailModal : UserControl, IBackdropCloseable
         shellVm.HideModal();
 
         var receiveModal = new ReceiveFundsModal { DataContext = DataContext };
-        receiveModal.SetWallet(_walletName, _walletType);
+        receiveModal.SetWallet(_walletName, _walletType, _walletId);
         shellVm.ShowModal(receiveModal);
     }
 

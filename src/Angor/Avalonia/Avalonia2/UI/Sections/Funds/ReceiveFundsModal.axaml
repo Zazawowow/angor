@@ -117,7 +117,7 @@
                                        Foreground="{DynamicResource TextMuted}" />
                             </Button>
                             <TextBlock Name="AddressText"
-                                       Text="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+                                       Text="Loading..."
                                        FontSize="13"
                                        FontFamily="Cascadia Mono, Consolas, monospace"
                                         Foreground="{DynamicResource PrimaryGreenBrush}"
