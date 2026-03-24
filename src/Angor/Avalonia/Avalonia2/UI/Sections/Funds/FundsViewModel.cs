@@ -60,6 +60,11 @@ public partial class FundsViewModel : ReactiveObject
 
     [Reactive] private bool isLoading;
 
+    /// <summary>Show empty state only when not loading and no wallets.</summary>
+    public bool ShowEmptyState => !IsLoading && !HasWallets;
+    /// <summary>Show populated state only when not loading and has wallets.</summary>
+    public bool ShowPopulatedState => !IsLoading && HasWallets;
+
     public ObservableCollection<SeedGroupViewModel> SeedGroups { get; } = new();
 
     /// <summary>Cached AccountBalanceInfo per wallet for UTXO access.</summary>
@@ -76,6 +81,14 @@ public partial class FundsViewModel : ReactiveObject
         _walletAppService = walletAppService;
         _balanceService = balanceService;
         _getNetwork = getNetwork;
+
+        // Raise computed visibility properties when IsLoading or HasWallets changes
+        this.WhenAnyValue(x => x.IsLoading, x => x.HasWallets)
+            .Subscribe(_ =>
+            {
+                this.RaisePropertyChanged(nameof(ShowEmptyState));
+                this.RaisePropertyChanged(nameof(ShowPopulatedState));
+            });
 
         // Start in loading state to prevent empty state flash
         IsLoading = true;
