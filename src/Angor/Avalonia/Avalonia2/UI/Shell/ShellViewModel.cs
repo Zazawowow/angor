@@ -408,7 +408,14 @@ public partial class ShellViewModel : ReactiveObject
             }
 
             if (SwitcherWallets.Count > 0)
-                SelectSwitcherWallet(SwitcherWallets[0]);
+            {
+                // Preserve current selection, or default to first wallet
+                var currentId = SelectedWallet?.Id;
+                var match = currentId != null
+                    ? SwitcherWallets.FirstOrDefault(w => w.Id == currentId)
+                    : null;
+                SelectSwitcherWallet(match ?? SwitcherWallets[0]);
+            }
         }
         catch
         {
