@@ -484,6 +484,9 @@ public partial class ShellViewModel : ReactiveObject
     /// </summary>
     private readonly Dictionary<string, object> _viewCache = new();
 
+    /// <summary>Clear the view cache so sections are recreated with fresh data on next navigation.</summary>
+    public void ClearViewCache() => _viewCache.Clear();
+
     public object? CurrentSectionContent
     {
         get

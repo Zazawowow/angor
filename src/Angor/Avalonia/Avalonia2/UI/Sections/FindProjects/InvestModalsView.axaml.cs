@@ -53,7 +53,18 @@ public partial class InvestModalsView : UserControl, IBackdropCloseable
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
     {
-        if (e.Source is not Button btn) return;
+        // Walk up from e.Source to find the Button — e.Source may be a child (TextBlock, Icon, Panel)
+        Button? btn = e.Source as Button;
+        if (btn == null)
+        {
+            var control = e.Source as Avalonia.Controls.Control;
+            while (control != null)
+            {
+                if (control is Button b) { btn = b; break; }
+                control = control.Parent as Avalonia.Controls.Control;
+            }
+        }
+        if (btn == null) return;
 
         switch (btn.Name)
         {

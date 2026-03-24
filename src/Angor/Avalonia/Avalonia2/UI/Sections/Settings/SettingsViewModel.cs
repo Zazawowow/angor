@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using Angor.Sdk.Common;
+using Angor.Sdk.Wallet.Application;
 using Angor.Shared;
 using Angor.Shared.Models;
 using Angor.Shared.Services;
@@ -16,6 +18,7 @@ public partial class SettingsViewModel : ReactiveObject
     private readonly INetworkService _networkService;
     private readonly INetworkConfiguration _networkConfig;
     private readonly INetworkStorage _networkStorage;
+    private readonly IWalletAppService _walletAppService;
 
     [Reactive] private string networkType;
     [Reactive] private bool isNetworkModalOpen;
@@ -72,11 +75,13 @@ public partial class SettingsViewModel : ReactiveObject
         INetworkService networkService,
         INetworkConfiguration networkConfig,
         INetworkStorage networkStorage,
+        IWalletAppService walletAppService,
         PrototypeSettings prototypeSettings)
     {
         _networkService = networkService;
         _networkConfig = networkConfig;
         _networkStorage = networkStorage;
+        _walletAppService = walletAppService;
         _prototypeSettings = prototypeSettings;
 
         // Ensure default settings exist
@@ -279,13 +284,33 @@ public partial class SettingsViewModel : ReactiveObject
     public void OpenWipeDataModal() => IsWipeDataModalOpen = true;
     public void CloseWipeDataModal() => IsWipeDataModalOpen = false;
 
-    public void ConfirmWipeData()
+    public async void ConfirmWipeData()
     {
-        // Clear all settings and reinitialize defaults
+        IsWipeDataModalOpen = false;
+
+        // Clear settings
         _networkStorage.SetSettings(new SettingsInfo());
         _networkService.AddSettingsIfNotExist();
         LoadSettingsFromSdk();
-        IsWipeDataModalOpen = false;
+
+        // Delete all wallets
+        try
+        {
+            var metadatas = await _walletAppService.GetMetadatas();
+            if (metadatas.IsSuccess)
+            {
+                foreach (var meta in metadatas.Value)
+                {
+                    await _walletAppService.DeleteWallet(meta.Id);
+                }
+            }
+        }
+        catch { }
+
+        // Clear cached views so sections reload with fresh data
+        var shellVm = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions
+            .GetService<ShellViewModel>(App.Services);
+        shellVm?.ClearViewCache();
     }
 }
 

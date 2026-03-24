@@ -197,7 +197,9 @@ public partial class InvestPageViewModel : ReactiveObject
 
         // Initialize ReactiveCommands for async payment operations
         PayWithWalletCommand = ReactiveCommand.CreateFromTask(PayWithWalletAsync);
+        PayWithWalletCommand.ThrownExceptions.Subscribe(ex => PaymentStatusText = $"Error: {ex.Message}");
         PayViaInvoiceCommand = ReactiveCommand.CreateFromTask(PayViaInvoiceAsync);
+        PayViaInvoiceCommand.ThrownExceptions.Subscribe(ex => PaymentStatusText = $"Error: {ex.Message}");
 
         // Raise derived property notifications when screen changes
         this.WhenAnyValue(x => x.CurrentScreen)
@@ -265,8 +267,14 @@ public partial class InvestPageViewModel : ReactiveObject
             Wallets.Clear();
             foreach (var meta in metadatasResult.Value)
             {
-                var balanceResult = await _walletAppService.GetBalance(meta.Id);
-                var balanceBtc = balanceResult.IsSuccess ? balanceResult.Value.Sats / 100_000_000.0 : 0;
+                long balanceSats = 0;
+                var balanceInfoResult = await _walletAppService.RefreshAndGetAccountBalanceInfo(meta.Id);
+                if (balanceInfoResult.IsSuccess)
+                {
+                    balanceSats = balanceInfoResult.Value.TotalBalance + balanceInfoResult.Value.TotalUnconfirmedBalance;
+                }
+
+                var balanceBtc = balanceSats / 100_000_000.0;
 
                 Wallets.Add(new WalletItem
                 {
@@ -496,7 +504,12 @@ public partial class InvestPageViewModel : ReactiveObject
 
     private async Task PayWithWalletAsync()
     {
-        if (SelectedWallet == null || string.IsNullOrEmpty(SelectedWallet.WalletId)) return;
+        if (SelectedWallet == null || string.IsNullOrEmpty(SelectedWallet.WalletId))
+        {
+            PaymentStatusText = "No wallet selected.";
+            return;
+        }
+
         IsProcessing = true;
         PaymentStatusText = "Building investment transaction...";
 
@@ -506,12 +519,20 @@ public partial class InvestPageViewModel : ReactiveObject
             var projectId = new ProjectId(Project.ProjectId);
             var amountSats = (long)Math.Round(ParseAmount() * 100_000_000);
 
+            // Determine pattern index for Fund/Subscription projects
+            byte? patternIndex = null;
+            if (IsSubscription || Project.ProjectType == "Fund")
+            {
+                patternIndex = SelectedSubscriptionPattern == "pattern2" ? (byte)1 : (byte)0;
+            }
+
             // Build investment draft
             var buildRequest = new BuildInvestmentDraft.BuildInvestmentDraftRequest(
                 walletId,
                 projectId,
                 new Amount(amountSats),
-                new DomainFeerate(20));
+                new DomainFeerate(20),
+                patternIndex);
 
             var buildResult = await _investmentAppService.BuildInvestmentDraft(buildRequest);
             if (buildResult.IsFailure)
@@ -568,9 +589,9 @@ public partial class InvestPageViewModel : ReactiveObject
 
             CurrentScreen = InvestScreen.Success;
         }
-        catch
+        catch (Exception ex)
         {
-            PaymentStatusText = "An error occurred during payment.";
+            PaymentStatusText = $"Error: {ex.Message}";
         }
         finally
         {
