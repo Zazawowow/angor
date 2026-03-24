@@ -137,7 +137,7 @@ public partial class FundsViewModel : ReactiveObject
                 {
                     var info = balanceInfoResult.Value;
                     _walletBalanceInfos[walletId.Value] = info;
-                    balanceSats = info.TotalBalance + info.TotalUnconfirmedBalance;
+                    balanceSats = info.TotalBalance + info.TotalUnconfirmedBalance + info.TotalBalanceReserved;
                 }
 
                 totalSats += balanceSats;
