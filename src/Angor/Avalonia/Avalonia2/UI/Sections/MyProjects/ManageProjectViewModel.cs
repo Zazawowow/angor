@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using Angor.Sdk.Common;
 using Angor.Sdk.Funding.Founder;
+using Angor.Sdk.Funding.Founder.Dtos;
 using Angor.Sdk.Funding.Founder.Operations;
 using Angor.Sdk.Funding.Shared;
 using ReactiveUI;
@@ -270,6 +271,47 @@ public partial class ManageProjectViewModel : ReactiveObject
         {
             // SDK call failed
         }
+    }
+
+    /// <summary>
+    /// Claim (spend) stage funds for selected transactions.
+    /// Builds a spending transaction and broadcasts it via the SDK.
+    /// </summary>
+    public async Task<bool> ClaimStageFundsAsync(int stageIndex, IEnumerable<UtxoTransactionViewModel> selectedTransactions, long feeRateSatsPerVByte = 20)
+    {
+        if (string.IsNullOrEmpty(Project.ProjectIdentifier) ||
+            string.IsNullOrEmpty(Project.OwnerWalletId)) return false;
+
+        try
+        {
+            var walletId = new WalletId(Project.OwnerWalletId);
+            var projectId = new ProjectId(Project.ProjectIdentifier);
+
+            var toSpend = selectedTransactions.Select(t => new SpendTransactionDto
+            {
+                InvestorAddress = t.TxId,
+                StageId = stageIndex
+            });
+
+            var fee = new Angor.Shared.Models.FeeEstimation { FeeRate = feeRateSatsPerVByte, Confirmations = 1 };
+
+            var spendResult = await _founderAppService.SpendStageFunds(
+                new SpendStageFunds.SpendStageFundsRequest(walletId, projectId, fee, toSpend));
+
+            if (spendResult.IsFailure) return false;
+
+            var publishResult = await _founderAppService.SubmitTransactionFromDraft(
+                new PublishFounderTransaction.PublishFounderTransactionRequest(spendResult.Value.TransactionDraft));
+
+            if (publishResult.IsSuccess)
+            {
+                await LoadClaimableTransactionsAsync();
+                return true;
+            }
+        }
+        catch { }
+
+        return false;
     }
 
     /// <summary>

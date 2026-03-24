@@ -208,19 +208,26 @@ public partial class ManageProjectModalsView : UserControl
     {
         if (Vm == null) return;
 
-        // Start claiming animation
+        var stage = Vm.SelectedStage;
+        if (stage == null) return;
+
+        var selectedTxs = stage.AvailableTransactions.Where(t => t.IsSelected).ToList();
+        if (selectedTxs.Count == 0) return;
+
         Vm.IsClaiming = true;
         var confirmText = this.FindControl<TextBlock>("ConfirmClaimText");
         if (confirmText != null) confirmText.Text = "Claiming...";
 
-        // Simulate network delay (visual-only, no real backend)
-        await System.Threading.Tasks.Task.Delay(1500);
+        var success = await Vm.ClaimStageFundsAsync(stage.Number, selectedTxs);
 
         Vm.IsClaiming = false;
         if (confirmText != null) confirmText.Text = "Confirm";
 
-        Vm.ShowPasswordModal = false;
-        Vm.ShowSuccessModal = true;
+        if (success)
+        {
+            Vm.ShowPasswordModal = false;
+            Vm.ShowSuccessModal = true;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -255,27 +262,26 @@ public partial class ManageProjectModalsView : UserControl
     {
         if (Vm == null) return;
 
-        // Calculate total release amount
         var totalRelease = Vm.Stages
             .SelectMany(s => s.AvailableTransactions)
             .Sum(t => double.TryParse(t.Amount, out var v) ? v : 0);
 
         Vm.ReleasedAmount = totalRelease.ToString("F8");
 
-        // Start releasing animation
         Vm.IsReleasingFunds = true;
         var confirmText = this.FindControl<TextBlock>("ConfirmReleaseText");
         if (confirmText != null) confirmText.Text = "Releasing...";
 
-        // Simulate network delay
-        await System.Threading.Tasks.Task.Delay(1500);
+        var success = await Vm.ReleaseFundsToInvestorsAsync();
 
         Vm.IsReleasingFunds = false;
         if (confirmText != null) confirmText.Text = "Confirm";
 
-        Vm.ShowReleaseFundsPasswordModal = false;
-        Vm.ShowReleaseFundsSuccessModal = true;
-        Vm.FundsReleasedToInvestors = true;
+        if (success)
+        {
+            Vm.ShowReleaseFundsPasswordModal = false;
+            Vm.ShowReleaseFundsSuccessModal = true;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────
