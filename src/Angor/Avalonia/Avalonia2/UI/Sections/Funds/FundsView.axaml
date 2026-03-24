@@ -13,34 +13,6 @@
     </Design.DataContext>
 
     <Panel>
-        <!-- ═══ LOADING STATE ═══ -->
-        <Panel IsVisible="{Binding IsLoading}" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <StackPanel Spacing="16" HorizontalAlignment="Center">
-                <i:Icon Value="fa-solid fa-spinner" FontSize="32"
-                        Foreground="{DynamicResource PrimaryGreenBrush}"
-                        HorizontalAlignment="Center"
-                        RenderTransformOrigin="50%,50%">
-                    <i:Icon.RenderTransform>
-                        <RotateTransform />
-                    </i:Icon.RenderTransform>
-                    <i:Icon.Styles>
-                        <Style Selector="i|Icon">
-                            <Style.Animations>
-                                <Animation Duration="0:0:1" IterationCount="Infinite">
-                                    <KeyFrame Cue="0%"><Setter Property="RenderTransform" Value="rotate(0deg)" /></KeyFrame>
-                                    <KeyFrame Cue="100%"><Setter Property="RenderTransform" Value="rotate(360deg)" /></KeyFrame>
-                                </Animation>
-                            </Style.Animations>
-                        </Style>
-                    </i:Icon.Styles>
-                </i:Icon>
-                <TextBlock Text="Loading wallets..."
-                           FontSize="14"
-                           Foreground="{DynamicResource TextMuted}"
-                           HorizontalAlignment="Center" />
-            </StackPanel>
-        </Panel>
-
         <!-- ═══ EMPTY STATE (no wallets) ═══ -->
         <!--
             Vue (Funds.vue, walletGroups.length === 0):
