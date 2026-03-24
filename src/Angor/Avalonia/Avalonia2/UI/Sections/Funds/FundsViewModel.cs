@@ -77,7 +77,8 @@ public partial class FundsViewModel : ReactiveObject
         _balanceService = balanceService;
         _getNetwork = getNetwork;
 
-        // Load wallets from SDK on construction
+        // Start in loading state to prevent empty state flash
+        IsLoading = true;
         _ = LoadWalletsFromSdkAsync();
     }
 

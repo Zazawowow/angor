@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -20,6 +21,15 @@ public partial class FundsView : UserControl
         // Handle button clicks from EmptyState "Add Wallet", populated "Add Wallet",
         // and WalletCard action buttons (BtnSend, BtnReceive, BtnUtxo)
         AddHandler(Button.ClickEvent, OnButtonClick, RoutingStrategies.Bubble);
+
+        // Show/hide panels based on loading + wallet state
+        vm.WhenAnyValue(x => x.IsLoading, x => x.HasWallets)
+            .Subscribe(tuple =>
+            {
+                var (loading, hasWallets) = tuple;
+                EmptyStatePanel.IsVisible = !loading && !hasWallets;
+                PopulatedPanel.IsVisible = !loading && hasWallets;
+            });
     }
 
     /// <summary>
