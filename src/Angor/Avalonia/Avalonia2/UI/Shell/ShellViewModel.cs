@@ -225,14 +225,14 @@ public partial class ShellViewModel : ReactiveObject
     /// <summary>Display name for the header button. Shows "Select Wallet" if none selected.</summary>
     public string SelectedWalletName => SelectedWallet?.Name ?? "Select Wallet";
 
-    /// <summary>Invested balance display string for the header.</summary>
-    public string InvestedBalanceDisplay => "0.0000 BTC";
+    /// <summary>Invested balance display string for the header. Uses PortfolioViewModel total.</summary>
+    public string InvestedBalanceDisplay => _portfolioVm.TotalInvested + " BTC";
 
     /// <summary>Available balance display string for the header. Uses selected wallet balance.</summary>
     public string AvailableBalanceDisplay =>
         SelectedWallet != null
             ? SelectedWallet.Balance.ToString("F4", CultureInfo.InvariantCulture) + " BTC"
-            : "10.0000 BTC";
+            : "0.0000 BTC";
 
     public ShellViewModel(PortfolioViewModel portfolioVm, Func<string, object?> viewFactory, IWalletAppService walletAppService)
     {
