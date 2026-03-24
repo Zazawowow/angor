@@ -59,8 +59,6 @@ public partial class FundsViewModel : ReactiveObject
     public string LiquidBalance { get; private set; } = "0.0000";
 
     [Reactive] private bool isLoading;
-    [Reactive] private bool showEmptyState;
-    [Reactive] private bool showPopulatedState;
 
     public ObservableCollection<SeedGroupViewModel> SeedGroups { get; } = new();
 
@@ -79,9 +77,6 @@ public partial class FundsViewModel : ReactiveObject
         _balanceService = balanceService;
         _getNetwork = getNetwork;
 
-        // Start in loading state to prevent empty state flash
-        IsLoading = true;
-        UpdatePanelVisibility();
         _ = LoadWalletsFromSdkAsync();
     }
 
@@ -181,14 +176,7 @@ public partial class FundsViewModel : ReactiveObject
         {
             IsLoading = false;
             _isLoadingWallets = false;
-            UpdatePanelVisibility();
         }
-    }
-
-    private void UpdatePanelVisibility()
-    {
-        ShowEmptyState = !IsLoading && !HasWallets;
-        ShowPopulatedState = !IsLoading && HasWallets;
     }
 
     /// <summary>
@@ -313,7 +301,6 @@ public partial class FundsViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(TotalInvested));
         this.RaisePropertyChanged(nameof(BitcoinBalance));
         this.RaisePropertyChanged(nameof(LiquidBalance));
-        UpdatePanelVisibility();
     }
 
 }
