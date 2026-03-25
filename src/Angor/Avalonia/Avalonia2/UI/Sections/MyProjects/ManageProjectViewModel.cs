@@ -6,7 +6,12 @@ using Angor.Sdk.Common;
 using Angor.Sdk.Funding.Founder;
 using Angor.Sdk.Funding.Founder.Dtos;
 using Angor.Sdk.Funding.Founder.Operations;
+using Angor.Sdk.Funding.Services;
 using Angor.Sdk.Funding.Shared;
+using Angor.Shared;
+using Blockcore.NBitcoin;
+using Blockcore.NBitcoin.DataEncoders;
+using Nostr.Client.Utils;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 
@@ -100,6 +105,9 @@ public class ManageStageViewModel
 public partial class ManageProjectViewModel : ReactiveObject
 {
     private readonly IFounderAppService _founderAppService;
+    private readonly IProjectService _projectService;
+    private readonly ISeedwordsProvider _seedwordsProvider;
+    private readonly IDerivationOperations _derivationOperations;
 
     /// <summary>The project being managed (from MyProjectsView).</summary>
     public MyProjectItemViewModel Project { get; }
@@ -113,13 +121,13 @@ public partial class ManageProjectViewModel : ReactiveObject
     // ── Project ID ──
     public string ProjectId => Project.ProjectIdentifier;
 
-    // ── Private Keys Data (placeholder — SDK doesn't expose these directly) ──
-    public string FounderKey { get; } = "";
-    public string RecoveryKey { get; } = "";
-    public string NostrNpub { get; } = "";
-    public string Nip05 { get; } = "";
-    public string NostrNsec { get; } = "";
-    public string NostrHex { get; } = "";
+    // ── Private Keys Data ──
+    [Reactive] public partial string FounderKey { get; set; }
+    [Reactive] public partial string RecoveryKey { get; set; }
+    [Reactive] public partial string NostrNpub { get; set; }
+    [Reactive] public partial string Nip05 { get; set; }
+    [Reactive] public partial string NostrNsec { get; set; }
+    [Reactive] public partial string NostrHex { get; set; }
 
     // ── Next Stage Countdown ──
     public int CountdownDays { get; private set; }
@@ -166,16 +174,77 @@ public partial class ManageProjectViewModel : ReactiveObject
 
     public ManageProjectViewModel(
         MyProjectItemViewModel project,
-        IFounderAppService founderAppService)
+        IFounderAppService founderAppService,
+        IProjectService projectService,
+        ISeedwordsProvider seedwordsProvider,
+        IDerivationOperations derivationOperations)
     {
         _founderAppService = founderAppService;
+        _projectService = projectService;
+        _seedwordsProvider = seedwordsProvider;
+        _derivationOperations = derivationOperations;
         Project = project;
         WalletPassword = "";
         ClaimedAmount = "0";
         ReleasedAmount = "0";
+        FounderKey = "";
+        RecoveryKey = "";
+        NostrNpub = "";
+        Nip05 = "";
+        NostrNsec = "";
+        NostrHex = "";
 
-        // Load claimable transactions from SDK
+        // Load claimable transactions and project keys from SDK
         _ = LoadClaimableTransactionsAsync();
+        _ = LoadProjectKeysAsync();
+    }
+
+    /// <summary>
+    /// Load project keys from SDK: public keys from the project entity,
+    /// private keys derived from wallet seed words.
+    /// </summary>
+    private async Task LoadProjectKeysAsync()
+    {
+        if (string.IsNullOrEmpty(Project.ProjectIdentifier) ||
+            string.IsNullOrEmpty(Project.OwnerWalletId)) return;
+
+        try
+        {
+            // Load public keys from the project entity
+            var projectResult = await _projectService.GetAsync(new ProjectId(Project.ProjectIdentifier));
+            if (projectResult.IsSuccess)
+            {
+                var project = projectResult.Value;
+                FounderKey = project.FounderKey ?? "";
+                RecoveryKey = project.FounderRecoveryKey ?? "";
+
+                if (!string.IsNullOrEmpty(project.NostrPubKey))
+                {
+                    NostrNpub = NostrConverter.ToNpub(project.NostrPubKey) ?? project.NostrPubKey;
+                }
+            }
+
+            // Derive private keys from wallet seed words
+            var sensitiveDataResult = await _seedwordsProvider.GetSensitiveData(Project.OwnerWalletId);
+            if (sensitiveDataResult.IsSuccess && projectResult.IsSuccess)
+            {
+                var walletWords = sensitiveDataResult.Value.ToWalletWords();
+                var founderKey = projectResult.Value.FounderKey;
+
+                if (!string.IsNullOrEmpty(founderKey))
+                {
+                    var nostrPrivateKey = await _derivationOperations.DeriveProjectNostrPrivateKeyAsync(walletWords, founderKey);
+                    var privateKeyHex = Encoders.Hex.EncodeData(nostrPrivateKey.ToBytes());
+
+                    NostrHex = privateKeyHex;
+                    NostrNsec = NostrConverter.ToNsec(privateKeyHex) ?? "";
+                }
+            }
+        }
+        catch
+        {
+            // Key loading failed — properties remain empty
+        }
     }
 
     /// <summary>

@@ -5,6 +5,7 @@ using Angor.Sdk.Integration;
 using Angor.Sdk.Funding.Founder;
 using Angor.Sdk.Funding.Investor;
 using Angor.Sdk.Funding.Projects;
+using Angor.Sdk.Funding.Services;
 using Angor.Sdk.Wallet;
 using Angor.Sdk.Wallet.Application;
 using Angor.Sdk.Wallet.Domain;
@@ -108,7 +109,10 @@ public static class CompositionRoot
         services.AddSingleton<Func<MyProjectItemViewModel, ManageProjectViewModel>>(sp =>
             project => new ManageProjectViewModel(
                 project,
-                sp.GetRequiredService<IFounderAppService>()));
+                sp.GetRequiredService<IFounderAppService>(),
+                sp.GetRequiredService<IProjectService>(),
+                sp.GetRequiredService<ISeedwordsProvider>(),
+                sp.GetRequiredService<IDerivationOperations>()));
 
         // ── Section Views (transient — each receives its VM via constructor injection) ──
         services.AddTransient<HomeView>();

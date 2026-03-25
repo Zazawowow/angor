@@ -1,6 +1,6 @@
 # HIGH-19: ManageProjectViewModel — Private keys all empty strings
 
-## Status: [ ] Not started
+## Status: [x] COMPLETED
 
 ## Section: MyProjects
 
@@ -16,15 +16,17 @@
 Comment says: "SDK doesn't expose these directly"
 
 ## Files
-- `src/Angor/Avalonia/Avalonia2/UI/Sections/MyProjects/ManageProjectViewModel.cs` (lines 115-121)
+- `src/Angor/Avalonia/Avalonia2/UI/Sections/MyProjects/ManageProjectViewModel.cs`
+- `src/Angor/Avalonia/Avalonia2/Composition/CompositionRoot.cs`
 
-## What needs to happen
-1. Investigate what key data `IFounderAppService.CreateProjectKeys()` returns during deployment.
-2. Store keys at deployment time and retrieve them for display.
-3. Or add SDK methods to derive/retrieve these from the wallet.
-
-## SDK availability
-- `IFounderAppService` is injected. Keys may need to be persisted during project creation and retrieved later.
+## Solution
+1. Added `IProjectService`, `ISeedwordsProvider`, and `IDerivationOperations` as constructor dependencies.
+2. `LoadProjectKeysAsync()` loads public keys (FounderKey, RecoveryKey, NostrNpub) from the Project entity via `IProjectService.GetAsync()`.
+3. Private keys (NostrNsec, NostrHex) are derived from wallet seed words using `IDerivationOperations.DeriveProjectNostrPrivateKeyAsync()`.
+4. Nostr public key is converted to npub format using `NostrConverter.ToNpub()`.
+5. Nostr private key is converted to nsec format using `NostrConverter.ToNsec()`.
+6. NIP-05 remains empty as it's Nostr profile metadata not stored in the project entity.
+7. Updated CompositionRoot.cs factory delegate to provide the new dependencies.
 
 ## Acceptance criteria
 - Private keys modal shows real project keys for the founder.
