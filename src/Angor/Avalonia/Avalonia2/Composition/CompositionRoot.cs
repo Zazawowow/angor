@@ -110,9 +110,7 @@ public static class CompositionRoot
             project => new ManageProjectViewModel(
                 project,
                 sp.GetRequiredService<IFounderAppService>(),
-                sp.GetRequiredService<IProjectService>(),
-                sp.GetRequiredService<ISeedwordsProvider>(),
-                sp.GetRequiredService<IDerivationOperations>()));
+                sp.GetRequiredService<IProjectService>()));
 
         // ── Section Views (transient — each receives its VM via constructor injection) ──
         services.AddTransient<HomeView>();
